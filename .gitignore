@@ -1,0 +1,15 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+output/
+temp_*.mp3
+temp_*.wav
+
+.cache/
+models/
+*.egg-info/
