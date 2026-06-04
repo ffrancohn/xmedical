@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="stat bg-primary/10 rounded-box">
+        <div class="stat-title">Pacientes hoy</div>
+        <div class="stat-value">{{ citas_hoy|length }}</div>
+    </div>
+    <div class="stat bg-warning/10 rounded-box">
+        <div class="stat-title">En espera</div>
+        <div class="stat-value">{{ pacientes_espera|length }}</div>
+    </div>
+    <div class="stat bg-success/10 rounded-box">
+        <div class="stat-title">Atendidos</div>
+        <div class="stat-value">{{ atendidos }}</div>
+    </div>
+</div>
+
+<div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h2 class="card-title">Agenda del dia</h2>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra">
+                <thead><tr><th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                {% for cita in citas_hoy %}
+                    <tr>
+                        <td>{{ cita.hora|time:"H:i" }}</td>
+                        <td>{{ cita.paciente.nombre }} {{ cita.paciente.apellido }}</td>
+                        <td><span class="badge">{{ cita.get_estado_display }}</span></td>
+                        <td><a href="{% url 'consulta_wizard' cita.id 1 %}" class="btn btn-sm btn-primary">Atender</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No hay citas para hoy.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

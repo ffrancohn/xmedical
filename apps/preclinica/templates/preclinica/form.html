@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Preclinica: {{ cita.paciente }}</h1>
+        <form method="post" class="space-y-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary">Guardar preclinica</button>
+        </form>
+        {% if form.instance.pk and form.instance.alertas %}
+            <div class="alert alert-warning mt-4">
+                <div>
+                    <strong>Alertas:</strong>
+                    {% for alerta in form.instance.alertas %}<span class="badge badge-warning">{{ alerta }}</span>{% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

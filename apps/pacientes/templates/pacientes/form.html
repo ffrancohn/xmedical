@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Paciente</h1>
+        <form method="post" class="space-y-3">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>{{ form.documento.label_tag }}{{ form.documento }}</div>
+                <div>{{ form.fecha_nacimiento.label_tag }}{{ form.fecha_nacimiento }}</div>
+                <div>{{ form.nombre.label_tag }}{{ form.nombre }}</div>
+                <div>{{ form.apellido.label_tag }}{{ form.apellido }}</div>
+                <div>{{ form.sexo.label_tag }}{{ form.sexo }}</div>
+                <div>{{ form.activo.label_tag }}{{ form.activo }}</div>
+            </div>
+
+            <div class="divider">Contacto</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>{{ form.telefono.label_tag }}{{ form.telefono }}</div>
+                <div>{{ form.telefono_fijo.label_tag }}{{ form.telefono_fijo }}</div>
+                <div>{{ form.email.label_tag }}{{ form.email }}</div>
+            </div>
+
+            <div class="divider">Direccion</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>{{ form.ciudad.label_tag }}{{ form.ciudad }}</div>
+                <div>{{ form.departamento.label_tag }}{{ form.departamento }}</div>
+            </div>
+            <div>{{ form.direccion.label_tag }}{{ form.direccion }}</div>
+
+            <div class="divider">Emergencia y notas</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>{{ form.contacto_emergencia_nombre.label_tag }}{{ form.contacto_emergencia_nombre }}</div>
+                <div>{{ form.contacto_emergencia_telefono.label_tag }}{{ form.contacto_emergencia_telefono }}</div>
+            </div>
+            <div>{{ form.observaciones.label_tag }}{{ form.observaciones }}</div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">{{ form.errors }}</div>
+            {% endif %}
+            <button class="btn btn-primary">Guardar</button>
+            <a href="{% url 'pacientes_lista' %}" class="btn btn-ghost">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
