@@ -1,0 +1,461 @@
+[
+  {
+    "model": "core.institucion",
+    "pk": 1,
+    "fields": {
+      "nombre": "Clinica Demo",
+      "subdominio": "demo",
+      "tipo": "privada",
+      "configuracion": {},
+      "activo": true,
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.especialidad",
+    "pk": 1,
+    "fields": {
+      "institucion": 1,
+      "nombre": "Medicina General",
+      "codigo": "MG",
+      "nivel": "primero",
+      "duracion_consulta_minutos": 20,
+      "activo": true
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$xmedicaldemo$/nunQvbRaJvjR5oy9wI0FR4jOw5LzDKUpZwZv8CTWhw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "admin.demo",
+      "first_name": "Ana",
+      "last_name": "Administradora",
+      "email": "admin@demo.test",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-06-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$xmedicaldemo$/nunQvbRaJvjR5oy9wI0FR4jOw5LzDKUpZwZv8CTWhw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "medico.demo",
+      "first_name": "Carlos",
+      "last_name": "Mendez",
+      "email": "medico@demo.test",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$xmedicaldemo$/nunQvbRaJvjR5oy9wI0FR4jOw5LzDKUpZwZv8CTWhw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "enfermera.demo",
+      "first_name": "Lucia",
+      "last_name": "Reyes",
+      "email": "enfermera@demo.test",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$xmedicaldemo$/nunQvbRaJvjR5oy9wI0FR4jOw5LzDKUpZwZv8CTWhw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "recepcion.demo",
+      "first_name": "Marta",
+      "last_name": "Lopez",
+      "email": "recepcion@demo.test",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$xmedicaldemo$/nunQvbRaJvjR5oy9wI0FR4jOw5LzDKUpZwZv8CTWhw=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "superadmin.demo",
+      "first_name": "Sofia",
+      "last_name": "Proveedor",
+      "email": "superadmin@xmedical.test",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-06-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.profesional",
+    "pk": 1,
+    "fields": {
+      "institucion": 1,
+      "usuario": 1,
+      "especialidad": 1,
+      "nombre": "Ana Administradora",
+      "tipo": "admin",
+      "registro_medico": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "core.profesional",
+    "pk": 2,
+    "fields": {
+      "institucion": 1,
+      "usuario": 2,
+      "especialidad": 1,
+      "nombre": "Dr. Carlos Mendez",
+      "tipo": "medico",
+      "registro_medico": "MED-1001",
+      "activo": true
+    }
+  },
+  {
+    "model": "core.profesional",
+    "pk": 3,
+    "fields": {
+      "institucion": 1,
+      "usuario": 3,
+      "especialidad": 1,
+      "nombre": "Lic. Lucia Reyes",
+      "tipo": "enfermera",
+      "registro_medico": "ENF-2001",
+      "activo": true
+    }
+  },
+  {
+    "model": "core.profesional",
+    "pk": 4,
+    "fields": {
+      "institucion": 1,
+      "usuario": 4,
+      "especialidad": 1,
+      "nombre": "Marta Lopez",
+      "tipo": "recepcionista",
+      "registro_medico": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "core.horario",
+    "pk": 1,
+    "fields": {
+      "institucion": 1,
+      "profesional": 2,
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "16:00:00",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 1,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119900001",
+      "nombre": "Jose",
+      "apellido": "Ramirez",
+      "fecha_nacimiento": "1990-02-14",
+      "sexo": "M",
+      "telefono": "9990-0001",
+      "telefono_fijo": "2230-0001",
+      "email": "jose.ramirez@demo.test",
+      "direccion": "Colonia Palmira, casa 101",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Maria Ramirez",
+      "contacto_emergencia_telefono": "9988-0001",
+      "observaciones": "Paciente demo con antecedente familiar de hipertension.",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 2,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119850002",
+      "nombre": "Maria",
+      "apellido": "Garcia",
+      "fecha_nacimiento": "1985-07-03",
+      "sexo": "F",
+      "telefono": "9990-0002",
+      "telefono_fijo": "2230-0002",
+      "email": "maria.garcia@demo.test",
+      "direccion": "Barrio El Centro, avenida principal",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Pedro Garcia",
+      "contacto_emergencia_telefono": "9988-0002",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 3,
+    "fields": {
+      "institucion": 1,
+      "documento": "080120010003",
+      "nombre": "Luis",
+      "apellido": "Pineda",
+      "fecha_nacimiento": "2001-11-22",
+      "sexo": "M",
+      "telefono": "9990-0003",
+      "telefono_fijo": "2230-0003",
+      "email": "luis.pineda@demo.test",
+      "direccion": "Residencial Las Acacias, bloque B",
+      "ciudad": "Comayaguela",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Ana Pineda",
+      "contacto_emergencia_telefono": "9988-0003",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 4,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119760004",
+      "nombre": "Rosa",
+      "apellido": "Castillo",
+      "fecha_nacimiento": "1976-05-18",
+      "sexo": "F",
+      "telefono": "9990-0004",
+      "telefono_fijo": "2230-0004",
+      "email": "rosa.castillo@demo.test",
+      "direccion": "Colonia Kennedy, tercera etapa",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Hector Castillo",
+      "contacto_emergencia_telefono": "9988-0004",
+      "observaciones": "Prefiere contacto por telefono fijo.",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 5,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119930005",
+      "nombre": "Fernando",
+      "apellido": "Mejia",
+      "fecha_nacimiento": "1993-09-09",
+      "sexo": "M",
+      "telefono": "9990-0005",
+      "telefono_fijo": "2230-0005",
+      "email": "fernando.mejia@demo.test",
+      "direccion": "Colonia Alameda, apartamento 3",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Sofia Mejia",
+      "contacto_emergencia_telefono": "9988-0005",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 6,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119880006",
+      "nombre": "Claudia",
+      "apellido": "Santos",
+      "fecha_nacimiento": "1988-12-30",
+      "sexo": "F",
+      "telefono": "9990-0006",
+      "telefono_fijo": "2230-0006",
+      "email": "claudia.santos@demo.test",
+      "direccion": "Barrio Abajo, casa 45",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Oscar Santos",
+      "contacto_emergencia_telefono": "9988-0006",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 7,
+    "fields": {
+      "institucion": 1,
+      "documento": "080120050007",
+      "nombre": "Andres",
+      "apellido": "Flores",
+      "fecha_nacimiento": "2005-03-11",
+      "sexo": "M",
+      "telefono": "9990-0007",
+      "telefono_fijo": "2230-0007",
+      "email": "andres.flores@demo.test",
+      "direccion": "Colonia Miraflores, lote 27",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Laura Flores",
+      "contacto_emergencia_telefono": "9988-0007",
+      "observaciones": "Menor de edad, validar acompanante responsable.",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 8,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119700008",
+      "nombre": "Elena",
+      "apellido": "Vargas",
+      "fecha_nacimiento": "1970-01-27",
+      "sexo": "F",
+      "telefono": "9990-0008",
+      "telefono_fijo": "2230-0008",
+      "email": "elena.vargas@demo.test",
+      "direccion": "Residencial Los Robles, casa 12",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Daniel Vargas",
+      "contacto_emergencia_telefono": "9988-0008",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 9,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119820009",
+      "nombre": "Ricardo",
+      "apellido": "Nunez",
+      "fecha_nacimiento": "1982-06-06",
+      "sexo": "M",
+      "telefono": "9990-0009",
+      "telefono_fijo": "2230-0009",
+      "email": "ricardo.nunez@demo.test",
+      "direccion": "Colonia San Miguel, pasaje 2",
+      "ciudad": "Comayaguela",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Karla Nunez",
+      "contacto_emergencia_telefono": "9988-0009",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 10,
+    "fields": {
+      "institucion": 1,
+      "documento": "080119950010",
+      "nombre": "Daniela",
+      "apellido": "Morales",
+      "fecha_nacimiento": "1995-10-15",
+      "sexo": "F",
+      "telefono": "9990-0010",
+      "telefono_fijo": "2230-0010",
+      "email": "daniela.morales@demo.test",
+      "direccion": "Colonia Hato de Enmedio, bloque C",
+      "ciudad": "Tegucigalpa",
+      "departamento": "Francisco Morazan",
+      "contacto_emergencia_nombre": "Teresa Morales",
+      "contacto_emergencia_telefono": "9988-0010",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "citas.cita",
+    "pk": 1,
+    "fields": {
+      "institucion": 1,
+      "paciente": 1,
+      "profesional": 2,
+      "fecha": "2026-06-04",
+      "hora": "08:00:00",
+      "estado": "confirmada",
+      "tipo_agendamiento": "especifico",
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  },
+  {
+    "model": "citas.cita",
+    "pk": 2,
+    "fields": {
+      "institucion": 1,
+      "paciente": 2,
+      "profesional": 2,
+      "fecha": "2026-06-04",
+      "hora": "08:30:00",
+      "estado": "pendiente",
+      "tipo_agendamiento": "especifico",
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  },
+  {
+    "model": "citas.cita",
+    "pk": 3,
+    "fields": {
+      "institucion": 1,
+      "paciente": 3,
+      "profesional": 2,
+      "fecha": "2026-06-04",
+      "hora": "09:00:00",
+      "estado": "pendiente",
+      "tipo_agendamiento": "especifico",
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  },
+  {
+    "model": "preclinica.preclinica",
+    "pk": 1,
+    "fields": {
+      "institucion": 1,
+      "cita": 1,
+      "presion_arterial_sis": 145,
+      "presion_arterial_dia": 92,
+      "frecuencia_cardiaca": 84,
+      "temperatura": "37.2",
+      "saturacion_o2": 96,
+      "peso": "82.50",
+      "talla": "1.72",
+      "imc": "27.89",
+      "motivo_consulta": "Cefalea y mareos desde hace dos dias.",
+      "triaje": "media",
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  }
+]

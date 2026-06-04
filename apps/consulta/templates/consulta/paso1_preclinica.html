@@ -1,0 +1,14 @@
+{% if preclinica %}
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="stat bg-base-200 rounded-box"><div class="stat-title">PA</div><div class="stat-value text-lg">{{ preclinica.presion_arterial_sis }}/{{ preclinica.presion_arterial_dia }}</div></div>
+    <div class="stat bg-base-200 rounded-box"><div class="stat-title">FC</div><div class="stat-value text-lg">{{ preclinica.frecuencia_cardiaca }}</div></div>
+    <div class="stat bg-base-200 rounded-box"><div class="stat-title">Temp</div><div class="stat-value text-lg">{{ preclinica.temperatura }}</div></div>
+    <div class="stat bg-base-200 rounded-box"><div class="stat-title">IMC</div><div class="stat-value text-lg">{{ preclinica.imc }}</div></div>
+</div>
+<p><strong>Motivo inicial:</strong> {{ preclinica.motivo_consulta }}</p>
+{% if preclinica.alertas %}
+<div class="alert alert-warning">{% for alerta in preclinica.alertas %}<span>{{ alerta }}</span>{% endfor %}</div>
+{% endif %}
+{% else %}
+<div class="alert">No hay preclinica registrada para esta cita.</div>
+{% endif %}

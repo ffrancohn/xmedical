@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Preclinica de hoy</h1>
+{% include 'partials/institution_filter.html' %}
+<div class="card bg-base-100 shadow">
+    <div class="card-body overflow-x-auto">
+        <table class="table table-zebra">
+            <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Medico</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+            {% for cita in citas %}
+                <tr>
+                    {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
+                    <td>{{ cita.hora|time:"H:i" }}</td>
+                    <td>{{ cita.paciente }}</td>
+                    <td>{{ cita.profesional.nombre }}</td>
+                    <td>{{ cita.get_estado_display }}</td>
+                    <td><a href="{% url 'preclinica_registro' cita.id %}" class="btn btn-sm btn-primary">Registrar signos</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="{% if is_superadmin_view %}6{% else %}5{% endif %}">No hay pacientes en espera.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

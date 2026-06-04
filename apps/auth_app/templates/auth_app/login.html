@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto card bg-base-100 shadow-xl mt-10">
+    <div class="card-body">
+        <h1 class="card-title">Iniciar sesion</h1>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary w-full">Entrar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

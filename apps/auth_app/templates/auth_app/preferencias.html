@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Configuracion visual</h1>
+        <p class="opacity-70">Elige el tema de colores que se aplicara a tu usuario.</p>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div data-theme="garden" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Garden</span></div>
+                <div data-theme="light" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Claro</span></div>
+                <div data-theme="dark" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Oscuro</span></div>
+                <div data-theme="corporate" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Corporativo</span></div>
+                <div data-theme="emerald" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Esmeralda</span></div>
+                <div data-theme="cupcake" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Suave</span></div>
+                <div data-theme="winter" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Invierno</span></div>
+                <div data-theme="night" class="rounded-box p-3 bg-base-200 border"><span class="badge badge-primary">Noche</span></div>
+            </div>
+            <button class="btn btn-primary">Guardar preferencias</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-ghost">Volver</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

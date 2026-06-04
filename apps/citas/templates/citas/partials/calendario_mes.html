@@ -1,0 +1,24 @@
+<div class="card bg-base-100 shadow">
+    <div class="card-body {% if compacto %}p-3{% endif %}">
+        <h2 class="card-title">{{ month.label }}</h2>
+        <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold opacity-70">
+            <div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div><div>Dom</div>
+        </div>
+        <div class="grid grid-cols-7 gap-1">
+            {% for week in month.weeks %}
+                {% for day in week %}
+                    <div class="min-h-24 rounded-box border p-2 {% if day.in_month %}bg-base-200{% else %}bg-base-300 opacity-50{% endif %}">
+                        <div class="font-bold text-sm">{{ day.date|date:"d" }}</div>
+                        <div class="space-y-1 mt-1">
+                            {% for cita in day.citas %}
+                                <div class="badge badge-sm badge-primary block truncate max-w-full">{{ cita.hora|time:"H:i" }} {{ cita.paciente.nombre }}{% if is_superadmin_view %} · {{ cita.institucion.subdominio }}{% endif %}</div>
+                            {% empty %}
+                                {% if not compacto %}<span class="text-xs opacity-40">Sin citas</span>{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>

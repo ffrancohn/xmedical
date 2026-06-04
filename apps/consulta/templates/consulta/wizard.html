@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+    <h1 class="text-2xl font-bold">Consulta: {{ cita.paciente }}</h1>
+    <p class="opacity-70">{{ cita.fecha }} {{ cita.hora|time:"H:i" }} con {{ cita.profesional.nombre }}</p>
+</div>
+<ul class="steps steps-horizontal w-full mb-6 overflow-x-auto">
+    {% for number, name in steps.items %}
+        <li class="step {% if number <= step %}step-primary{% endif %}">{{ number }}</li>
+    {% endfor %}
+</ul>
+<div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h2 class="card-title">Paso {{ step }}: {{ step_name }}</h2>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% if step == 1 %}
+                {% include 'consulta/paso1_preclinica.html' %}
+            {% elif step == 2 %}
+                {% include 'consulta/paso2_motivo.html' %}
+            {% elif step == 3 %}
+                {% include 'consulta/paso3_anamnesis.html' %}
+            {% elif step == 4 %}
+                {% include 'consulta/paso4_examen_fisico.html' %}
+            {% elif step == 5 %}
+                {% include 'consulta/paso5_diagnostico.html' %}
+            {% elif step == 6 %}
+                {% include 'consulta/paso6_plan.html' %}
+            {% elif step == 7 %}
+                {% include 'consulta/paso7_resumen.html' %}
+            {% endif %}
+            <div class="flex justify-between pt-4">
+                {% if step > 1 %}<a href="{% url 'consulta_wizard' cita.id step|add:'-1' %}" class="btn btn-ghost">Anterior</a>{% else %}<span></span>{% endif %}
+                <button class="btn btn-primary">{% if step == 7 %}Finalizar{% else %}Continuar{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

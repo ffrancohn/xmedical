@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6">
+    <div>
+        <p class="font-semibold text-primary">Panel del proveedor</p>
+        <h1 class="text-3xl font-bold">Superadmin XMedical</h1>
+        <p class="opacity-70">Vista global de instituciones, actividad y respaldos.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="stat bg-base-100 rounded-box shadow"><div class="stat-title">Instituciones</div><div class="stat-value">{{ total_instituciones }}</div></div>
+    <div class="stat bg-base-100 rounded-box shadow"><div class="stat-title">Pacientes</div><div class="stat-value">{{ total_pacientes }}</div></div>
+    <div class="stat bg-base-100 rounded-box shadow"><div class="stat-title">Citas</div><div class="stat-value">{{ total_citas }}</div></div>
+    <div class="stat bg-base-100 rounded-box shadow"><div class="stat-title">Consultas</div><div class="stat-value">{{ total_consultas }}</div></div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+    <div class="xl:col-span-2 card bg-base-100 shadow">
+        <div class="card-body overflow-x-auto">
+            <h2 class="card-title">Instituciones</h2>
+            <table class="table table-zebra">
+                <thead><tr><th>Institucion</th><th>Tipo</th><th>Estado</th><th>Profesionales</th><th>Pacientes</th><th>Citas</th><th>Consultas</th></tr></thead>
+                <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>
+                            <div class="font-semibold">{{ row.institucion.nombre }}</div>
+                            <div class="text-xs opacity-70">{{ row.institucion.subdominio }}</div>
+                        </td>
+                        <td>{{ row.institucion.get_tipo_display }}</td>
+                        <td>{% if row.institucion.activo %}<span class="badge badge-success">Activa</span>{% else %}<span class="badge">Inactiva</span>{% endif %}</td>
+                        <td>{{ row.profesionales }}</td>
+                        <td>{{ row.pacientes }}</td>
+                        <td>{{ row.citas }}</td>
+                        <td>{{ row.consultas }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No hay instituciones registradas.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Crear respaldo</h2>
+                <form method="post" action="{% url 'superadmin_backup' %}" class="space-y-3">
+                    {% csrf_token %}
+                    <label class="label">Alcance</label>
+                    <select name="alcance" class="select select-bordered w-full">
+                        <option value="global">Toda la base de datos</option>
+                        <option value="institucion">Por institucion</option>
+                    </select>
+                    <label class="label">Institucion</label>
+                    <select name="institucion_id" class="select select-bordered w-full">
+                        {% for institucion in instituciones %}<option value="{{ institucion.id }}">{{ institucion.nombre }}</option>{% endfor %}
+                    </select>
+                    <button class="btn btn-primary w-full">Generar respaldo</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Restaurar JSON</h2>
+                <div class="alert alert-warning text-sm">La restauracion usa loaddata: actualiza o inserta registros por PK. Para produccion conviene agregar validacion y confirmacion doble.</div>
+                <form method="post" enctype="multipart/form-data" action="{% url 'superadmin_restore' %}" class="space-y-3">
+                    {% csrf_token %}
+                    <select name="alcance" class="select select-bordered w-full">
+                        <option value="global">Toda la base de datos</option>
+                        <option value="institucion">Por institucion</option>
+                    </select>
+                    <select name="institucion_id" class="select select-bordered w-full">
+                        {% for institucion in instituciones %}<option value="{{ institucion.id }}">{{ institucion.nombre }}</option>{% endfor %}
+                    </select>
+                    <input type="file" name="archivo" accept=".json" class="file-input file-input-bordered w-full">
+                    <button class="btn btn-outline w-full">Restaurar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-base-100 shadow mt-4">
+    <div class="card-body overflow-x-auto">
+        <h2 class="card-title">Ultimas operaciones</h2>
+        <table class="table table-zebra">
+            <thead><tr><th>Fecha</th><th>Tipo</th><th>Alcance</th><th>Institucion</th><th>Usuario</th><th>Archivo</th></tr></thead>
+            <tbody>
+            {% for log in backup_logs %}
+                <tr>
+                    <td>{{ log.creado_en|date:"d/m/Y H:i" }}</td>
+                    <td>{{ log.get_tipo_display }}</td>
+                    <td>{{ log.get_alcance_display }}</td>
+                    <td>{{ log.institucion|default:"-" }}</td>
+                    <td>{{ log.usuario|default:"-" }}</td>
+                    <td class="text-xs">{{ log.archivo }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6">Sin operaciones registradas.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

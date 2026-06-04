@@ -1,0 +1,33 @@
+<div class="grid md:grid-cols-2 gap-4">
+    <div>
+        {{ form.as_p }}
+        <p class="text-sm opacity-70">Puede escribir codigo y nombre, o usar las sugerencias.</p>
+    </div>
+    <div>
+        <label class="label">Sugerencias CIE-10</label>
+        <input id="cie10-q" class="input input-bordered w-full mb-2" placeholder="Buscar CIE-10">
+        <div id="cie10-results" class="space-y-2">
+            {% for item in cie10 %}
+                <button type="button" class="btn btn-sm btn-outline cie10-item" data-code="{{ item.codigo }}" data-name="{{ item.nombre }}">{{ item.codigo }} - {{ item.nombre }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script>
+const q = document.getElementById('cie10-q');
+const box = document.getElementById('cie10-results');
+const codeInput = document.getElementById('id_codigo_cie10');
+const nameInput = document.getElementById('id_nombre');
+function bindItems() {
+  document.querySelectorAll('.cie10-item').forEach(btn => {
+    btn.onclick = () => { codeInput.value = btn.dataset.code; nameInput.value = btn.dataset.name; };
+  });
+}
+q.addEventListener('input', async () => {
+  const res = await fetch("{% url 'cie10_search' %}?q=" + encodeURIComponent(q.value));
+  const data = await res.json();
+  box.innerHTML = data.results.map(item => `<button type="button" class="btn btn-sm btn-outline cie10-item" data-code="${item.codigo}" data-name="${item.nombre}">${item.codigo} - ${item.nombre}</button>`).join(' ');
+  bindItems();
+});
+bindItems();
+</script>

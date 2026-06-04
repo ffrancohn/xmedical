@@ -1,5 +1,7 @@
 venv/
 .venv/
+.env
+backups/*.json
 __pycache__/
 *.py[cod]
 *.pyo

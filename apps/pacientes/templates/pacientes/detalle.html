@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+    <div>
+        <h1 class="text-2xl font-bold">{{ paciente.nombre }} {{ paciente.apellido }}</h1>
+        <p class="opacity-70">Documento: {{ paciente.documento }}</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="{% url 'pacientes_historia' paciente.id %}" class="btn">Historia</a>
+        <a href="{% url 'pacientes_editar' paciente.id %}" class="btn btn-primary">Editar</a>
+        <a href="{% url 'pacientes_lista' %}" class="btn btn-ghost">Volver</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Datos generales</h2>
+            <dl class="grid grid-cols-2 gap-3">
+                <dt class="font-semibold">Fecha nacimiento</dt><dd>{{ paciente.fecha_nacimiento|default:"-" }}</dd>
+                <dt class="font-semibold">Sexo</dt><dd>{{ paciente.get_sexo_display|default:"-" }}</dd>
+                <dt class="font-semibold">Estado</dt><dd>{% if paciente.activo %}Activo{% else %}Inactivo{% endif %}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Contacto</h2>
+            <dl class="grid grid-cols-2 gap-3">
+                <dt class="font-semibold">Movil</dt><dd>{{ paciente.telefono|default:"-" }}</dd>
+                <dt class="font-semibold">Fijo</dt><dd>{{ paciente.telefono_fijo|default:"-" }}</dd>
+                <dt class="font-semibold">Correo</dt><dd>{{ paciente.email|default:"-" }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Direccion</h2>
+            <p>{{ paciente.direccion|default:"-" }}</p>
+            <p class="opacity-70">{{ paciente.ciudad }}{% if paciente.departamento %}, {{ paciente.departamento }}{% endif %}</p>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Emergencia</h2>
+            <dl class="grid grid-cols-2 gap-3">
+                <dt class="font-semibold">Contacto</dt><dd>{{ paciente.contacto_emergencia_nombre|default:"-" }}</dd>
+                <dt class="font-semibold">Telefono</dt><dd>{{ paciente.contacto_emergencia_telefono|default:"-" }}</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+{% if paciente.observaciones %}
+<div class="card bg-base-100 shadow mt-4">
+    <div class="card-body">
+        <h2 class="card-title">Observaciones</h2>
+        <p>{{ paciente.observaciones|linebreaksbr }}</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
