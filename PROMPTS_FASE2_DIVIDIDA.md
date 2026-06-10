@@ -6,7 +6,7 @@ Este documento divide la Fase 2 en prompts ejecutables por partes. La idea es ev
 
 No pegar claves reales en el prompt, codigo o repositorio. Usar variables de entorno.
 
-| Proveedor | Uso | Modelo | Variable de API Key | Base URL | Notas |
+| Proveedor | Uso | Modelc:\py\ruta-interna.rar c:\py\voices.rar c:\py\xmedical.rar c:\py\Dashboard Estadistico IHSS.raro | Variable de API Key | Base URL | Notas |
 |---|---|---|---|---|---|
 | OpenAI | Diagnostico sugerido, resumen clinico, ayuda de redaccion | PENDIENTE_DEFINIR | `OPENAI_API_KEY` | `https://api.openai.com/v1` | Usar solo con datos minimos necesarios y consentimiento/configuracion institucional. |
 | OpenRouter | Diagnostico sugerido, OCR asistido, clasificacion de texto | PENDIENTE_DEFINIR | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` | El modelo se selecciona por institucion o por configuracion global. |

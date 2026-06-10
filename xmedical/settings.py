@@ -69,7 +69,7 @@ DATABASES = {
         "USER": env("DB_USER", default="xmedical_user"),
         "PASSWORD": env("DB_PASSWORD", default="password"),
         "HOST": env("DB_HOST", default="localhost"),
-        "PORT": env("DB_PORT", default="5432"),
+        "PORT": env("DB_PORT", default="5433"),
     }
 }
 
