@@ -1,4 +1,9 @@
+from apps.core.decorators import get_profesional
 from apps.core.models import Institucion
+
+
+def user_profesional(request):
+    return {"profesional": get_profesional(request.user) if request.user.is_authenticated else None}
 
 
 def institucion(request):

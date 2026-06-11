@@ -13,6 +13,7 @@
         <a href="{% url 'citas_lista' %}?vista=dos_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dos_meses' %}btn-primary{% else %}btn-outline{% endif %}">2 meses</a>
         <a href="{% url 'citas_lista' %}?vista=tres_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'tres_meses' %}btn-primary{% else %}btn-outline{% endif %}">3 meses</a>
         <a href="{% url 'citas_agendar' %}" class="btn btn-sm btn-primary">Agendar cita</a>
+        <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-sm btn-outline">Agendar flexible</a>
     </div>
 </div>
 

@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     "apps.citas",
     "apps.preclinica",
     "apps.consulta",
+    "apps.referencias",
+    "apps.qr",
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.institucion",
+                "apps.core.context_processors.user_profesional",
                 "apps.core.context_processors.visual_preferences",
             ],
         },
@@ -98,3 +101,18 @@ LOGOUT_REDIRECT_URL = "/auth/login/"
 
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://localhost:6379/0")
+
+# IA (Fase 2) - claves solo en entorno, nunca en base de datos
+AI_PROVIDER = env("AI_PROVIDER", default="openai")
+OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
+OPENAI_MODEL = env("OPENAI_MODEL", default="")
+OPENAI_BASE_URL = env("OPENAI_BASE_URL", default="https://api.openai.com/v1")
+OPENROUTER_API_KEY = env("OPENROUTER_API_KEY", default="")
+OPENROUTER_MODEL = env("OPENROUTER_MODEL", default="")
+OPENROUTER_BASE_URL = env("OPENROUTER_BASE_URL", default="https://openrouter.ai/api/v1")
+OPENROUTER_HTTP_REFERER = env("OPENROUTER_HTTP_REFERER", default="http://localhost:8000")
+OPENROUTER_APP_NAME = env("OPENROUTER_APP_NAME", default="XMedical")
+
+# QR (Fase 2)
+QR_BASE_URL = env("QR_BASE_URL", default="http://localhost:8000/qr")
+QR_EXPIRATION_DAYS = env.int("QR_EXPIRATION_DAYS", default=30)

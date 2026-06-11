@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-4">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h1 class="card-title">Referencia #{{ referencia.id }}</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <p><strong>Paciente:</strong> {{ referencia.paciente }}</p>
+                <p><strong>Estado:</strong> {{ referencia.get_estado_display }}</p>
+                <p><strong>Especialidad destino:</strong> {{ referencia.especialidad_destino.nombre }}</p>
+                <p><strong>Prioridad:</strong> {{ referencia.get_prioridad_display }}</p>
+                <p><strong>Medico referente:</strong> {{ referencia.medico_referente.nombre }}</p>
+                <p><strong>Especialista:</strong> {{ referencia.especialista.nombre|default:"Sin asignar" }}</p>
+            </div>
+            <div class="divider"></div>
+            <section>
+                <h3 class="font-bold">Motivo</h3>
+                <p>{{ referencia.motivo|linebreaksbr }}</p>
+            </section>
+            {% if referencia.comentarios_especialista %}
+            <section>
+                <h3 class="font-bold">Comentarios del especialista</h3>
+                <p>{{ referencia.comentarios_especialista|linebreaksbr }}</p>
+            </section>
+            {% endif %}
+            {% if referencia.cita_derivada %}
+            <section>
+                <h3 class="font-bold">Cita asignada</h3>
+                <p>{{ referencia.cita_derivada.fecha }} {{ referencia.cita_derivada.hora|time:"H:i" }} - {{ referencia.cita_derivada.get_estado_display }}</p>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if referencia.estado == 'pendiente' %}
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="font-bold">Responder referencia</h2>
+            <form method="post" action="{% url 'referencias_aceptar' referencia.id %}" class="space-y-3 mb-4">
+                {% csrf_token %}
+                {{ respuesta_form.comentarios_especialista.label_tag }}
+                {{ respuesta_form.comentarios_especialista }}
+                <button class="btn btn-success">Aceptar</button>
+            </form>
+            <form method="post" action="{% url 'referencias_rechazar' referencia.id %}" class="space-y-3">
+                {% csrf_token %}
+                {{ respuesta_form.comentarios_especialista.label_tag }}
+                <textarea name="comentarios_especialista" class="textarea textarea-bordered w-full" rows="3" placeholder="Motivo del rechazo"></textarea>
+                <button class="btn btn-error">Rechazar</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if referencia.estado == 'aceptada' and not referencia.cita_derivada %}
+    <a href="{% url 'referencias_agendar' referencia.id %}" class="btn btn-primary">Agendar cita</a>
+    {% endif %}
+
+    {% if referencia.estado == 'aceptada' and referencia.cita_derivada and not contrarreferencia %}
+    <a href="{% url 'referencias_contrarreferencia' referencia.id %}" class="btn btn-secondary">Crear contrarreferencia</a>
+    {% endif %}
+
+    {% if contrarreferencia %}
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="font-bold">Contrarreferencia</h2>
+            <p><strong>Resumen:</strong> {{ contrarreferencia.resumen_atencion|linebreaksbr }}</p>
+            <p class="mt-2"><strong>Plan de seguimiento:</strong> {{ contrarreferencia.plan_seguimiento|linebreaksbr }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'referencias_lista' %}" class="btn btn-ghost">Volver a bandeja</a>
+</div>
+{% endblock %}

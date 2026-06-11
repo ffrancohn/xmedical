@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Agendamiento flexible</h1>
+        <p class="text-sm opacity-70 mb-4">
+            Indica un rango de fechas y jornada preferida. El sistema asignara el primer turno disponible.
+        </p>
+        {% if sin_turnos %}
+        <div class="alert alert-warning mb-4">No se encontraron turnos libres con esos criterios. Prueba otro rango o jornada.</div>
+        {% endif %}
+        <form method="post" class="space-y-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="flex flex-wrap gap-2">
+                <button class="btn btn-primary">Buscar y asignar turno</button>
+                <a href="{% url 'citas_agendar' %}" class="btn btn-ghost">Agendamiento especifico</a>
+                <a href="{% url 'citas_lista' %}" class="btn btn-ghost">Volver a agenda</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

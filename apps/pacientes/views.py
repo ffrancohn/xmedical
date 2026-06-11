@@ -1,11 +1,21 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+from apps.core.decorators import get_profesional
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
-from .forms import PacienteForm
+from .forms import PacienteForm, PacientePublicForm
 from .models import Paciente
+
+
+def can_manage_pacientes(user):
+    if user.is_superuser:
+        return True
+    profesional = get_profesional(user)
+    return profesional and profesional.tipo in ("recepcionista", "admin", "medico")
 
 
 class PacienteListView(LoginRequiredMixin, ListView):
@@ -13,13 +23,25 @@ class PacienteListView(LoginRequiredMixin, ListView):
     template_name = "pacientes/lista.html"
     context_object_name = "pacientes"
 
+    def dispatch(self, request, *args, **kwargs):
+        if can_manage_pacientes(request.user):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para acceder a pacientes.")
+        return redirect("dashboard")
+
     def get_queryset(self):
         qs = Paciente.objects.filter(activo=True)
         instituciones, _ = selected_instituciones(self.request)
         qs = qs.filter(institucion__in=instituciones)
         q = self.request.GET.get("q")
         if q:
-            qs = qs.filter(Q(documento__icontains=q) | Q(nombre__icontains=q) | Q(apellido__icontains=q))
+            qs = qs.filter(
+                Q(documento__icontains=q)
+                | Q(nombre__icontains=q)
+                | Q(apellido__icontains=q)
+                | Q(telefono__icontains=q)
+                | Q(telefono_fijo__icontains=q)
+            )
         return qs
 
     def get_context_data(self, **kwargs):
@@ -34,6 +56,13 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
     template_name = "pacientes/form.html"
     success_url = "/pacientes/"
 
+    def dispatch(self, request, *args, **kwargs):
+        profesional = get_profesional(request.user)
+        if request.user.is_superuser or (profesional and profesional.tipo in ("recepcionista", "admin")):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para registrar pacientes.")
+        return redirect("dashboard")
+
     def form_valid(self, form):
         form.instance.institucion = current_institucion(self.request)
         return super().form_valid(form)
@@ -44,6 +73,12 @@ class PacienteUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PacienteForm
     template_name = "pacientes/form.html"
     success_url = "/pacientes/"
+
+    def dispatch(self, request, *args, **kwargs):
+        if can_manage_pacientes(request.user):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para editar pacientes.")
+        return redirect("dashboard")
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -58,12 +93,47 @@ class PacienteDetailView(LoginRequiredMixin, DetailView):
     template_name = "pacientes/detalle.html"
     context_object_name = "paciente"
 
+    def dispatch(self, request, *args, **kwargs):
+        if can_manage_pacientes(request.user):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para ver pacientes.")
+        return redirect("dashboard")
+
     def get_queryset(self):
         qs = super().get_queryset()
         institucion = current_institucion(self.request)
         if institucion:
             qs = qs.filter(institucion=institucion)
         return qs
+
+
+class PacientePublicRegistroView(View):
+    template_name = "pacientes/registro_publico.html"
+
+    def get(self, request):
+        institucion = current_institucion(request)
+        if not institucion:
+            messages.error(request, "Selecciona una institucion valida para registrarte.")
+            return redirect("home")
+        return render(request, self.template_name, {"form": PacientePublicForm(), "institucion": institucion})
+
+    def post(self, request):
+        institucion = current_institucion(request)
+        if not institucion:
+            messages.error(request, "No se pudo identificar la institucion.")
+            return redirect("home")
+        form = PacientePublicForm(request.POST)
+        if form.is_valid():
+            paciente = form.save(commit=False)
+            paciente.institucion = institucion
+            paciente.activo = True
+            paciente.save()
+            messages.success(
+                request,
+                "Registro completado. Acude a recepcion con tu documento para confirmar tu cita.",
+            )
+            return redirect("home")
+        return render(request, self.template_name, {"form": form, "institucion": institucion})
 
 
 def paciente_historia_redirect(request, pk):

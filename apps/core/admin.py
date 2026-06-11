@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import BackupLog, Especialidad, Horario, Institucion, Profesional
+from .models import BackupLog, Especialidad, Horario, Institucion, LogAuditoria, Profesional
 
 
 @admin.register(Institucion)
@@ -25,6 +25,24 @@ class ProfesionalAdmin(admin.ModelAdmin):
 class HorarioAdmin(admin.ModelAdmin):
     list_display = ("profesional", "dia_semana", "hora_inicio", "hora_fin", "activo")
     list_filter = ("institucion", "dia_semana", "activo")
+
+
+@admin.register(LogAuditoria)
+class LogAuditoriaAdmin(admin.ModelAdmin):
+    list_display = ("creado_en", "institucion", "usuario", "accion", "tabla_afectada", "registro_id")
+    list_filter = ("accion", "tabla_afectada", "institucion")
+    search_fields = ("tabla_afectada", "usuario__username")
+    readonly_fields = (
+        "institucion",
+        "usuario",
+        "accion",
+        "tabla_afectada",
+        "registro_id",
+        "valor_anterior",
+        "valor_nuevo",
+        "ip_address",
+        "creado_en",
+    )
 
 
 @admin.register(BackupLog)

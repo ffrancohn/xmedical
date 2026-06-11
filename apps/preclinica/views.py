@@ -16,6 +16,17 @@ class PreclinicaListView(LoginRequiredMixin, ListView):
     template_name = "preclinica/lista.html"
     context_object_name = "citas"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        from apps.core.decorators import get_profesional
+
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo in ("enfermera", "admin"):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para acceder a preclinica.")
+        return redirect("dashboard")
+
     def get_queryset(self):
         qs = Cita.objects.select_related("paciente", "profesional").filter(
             fecha=timezone.localdate(), estado__in=["pendiente", "confirmada"]
@@ -32,6 +43,17 @@ class PreclinicaListView(LoginRequiredMixin, ListView):
 
 class PreclinicaRegistroView(LoginRequiredMixin, View):
     template_name = "preclinica/form.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        from apps.core.decorators import get_profesional
+
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo in ("enfermera", "admin"):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para registrar preclinica.")
+        return redirect("dashboard")
 
     def get_object(self, cita):
         return Preclinica.objects.filter(cita=cita).first()
@@ -51,7 +73,7 @@ class PreclinicaRegistroView(LoginRequiredMixin, View):
             obj.institucion = institucion
             obj.cita = cita
             obj.save()
-            cita.estado = "confirmada"
+            cita.estado = "en_espera"
             cita.save(update_fields=["estado"])
             messages.success(request, "Preclinica registrada.")
             return redirect("preclinica_lista")

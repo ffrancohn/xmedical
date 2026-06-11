@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Codigos QR de la consulta</h1>
+<p class="mb-4 opacity-70">Paciente: {{ consulta.cita.paciente }}</p>
+<div class="card bg-base-100 shadow">
+    <div class="card-body overflow-x-auto">
+        <table class="table">
+            <thead>
+                <tr><th>Tipo</th><th>Estado</th><th>Expira</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for doc in documentos %}
+                <tr>
+                    <td>{{ doc.get_tipo_display }}</td>
+                    <td>{% if doc.usado %}Usado{% else %}Activo{% endif %}</td>
+                    <td>{{ doc.expira_en|date:"Y-m-d H:i" }}</td>
+                    <td><a href="{% url 'qr_mostrar' doc.token %}" class="btn btn-sm btn-outline">Ver QR</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">Sin codigos QR generados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a href="{% url 'consulta_wizard' consulta.cita.id 7 %}" class="btn btn-ghost mt-4">Volver</a>
+{% endblock %}

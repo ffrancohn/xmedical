@@ -1,7 +1,8 @@
 import calendar
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,15 +10,28 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import ListView
 
+from apps.core.decorators import role_required
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
-from .forms import CitaForm
+from .forms import CitaFlexibleForm, CitaForm
 from .models import Cita
+from .services import FlexibleAgendamientoService, SinTurnosDisponiblesError
 
 
 class CitaListView(LoginRequiredMixin, ListView):
     model = Cita
     template_name = "citas/lista.html"
     context_object_name = "citas"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        from apps.core.decorators import get_profesional
+
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo in ("recepcionista", "admin", "medico"):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para acceder a esta seccion.")
+        return redirect("dashboard")
 
     def get_queryset(self):
         qs = Cita.objects.select_related("paciente", "profesional").all()
@@ -56,6 +70,17 @@ class CitaListView(LoginRequiredMixin, ListView):
 class CitaCreateView(LoginRequiredMixin, View):
     template_name = "citas/form.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        from apps.core.decorators import get_profesional
+
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo in ("recepcionista", "admin"):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para agendar citas.")
+        return redirect("dashboard")
+
     def get(self, request):
         return render(request, self.template_name, {"form": CitaForm(institucion=current_institucion(request))})
 
@@ -72,12 +97,64 @@ class CitaCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
+class CitaFlexibleCreateView(LoginRequiredMixin, View):
+    template_name = "citas/form_flexible.html"
+    resultado_template = "citas/flexible_resultado.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        from apps.core.decorators import get_profesional
+
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo in ("recepcionista", "admin"):
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para agendar citas.")
+        return redirect("dashboard")
+
+    def get(self, request):
+        institucion = current_institucion(request)
+        return render(request, self.template_name, {"form": CitaFlexibleForm(institucion=institucion)})
+
+    def post(self, request):
+        institucion = current_institucion(request)
+        if not institucion:
+            messages.error(request, "No se pudo identificar la institucion.")
+            return redirect("citas_lista")
+        form = CitaFlexibleForm(request.POST, institucion=institucion)
+        if not form.is_valid():
+            return render(request, self.template_name, {"form": form})
+
+        service = FlexibleAgendamientoService(institucion)
+        try:
+            cita = service.asignar_primer_turno(
+                paciente=form.cleaned_data["paciente"],
+                especialidad=form.cleaned_data["especialidad"],
+                fecha_inicio=form.cleaned_data["fecha_inicio"],
+                fecha_fin=form.cleaned_data["fecha_fin"],
+                jornada=form.cleaned_data["jornada"],
+                profesional=form.cleaned_data.get("profesional"),
+            )
+        except SinTurnosDisponiblesError as exc:
+            messages.error(request, str(exc))
+            return render(request, self.template_name, {"form": form, "sin_turnos": True})
+
+        messages.success(request, "Cita flexible asignada automaticamente.")
+        return render(request, self.resultado_template, {"cita": cita, "form": form})
+
+
+@login_required
+@role_required("recepcionista", "admin")
 def cancelar_cita(request, pk):
     qs = Cita.objects.all()
     institucion = current_institucion(request)
     if institucion:
         qs = qs.filter(institucion=institucion)
     cita = get_object_or_404(qs, pk=pk)
+    cita_datetime = timezone.make_aware(datetime.combine(cita.fecha, cita.hora))
+    if cita_datetime - timezone.now() < timedelta(hours=2):
+        messages.error(request, "Las citas solo pueden cancelarse con al menos 2 horas de anticipacion.")
+        return redirect("citas_lista")
     cita.estado = "cancelada"
     cita.save(update_fields=["estado"])
     messages.info(request, "Cita cancelada.")

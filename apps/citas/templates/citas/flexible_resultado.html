@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title text-success">Turno asignado</h1>
+        <p class="text-sm opacity-70">Agendamiento flexible completado.</p>
+        <div class="divider"></div>
+        <div class="space-y-2 text-sm">
+            <p><strong>Paciente:</strong> {{ cita.paciente }}</p>
+            <p><strong>Medico:</strong> {{ cita.profesional.nombre }}</p>
+            <p><strong>Especialidad:</strong> {{ cita.profesional.especialidad.nombre }}</p>
+            <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
+            <p><strong>Hora:</strong> {{ cita.hora|time:"H:i" }}</p>
+            <p><strong>Estado:</strong> {{ cita.get_estado_display }}</p>
+        </div>
+        <div class="card-actions justify-end mt-4">
+            <a href="{% url 'citas_lista' %}" class="btn btn-primary">Ver agenda</a>
+            <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-ghost">Agendar otra</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
