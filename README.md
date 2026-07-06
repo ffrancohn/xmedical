@@ -66,14 +66,19 @@ python manage.py runserver
 ### Opción 3: Desarrollo local (Linux)
 
 ```bash
-docker compose up -d db redis
-python3 -m venv venv
+./setup_venv.sh              # crear/recrear venv Linux
+./levantar_xmedical.sh       # PostgreSQL + Redis (Docker)
 source venv/bin/activate
-pip install -r requirements.txt
 cp .env.example .env
 python manage.py migrate
 python manage.py loaddata fixtures/initial_data.json
 python manage.py runserver
+```
+
+O todo en uno:
+
+```bash
+./start_xmedical.sh
 ```
 
 ## Acceso al sistema
@@ -141,6 +146,15 @@ python manage.py createsuperuser
 # Servidor de desarrollo
 python manage.py runserver
 ```
+
+### Scripts Linux
+
+| Script | Acción |
+|---|---|
+| `setup_venv.sh` | Crea o recrea el entorno virtual Linux |
+| `levantar_xmedical.sh` | Inicia PostgreSQL y Redis con Docker |
+| `bajar_xmedical.sh` | Detiene servicios Docker |
+| `start_xmedical.sh` | Levanta Docker + Django en desarrollo |
 
 ### Scripts Windows
 
