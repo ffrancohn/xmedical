@@ -11,6 +11,8 @@ Sistema de gestión clínica para instituciones de primer y segundo nivel de ate
 | Tareas asíncronas | **Celery** + **Redis** |
 | Frontend | Plantillas Django (server-side) |
 | Despliegue | **Docker Compose** + Gunicorn + Apache |
+| Producción | https://xmedical.cloud |
+| App móvil | 🔮 Planificada — ver [`docs/13`](docs/13%20App%20movil%20y%20API%20REST.md) |
 
 Documentación de producto y arquitectura en [`docs/`](docs/).
 
@@ -145,8 +147,18 @@ python manage.py collectstatic --noinput
 |---|---|
 | [`GUIA_CONFIGURACION.md`](GUIA_CONFIGURACION.md) | Configuración paso a paso |
 | [`USUARIOS_PRUEBA.md`](USUARIOS_PRUEBA.md) | Credenciales y rutas de prueba |
-| [`docs/README.md`](docs/README.md) | Índice de documentación |
+| [`docs/README.md`](docs/README.md) | Índice y estado de implementación |
 | [`docs/4 Documento Arquitectura de alto nivel.md`](docs/4%20Documento%20Arquitectura%20de%20alto%20nivel.md) | Arquitectura Django |
+| [`docs/13 App movil y API REST.md`](docs/13%20App%20movil%20y%20API%20REST.md) | Hoja de ruta app móvil |
+
+## Roadmap
+
+| Fase | Entregable | Estado |
+|------|------------|--------|
+| MVP web | Django + flujos clínicos | ✅ En producción |
+| API REST + JWT | `/api/v1/` para integraciones y móvil | 🔮 Planificado |
+| App móvil | iOS/Android (repo separado) | 🔮 Planificado |
+| IA (OCR, biometría) | Microservicio FastAPI (Fase 4 producto) | 🔮 Futuro |
 
 ## Licencia
 

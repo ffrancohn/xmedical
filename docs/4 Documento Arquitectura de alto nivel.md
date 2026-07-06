@@ -3,7 +3,8 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.0 | 2026 | Agente de Documentación Técnica | **Aprobado** |
+| 1.1 | 2026-07 | Equipo XMedical | **Actualizado** |
+| 1.0 | 2026 | Agente de Documentación Técnica | Aprobado |
 
 ---
 
@@ -11,14 +12,27 @@
 
 XMedical utiliza una **arquitectura monolítica modular** con separación de responsabilidades, diseñada para soportar **multi-tenant** desde el inicio, con capacidad de evolución hacia **microservicios** para componentes de IA en fases posteriores.
 
+### 1.0 Estado de implementación (julio 2026)
+
+| Capa | Implementado | Pendiente |
+|------|--------------|-----------|
+| Django + apps clínicas | ✅ | — |
+| Frontend web (plantillas) | ✅ | — |
+| Producción `xmedical.cloud` | ✅ Apache + Gunicorn + HTTPS | — |
+| API REST `/api/v1/` | — | 🔮 [Doc 13](13%20App%20movil%20y%20API%20REST.md) |
+| App móvil | — | 🔮 Repo separado |
+| Auth web | ✅ Sesión Django | — |
+| Auth API | — | 🔮 JWT |
+| Microservicio IA (FastAPI) | — | 🔮 Fase 4 producto |
+
 ### 1.1 Diagrama de arquitectura de alto nivel
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                              CLIENTES                                                 │
 ├───────────────┬───────────────┬───────────────┬───────────────┬─────────────────────┤
-│   Navegador   │   Navegador   │   Navegador   │   Navegador   │   API Externa       │
-│   (Médico)    │  (Enfermera)  │(Recepcionista)│  (Paciente)   │   (Integraciones)   │
+│   Navegador   │   Navegador   │   Navegador   │   App móvil   │   API Externa       │
+│   (Médico)    │  (Enfermera)  │(Recepcionista)│  (futuro)     │   (Integraciones)   │
 └───────┬───────┴───────┬───────┴───────┬───────┴───────┬───────┴─────────┬───────────┘
         │               │               │               │                 │
         ▼               ▼               ▼               ▼                 ▼
