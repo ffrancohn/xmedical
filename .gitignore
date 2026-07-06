@@ -1,16 +1,7 @@
-# Entornos virtuales Python
 venv/
 .venv/
-server/venv/
-env/
 .env
 .env.local
-client/env.local
-server/config.env
-
-# Dependencias Node.js
-node_modules/
-client/node_modules/
 
 # Python
 __pycache__/
@@ -30,8 +21,6 @@ db.sqlite3
 # Media y uploads generados
 media/*
 !media/.gitkeep
-server/uploads/*
-!server/uploads/.gitkeep
 
 # Backups locales
 backups/*.json
