@@ -3,23 +3,85 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-DATE="$(date +%Y-%m-%d)"
-TMP="${TMPDIR:-/tmp}/xmedical-verify-$$"
-mkdir -p "$TMP" docs/informes
 
-echo "=== XMedical: verificación completa ($DATE) ==="
+TIMESTAMP="$(date +%Y-%m-%d_%H%M%S)"
+DATE="${TIMESTAMP%%_*}"
+EVIDENCE_DIR="${XMEDICAL_EVIDENCE_DIR:-$ROOT/docs/informes/evidencia/$TIMESTAMP}"
 
-bash scripts/verify_infra.sh | tee "$TMP/infra.out" || true
-bash scripts/verify_ssl.sh | tee "$TMP/ssl.out" || true
-bash scripts/verify_smoke.sh | tee "$TMP/smoke.out" || true
+mkdir -p "$EVIDENCE_DIR"
+echo "$EVIDENCE_DIR" > "$ROOT/docs/informes/evidencia/ULTIMA.txt"
+
+log() { echo "[$(date +%H:%M:%S)] $*" | tee -a "$EVIDENCE_DIR/00-ejecucion.log"; }
+
+log "=== XMedical: verificación completa ==="
+log "Carpeta de evidencia: $EVIDENCE_DIR"
+
+run_step() {
+  local id="$1"
+  local name="$2"
+  local outfile="$EVIDENCE_DIR/${id}-${name}.txt"
+  shift 2
+  log "--- $id: $name ---"
+  set +e
+  "$@" > >(tee "$outfile") 2>&1
+  local code=$?
+  set -e
+  echo "$code" > "$EVIDENCE_DIR/${id}-exit-code.txt"
+  return 0
+}
+
+run_step "01" "infraestructura" bash scripts/verify_infra.sh
+run_step "02" "ssl" bash scripts/verify_ssl.sh
+run_step "03" "humo-http" bash scripts/verify_smoke.sh
 
 source venv/bin/activate
-python manage.py check 2>&1 | tee "$TMP/check.out"
-python manage.py check --deploy 2>&1 | tee "$TMP/deploy.out" || true
-python manage.py test apps.core apps.auth_app apps.pacientes apps.citas apps.preclinica apps.consulta apps.api.tests --verbosity=1 2>&1 | tee "$TMP/django.out"
 
-export TMP
-bash scripts/generate_report.sh "$DATE"
+run_step "04" "django-check" python manage.py check
+run_step "05" "django-deploy-check" bash -c "python manage.py check --deploy || true"
 
-rm -rf "$TMP"
-echo "=== Verificación completada ==="
+APPS="apps.core apps.auth_app apps.pacientes apps.citas apps.preclinica apps.consulta apps.api.tests"
+run_step "06" "django-tests" python manage.py test $APPS --verbosity=2
+
+if python -c "import coverage" 2>/dev/null; then
+  log "--- 07: cobertura ---"
+  coverage erase
+  set +e
+  coverage run --source=apps manage.py test $APPS --verbosity=0 \
+    > "$EVIDENCE_DIR/07-cobertura-tests.txt" 2>&1
+  coverage report --fail-under=60 > "$EVIDENCE_DIR/07-cobertura-report.txt" 2>&1
+  coverage html -d "$EVIDENCE_DIR/07-cobertura-html" \
+    >> "$EVIDENCE_DIR/07-cobertura-report.txt" 2>&1
+  set -e
+  log "Cobertura HTML: $EVIDENCE_DIR/07-cobertura-html/index.html"
+else
+  echo "coverage no instalado" > "$EVIDENCE_DIR/07-cobertura-report.txt"
+fi
+
+export XMEDICAL_EVIDENCE_DIR="$EVIDENCE_DIR"
+bash scripts/generate_report.sh "$DATE" "$EVIDENCE_DIR"
+
+cat > "$EVIDENCE_DIR/LEEME.txt" <<EOF
+Evidencia de verificación XMedical
+==================================
+Fecha/hora: $TIMESTAMP
+Generado por: scripts/run_all_verifications.sh
+
+Archivos:
+  00-ejecucion.log          Log de la ejecución
+  01-infraestructura.txt    Pruebas INF-*
+  02-ssl.txt                Pruebas SSL-*
+  03-humo-http.txt          Pruebas SMK-*
+  04-django-check.txt       manage.py check
+  05-django-deploy-check.txt manage.py check --deploy
+  06-django-tests.txt       Suite completa Django
+  07-cobertura-report.txt   Resumen de cobertura
+  07-cobertura-html/        Reporte HTML de cobertura
+  INFORME.md                Resumen consolidado (empezar aquí)
+
+Última ejecución registrada en: docs/informes/evidencia/ULTIMA.txt
+EOF
+
+log "=== Verificación completada ==="
+log "Revisar evidencia en: $EVIDENCE_DIR"
+log "Informe resumen: $EVIDENCE_DIR/INFORME.md"
+echo "$EVIDENCE_DIR"

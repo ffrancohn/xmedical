@@ -1,0 +1,4 @@
+Evidencia de verificación XMedical
+==================================
+Abrir INFORME.md para el resumen.
+Ver 07-cobertura-html/index.html en el navegador para cobertura visual.
