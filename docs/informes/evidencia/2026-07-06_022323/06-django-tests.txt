@@ -1,0 +1,123 @@
+Creating test database for alias 'default' ('test_xmedical')...
+Found 60 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: messages, staticfiles
+  Apply all migrations: admin, auth, auth_app, citas, consulta, contenttypes, core, django_celery_beat, pacientes, preclinica, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying auth_app.0001_initial... OK
+  Applying core.0001_initial... OK
+  Applying pacientes.0001_initial... OK
+  Applying citas.0001_initial... OK
+  Applying consulta.0001_initial... OK
+  Applying core.0002_backuplog... OK
+  Applying django_celery_beat.0001_initial... OK
+  Applying django_celery_beat.0002_auto_20161118_0346... OK
+  Applying django_celery_beat.0003_auto_20161209_0049... OK
+  Applying django_celery_beat.0004_auto_20170221_0000... OK
+  Applying django_celery_beat.0005_add_solarschedule_events_choices... OK
+  Applying django_celery_beat.0006_auto_20180322_0932... OK
+  Applying django_celery_beat.0007_auto_20180521_0826... OK
+  Applying django_celery_beat.0008_auto_20180914_1922... OK
+  Applying django_celery_beat.0006_auto_20180210_1226... OK
+  Applying django_celery_beat.0006_periodictask_priority... OK
+  Applying django_celery_beat.0009_periodictask_headers... OK
+  Applying django_celery_beat.0010_auto_20190429_0326... OK
+  Applying django_celery_beat.0011_auto_20190508_0153... OK
+  Applying django_celery_beat.0012_periodictask_expire_seconds... OK
+  Applying django_celery_beat.0013_auto_20200609_0727... OK
+  Applying django_celery_beat.0014_remove_clockedschedule_enabled... OK
+  Applying django_celery_beat.0015_edit_solarschedule_events_choices... OK
+  Applying django_celery_beat.0016_alter_crontabschedule_timezone... OK
+  Applying django_celery_beat.0017_alter_crontabschedule_month_of_year... OK
+  Applying django_celery_beat.0018_improve_crontab_helptext... OK
+  Applying pacientes.0002_contacto_extendido... OK
+  Applying preclinica.0001_initial... OK
+  Applying sessions.0001_initial... OK
+System check identified no issues (0 silenced).
+test_demo_users_can_login (apps.core.tests.AuthTests.test_demo_users_can_login) ... ok
+test_login_page_accessible (apps.core.tests.AuthTests.test_login_page_accessible) ... ok
+test_protected_route_redirects_to_login (apps.core.tests.AuthTests.test_protected_route_redirects_to_login) ... ok
+test_enfermera_accesses_preclinica (apps.core.tests.ClinicalRouteTests.test_enfermera_accesses_preclinica) ... ok
+test_recepcionista_accesses_pacientes_and_citas (apps.core.tests.ClinicalRouteTests.test_recepcionista_accesses_pacientes_and_citas) ... ok
+test_superadmin_accesses_superadmin_panel (apps.core.tests.ClinicalRouteTests.test_superadmin_accesses_superadmin_panel) ... ok
+test_fun_k02_superadmin_filtro_instituciones (apps.core.tests.CoreFunctionalTests.test_fun_k02_superadmin_filtro_instituciones) ... ok
+test_fun_k03_dashboard_medico_citas_hoy (apps.core.tests.CoreFunctionalTests.test_fun_k03_dashboard_medico_citas_hoy) ... ok
+test_fun_k04_home_autenticado_redirect (apps.core.tests.CoreFunctionalTests.test_fun_k04_home_autenticado_redirect) ... ok
+test_fixture_data_loaded (apps.core.tests.FixtureLoadedTests.test_fixture_data_loaded) ... ok
+test_enfermera_redirects_to_preclinica (apps.core.tests.RoleRoutingTests.test_enfermera_redirects_to_preclinica) ... ok
+test_medico_sees_dashboard (apps.core.tests.RoleRoutingTests.test_medico_sees_dashboard) ... ok
+test_recepcionista_redirects_to_citas (apps.core.tests.RoleRoutingTests.test_recepcionista_redirects_to_citas) ... ok
+test_superadmin_redirects_to_superadmin_panel (apps.core.tests.RoleRoutingTests.test_superadmin_redirects_to_superadmin_panel) ... ok
+test_smk07_medico_dashboard (apps.core.tests.SmokeHttpTests.test_smk07_medico_dashboard) ... ok
+test_smk08_recepcion_pacientes_citas (apps.core.tests.SmokeHttpTests.test_smk08_recepcion_pacientes_citas) ... ok
+test_smk09_enfermera_preclinica (apps.core.tests.SmokeHttpTests.test_smk09_enfermera_preclinica) ... ok
+test_smk10_superadmin_panel (apps.core.tests.SmokeHttpTests.test_smk10_superadmin_panel) ... ok
+test_smk11_admin_registro (apps.core.tests.SmokeHttpTests.test_smk11_admin_registro) ... ok
+test_fun_k01_tenant_middleware_subdominio (apps.core.tests.TenantMiddlewareTests.test_fun_k01_tenant_middleware_subdominio) ... ok
+test_institucion_exists_for_demo (apps.core.tests.TenantMiddlewareTests.test_institucion_exists_for_demo) ... ok
+test_bak01_backup_global (apps.core.tests_backup.BackupUtilsTests.test_bak01_backup_global) ... ok
+test_bak02_backup_institucion (apps.core.tests_backup.BackupUtilsTests.test_bak02_backup_institucion) ... ok
+test_bak03_restore_fixture (apps.core.tests_backup.BackupUtilsTests.test_bak03_restore_fixture) ... ok
+test_bak04_vista_post_superadmin (apps.core.tests_backup.BackupViewTests.test_bak04_vista_post_superadmin) ... ok
+test_bak05_permiso_denegado_medico (apps.core.tests_backup.BackupViewTests.test_bak05_permiso_denegado_medico) ... ok
+test_fun_a01_login_valido (apps.auth_app.tests.AuthFunctionalTests.test_fun_a01_login_valido) ... ok
+test_fun_a02_login_invalido (apps.auth_app.tests.AuthFunctionalTests.test_fun_a02_login_invalido) ... ok
+test_fun_a03_logout (apps.auth_app.tests.AuthFunctionalTests.test_fun_a03_logout) ... ok
+test_fun_a04_registro_profesional (apps.auth_app.tests.AuthFunctionalTests.test_fun_a04_registro_profesional) ... ok
+test_fun_a05_preferencias_visuales (apps.auth_app.tests.AuthFunctionalTests.test_fun_a05_preferencias_visuales) ... ok
+test_fun_p01_listar_pacientes (apps.pacientes.tests.PacienteFunctionalTests.test_fun_p01_listar_pacientes) ... ok
+test_fun_p02_crear_paciente (apps.pacientes.tests.PacienteFunctionalTests.test_fun_p02_crear_paciente) ... ok
+test_fun_p03_documento_duplicado (apps.pacientes.tests.PacienteFunctionalTests.test_fun_p03_documento_duplicado) ... ok
+test_fun_p04_detalle_paciente (apps.pacientes.tests.PacienteFunctionalTests.test_fun_p04_detalle_paciente) ... ok
+test_fun_p05_editar_paciente (apps.pacientes.tests.PacienteFunctionalTests.test_fun_p05_editar_paciente) ... ok
+test_fun_p06_historia_redirect (apps.pacientes.tests.PacienteFunctionalTests.test_fun_p06_historia_redirect) ... ok
+test_paciente_str (apps.pacientes.tests.PacienteFunctionalTests.test_paciente_str) ... ok
+test_fun_c01_listar_citas (apps.citas.tests.CitaFunctionalTests.test_fun_c01_listar_citas) ... ok
+test_fun_c02_agendar_cita (apps.citas.tests.CitaFunctionalTests.test_fun_c02_agendar_cita) ... ok
+test_fun_c03_slot_duplicado (apps.citas.tests.CitaFunctionalTests.test_fun_c03_slot_duplicado) ... ok
+test_fun_c04_cancelar_cita (apps.citas.tests.CitaFunctionalTests.test_fun_c04_cancelar_cita) ... ok
+test_fun_c05_calendario_contexto (apps.citas.tests.CitaFunctionalTests.test_fun_c05_calendario_contexto) ... ok
+test_fun_pr03_alerta_pa_alta (apps.preclinica.tests.PreclinicaAlertasTests.test_fun_pr03_alerta_pa_alta) ... ok
+test_fun_pr04_alerta_fiebre (apps.preclinica.tests.PreclinicaAlertasTests.test_fun_pr04_alerta_fiebre) ... ok
+test_fun_pr05_alerta_spo2_baja (apps.preclinica.tests.PreclinicaAlertasTests.test_fun_pr05_alerta_spo2_baja) ... ok
+test_fun_pr01_lista_cola (apps.preclinica.tests.PreclinicaFunctionalTests.test_fun_pr01_lista_cola) ... ok
+test_fun_pr02_registrar_signos (apps.preclinica.tests.PreclinicaFunctionalTests.test_fun_pr02_registrar_signos) ... ok
+test_cie10_mvp_filtra_por_codigo (apps.consulta.tests.CIE10SearchTests.test_cie10_mvp_filtra_por_codigo) ... ok
+test_fun_q01_paso1_revisar_preclinica (apps.consulta.tests.ConsultaWizardTests.test_fun_q01_paso1_revisar_preclinica) ... ok
+test_fun_q02_paso2_motivo (apps.consulta.tests.ConsultaWizardTests.test_fun_q02_paso2_motivo) ... ok
+test_fun_q03_paso3_anamnesis (apps.consulta.tests.ConsultaWizardTests.test_fun_q03_paso3_anamnesis) ... ok
+test_fun_q04_paso4_examen_fisico (apps.consulta.tests.ConsultaWizardTests.test_fun_q04_paso4_examen_fisico) ... ok
+test_fun_q05_paso5_diagnostico (apps.consulta.tests.ConsultaWizardTests.test_fun_q05_paso5_diagnostico) ... ok
+test_fun_q06_paso6_plan (apps.consulta.tests.ConsultaWizardTests.test_fun_q06_paso6_plan) ... ok
+test_fun_q07_paso7_finalizar (apps.consulta.tests.ConsultaWizardTests.test_fun_q07_paso7_finalizar) ... ok
+test_fun_q08_busqueda_cie10 (apps.consulta.tests.ConsultaWizardTests.test_fun_q08_busqueda_cie10) ... ok
+test_fun_q09_historia_clinica (apps.consulta.tests.ConsultaWizardTests.test_fun_q09_historia_clinica) ... ok
+test_api_01_login_placeholder (apps.api.tests.test_future.APIFutureTests.test_api_01_login_placeholder) ... skipped 'API REST no implementada aún'
+test_openapi_schema_available (apps.api.tests.test_openapi.OpenAPIRegressionTests.test_openapi_schema_available) ... skipped 'API REST no implementada aún'
+
+----------------------------------------------------------------------
+Ran 60 tests in 16.931s
+
+OK (skipped=2)
+Destroying test database for alias 'default' ('test_xmedical')...
+Installed 21 object(s) from 1 fixture(s)

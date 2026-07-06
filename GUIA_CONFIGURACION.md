@@ -1,241 +1,210 @@
-# 🚀 Guía de Configuración Rápida - XMedical
+# Guía de Configuración - XMedical
 
-Guía paso a paso para configurar y ejecutar el sistema XMedical en tu máquina local.
+Guía paso a paso para configurar y ejecutar XMedical con Django.
 
-## 📋 Checklist de Preparación
+## Checklist de preparación
 
-### ✅ Software Requerido
 - [ ] **Python 3.11+** instalado
-- [ ] **Node.js 18+** instalado
-- [ ] **PostgreSQL 14+** instalado y ejecutándose
-- [ ] **Tesseract OCR** instalado (opcional para OCR)
+- [ ] **Docker y Docker Compose** instalados (recomendado)
+- [ ] Git instalado
 
-### ✅ Verificación Rápida
+Verificación rápida:
+
 ```bash
-# Verificar Python
-python --version
-
-# Verificar Node.js
-node --version
-
-# Verificar PostgreSQL
-psql --version
-
-# Verificar Tesseract (opcional)
-tesseract --version
+python --version    # o python3 --version en Linux
+docker --version
+docker compose version
 ```
 
-## 🗄️ Paso 1: Configurar PostgreSQL
+## Paso 1: Clonar y configurar entorno
 
-### 1.1 Instalar PostgreSQL
-1. Descarga desde [postgresql.org](https://postgresql.org/)
-2. Instala con **pgAdmin** incluido
-3. **Anota la contraseña** del usuario `postgres`
+```bash
+git clone <repository-url>
+cd xmedical
+cp .env.example .env
+```
 
-### 1.2 Crear Base de Datos
+Editar `.env` si necesitas cambiar credenciales de base de datos o `SECRET_KEY`.
+
+## Paso 2: Levantar PostgreSQL y Redis
+
+### Con Docker (recomendado)
+
+**Linux / macOS:**
+
+```bash
+./levantar_xmedical.sh
+```
+
+**Windows:**
+
+```bash
+levantar_xmedical.bat
+```
+
+Servicios:
+
+- PostgreSQL: `localhost:5432` (base `xmedical`, usuario `xmedical_user`)
+- Redis: `localhost:6379`
+
+### Sin Docker
+
+Instalar PostgreSQL 14+ y Redis 7 manualmente, crear la base de datos:
+
 ```sql
--- Conectar como postgres
-psql -U postgres
-
--- Crear base de datos
 CREATE DATABASE xmedical;
-
--- Verificar creación
-\l
-
--- Salir
-\q
+CREATE USER xmedical_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE xmedical TO xmedical_user;
 ```
 
-### 1.3 Verificar Conexión
+## Paso 3: Configurar entorno Python
+
+**Linux / macOS:**
+
 ```bash
-# Probar conexión
-psql -h localhost -U postgres -d xmedical
+./setup_venv.sh
+source venv/bin/activate
 ```
 
-## 🐍 Paso 2: Configurar Backend Python
+**Windows:**
 
-### 2.1 Navegar al Directorio
-```bash
-cd server
-```
-
-### 2.2 Crear Entorno Virtual
 ```bash
 python -m venv venv
-venv\Scripts\activate  # Windows
+venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-### 2.3 Instalar Dependencias
+## Paso 4: Inicializar base de datos
+
+```bash
+python manage.py migrate
+python manage.py loaddata fixtures/initial_data.json
+```
+
+Opcional — crear superusuario adicional:
+
+```bash
+python manage.py createsuperuser
+```
+
+## Paso 5: Iniciar Django
+
+```bash
+python manage.py runserver
+```
+
+**Sistema listo en:** http://localhost:8000
+
+## Paso 6: Verificar acceso
+
+| Recurso | URL (local) | URL (producción) |
+|---|---|---|
+| Login | http://localhost:8000/auth/login/ | https://xmedical.cloud/auth/login/ |
+| Dashboard médico | http://localhost:8000/dashboard/ | https://xmedical.cloud/dashboard/ |
+| Admin Django | http://localhost:8000/admin/ | https://xmedical.cloud/admin/ |
+| Superadmin | http://localhost:8000/superadmin/ | https://xmedical.cloud/superadmin/ |
+
+Credenciales de prueba: ver [`USUARIOS_PRUEBA.md`](USUARIOS_PRUEBA.md).
+
+Contraseña común de todos los usuarios demo: `Xmedical123!`
+
+## Inicio con Docker completo
+
+Para levantar Django y Celery dentro de contenedores:
+
+```bash
+docker compose up -d
+```
+
+Esto inicia: `db`, `redis`, `web` (Django) y `celery`.
+
+## Scripts de inicio rápido (Windows)
+
+| Script | Descripción |
+|---|---|
+| `start_xmedical.bat` | Levanta Docker + Django en desarrollo |
+| `levantar_xmedical.bat` | Solo PostgreSQL y Redis |
+| `bajar_xmedical.bat` | Detiene servicios Docker |
+| `reiniciar_xmedical.bat` | Reinicia PostgreSQL y Redis |
+
+## Solución de problemas
+
+### Error: "No module named django"
+
+Activar el entorno virtual e instalar dependencias:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2.4 Configurar Variables de Entorno
-1. Copiar archivo de ejemplo:
-   ```bash
-   copy env.example config.env
-   ```
+### Error de conexión a PostgreSQL
 
-2. Editar `config.env`:
-   ```env
-   # Base de Datos - CAMBIA LA CONTRASEÑA
-   DATABASE_URL=postgresql://postgres:TU_PASSWORD@localhost:5432/xmedical
-   
-   # JWT - GENERA UNA CLAVE SEGURA
-   JWT_SECRET_KEY=tu_clave_secreta_muy_larga_y_segura_aqui
-   
-   # Tesseract (opcional)
-   TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
-   ```
+1. Verificar que Docker esté corriendo: `docker compose ps`
+2. Verificar credenciales en `.env`
+3. Probar conexión:
 
-### 2.5 Probar Conexión
 ```bash
-python test_db.py
+docker compose exec db psql -U xmedical_user -d xmedical
 ```
 
-### 2.6 Inicializar Base de Datos
+### Recargar datos de prueba
+
 ```bash
-python init_db.py
+python manage.py loaddata fixtures/initial_data.json
 ```
 
-### 2.7 Iniciar Servidor Backend
+### Puerto 8000 ocupado
+
+Usar otro puerto:
+
 ```bash
-python start_server.py
+python manage.py runserver 8001
 ```
 
-**✅ Backend listo en:** http://localhost:8000
+## Checklist final
 
-## ⚛️ Paso 3: Configurar Frontend React
+- [ ] PostgreSQL y Redis en ejecución
+- [ ] Migraciones aplicadas (`migrate`)
+- [ ] Datos de prueba cargados (`loaddata`)
+- [ ] Django responde en http://localhost:8000
+- [ ] Login exitoso con usuario demo
 
-### 3.1 Navegar al Directorio
-```bash
-cd client
-```
+## Próximos pasos
 
-### 3.2 Instalar Dependencias
-```bash
-npm install
-```
-
-### 3.3 Configurar Variables de Entorno
-```bash
-# Copiar configuración
-copy env.local .env.local
-```
-
-### 3.4 Iniciar Servidor Frontend
-```bash
-npm run dev
-```
-
-**✅ Frontend listo en:** http://localhost:3000
-
-## 🎯 Paso 4: Verificar Sistema
-
-### 4.1 URLs de Acceso
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **Documentación API**: http://localhost:8000/docs
-
-### 4.2 Credenciales por Defecto
-- **Usuario**: admin
-- **Contraseña**: admin123
-
-### 4.3 Pruebas Rápidas
-1. **Acceder al frontend**: http://localhost:3000
-2. **Hacer login** con credenciales por defecto
-3. **Verificar dashboard** cargue correctamente
-4. **Probar API docs**: http://localhost:8000/docs
-
-## 🔧 Scripts de Inicio Rápido
-
-### Opción 1: Script Automático (Windows)
-```bash
-# Desde el directorio raíz
-start_xmedical.bat
-```
-
-### Opción 2: Inicio Manual
-```bash
-# Terminal 1 - Backend
-cd server
-venv\Scripts\activate
-python start_server.py
-
-# Terminal 2 - Frontend
-cd client
-npm run dev
-```
-
-## 🐛 Solución de Problemas Comunes
-
-### ❌ Error: "PostgreSQL no está ejecutándose"
-```bash
-# Windows - Verificar servicio
-services.msc
-# Buscar "PostgreSQL" y asegurar que esté "Running"
-
-# Reiniciar servicio
-net stop postgresql
-net start postgresql
-```
-
-### ❌ Error: "No se puede conectar a la base de datos"
-```bash
-# Verificar credenciales en config.env
-# Probar conexión manual
-psql -h localhost -U postgres -d xmedical
-
-# Si falla, verificar:
-# 1. PostgreSQL ejecutándose
-# 2. Contraseña correcta
-# 3. Base de datos 'xmedical' existe
-```
-
-### ❌ Error: "Module not found"
-```bash
-# Backend - Reinstalar dependencias
-cd server
-venv\Scripts\activate
-pip install -r requirements.txt --force-reinstall
-
-# Frontend - Reinstalar dependencias
-cd client
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### ❌ Error: "Tesseract not found"
-```bash
-# Instalar Tesseract OCR
-# Windows: https://github.com/UB-Mannheim/tesseract/wiki
-# Verificar ruta en config.env
-TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
-```
-
-## 📊 Verificación Final
-
-### ✅ Checklist de Verificación
-- [ ] PostgreSQL ejecutándose en puerto 5432
-- [ ] Base de datos 'xmedical' creada
-- [ ] Backend iniciado en http://localhost:8000
-- [ ] Frontend iniciado en http://localhost:3000
-- [ ] Login exitoso con admin/admin123
-- [ ] Dashboard carga correctamente
-- [ ] API docs accesible en /docs
-
-### 🎉 ¡Sistema Listo!
-Tu sistema XMedical está configurado y funcionando correctamente.
-
-## 🔒 Próximos Pasos de Seguridad
-
-1. **Cambiar contraseña del administrador**
-2. **Configurar HTTPS** para producción
-3. **Actualizar JWT_SECRET_KEY**
-4. **Configurar backup** de base de datos
-5. **Revisar logs** de seguridad
+1. Revisar [`docs/`](docs/) para arquitectura y plan de despliegue
+2. Cambiar contraseñas de usuarios demo en entornos reales
+3. Configurar `DEBUG=False` y `SECRET_KEY` seguro para producción
 
 ---
 
-**¿Necesitas ayuda?** Consulta el README.md principal o abre un issue en GitHub. 
+## Producción (xmedical.cloud)
+
+Despliegue actual en servidor Linux:
+
+| Componente | Ubicación / comando |
+|---|---|
+| Código | `/var/www/xmedical` |
+| Servicio Gunicorn | `systemctl status xmedical` |
+| Apache vhost | `/etc/apache2/sites-available/xmedical-le-ssl.conf` |
+| SSL | Certbot / Let's Encrypt |
+| Variables | `/var/www/xmedical/.env` (no en Git) |
+
+Comandos útiles:
+
+```bash
+sudo systemctl restart xmedical    # reiniciar Django
+sudo systemctl reload apache2      # recargar Apache
+./bajar_xmedical.sh                # detener Docker (BD)
+./levantar_xmedical.sh             # levantar PostgreSQL + Redis
+python manage.py collectstatic --noinput
+```
+
+URL producción: https://xmedical.cloud/auth/login/
+
+**Apache SSL** (`/etc/apache2/sites-available/xmedical-le-ssl.conf`): el vhost HTTPS debe enviar `X-Forwarded-Proto "https"` a Gunicorn (no `"http"`).
+
+**Pruebas automatizadas:**
+
+```bash
+./run_tests.sh
+```

@@ -4,6 +4,9 @@
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
 | 1.0 | 2026 | Agente de Documentación Técnica | **Aprobado** |
+| 1.1 | 2026-07 | Roadmap pruebas SEC implementadas | **Vigente** |
+
+> **Estado y planificación:** ver [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md) — implementado vs pendiente (RBAC, CVE, rate limit).
 
 ---
 
@@ -391,6 +394,20 @@ pip-audit --requirement requirements.txt --format json
 pip install --upgrade django djangorestframework
 pip-audit fix  # Automático (experimental)
 ```
+
+### 9.4 Estado de implementación (2026-07)
+
+| Control | Estado | Referencia |
+|---------|--------|------------|
+| Tests SEC automatizados | Implementado | [`apps/core/tests_security.py`](../apps/core/tests_security.py) |
+| SAST bandit / pip-audit | Implementado (hallazgos abiertos → Fase 1) | [`scripts/verify_security_static.sh`](../scripts/verify_security_static.sh) |
+| Headers seguridad prod | Implementado | [`scripts/verify_security_headers.sh`](../scripts/verify_security_headers.sh) |
+| OWASP ZAP baseline | Script mensual | [`scripts/verify_security_zap.sh`](../scripts/verify_security_zap.sh) |
+| RBAC estricto por rol | **Planificado Fase 1** | [Roadmap §4](14%20Roadmap%20Seguridad.md#4-planificado--fase-1-corto-plazo-12-semanas) |
+| Rate limiting | **Planificado Fase 2** | [Roadmap §5](14%20Roadmap%20Seguridad.md#5-planificado--fase-2-api-rest--móvil) |
+| Remediación CVE dependencias | **Planificado Fase 1** | SEC-P02 en roadmap |
+
+Detalle completo: [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md).
 
 ---
 

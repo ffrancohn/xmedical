@@ -1,383 +1,167 @@
-# 🏥 XMedical - Sistema de Asistencia Médica Inteligente
+# XMedical - Sistema de Gestión Clínica Multi-tenant
 
-Sistema completo de verificación de identidad y asistencia médica inteligente con backend Python FastAPI y frontend React TypeScript.
+Sistema de gestión clínica para instituciones de primer y segundo nivel de atención. Soporta múltiples clínicas en una sola instalación (multi-tenant por subdominio), con flujos de pacientes, citas, preclínica y consulta médica guiada.
 
-## 🚀 Características Principales
+## Arquitectura
 
-### 🔐 Autenticación y Seguridad
-- **JWT Authentication** con refresh tokens
-- **Role-based Access Control** (Admin, Usuario, Médico)
-- **Password hashing** con bcrypt
-- **Middleware de autenticación** personalizado
+| Componente | Tecnología |
+|---|---|
+| Backend | **Django 4.2** (monolito modular) |
+| Base de datos | **PostgreSQL 15** |
+| Tareas asíncronas | **Celery** + **Redis** |
+| Frontend | Plantillas Django (server-side) |
+| Despliegue | **Docker Compose** + Gunicorn + Apache |
+| Producción | https://xmedical.cloud |
+| App móvil | 🔮 Planificada — ver [`docs/13`](docs/13%20App%20movil%20y%20API%20REST.md) |
 
-### 📄 Gestión de Documentos
-- **OCR inteligente** para extracción de datos de documentos
-- **Verificación facial** con reconocimiento biométrico
-- **Validación automática** de documentos de identidad
-- **Almacenamiento seguro** de archivos
+Documentación de producto y arquitectura en [`docs/`](docs/).
 
-### 👥 Gestión de Usuarios
-- **Perfiles de usuario** con roles específicos
-- **Gestión de beneficiarios** y dependientes
-- **Direcciones múltiples** por usuario
-- **Validación avanzada** de datos personales
+## Características principales
 
-### 🏥 Centros Médicos
-- **Registro de centros médicos** y clínicas
-- **Información de contacto** y ubicación
-- **Gestión de horarios** y servicios
+- **Multi-tenant** por subdominio e institución
+- **Roles**: superadmin, admin, médico, enfermera, recepcionista
+- **Pacientes**: registro, búsqueda y detalle clínico
+- **Citas**: calendario, agendamiento y cancelación
+- **Preclínica**: signos vitales y alertas clínicas
+- **Consulta médica**: wizard de 7 pasos con diagnóstico CIE-10
+- **Respaldos**: backup y restauración global o por institución
 
-### 💬 Sistema de Feedback
-- **Encuestas de satisfacción** personalizables
-- **Análisis de respuestas** en tiempo real
-- **Reportes automáticos** de calidad
+## Requisitos
 
-## 🛠️ Tecnologías Utilizadas
+- Python 3.11+
+- Docker y Docker Compose (recomendado)
+- PostgreSQL 14+ y Redis 7 (si se ejecuta sin Docker)
 
-### Backend
-- **Python 3.11+**
-- **FastAPI** - Framework web moderno
-- **SQLModel** - ORM con SQLAlchemy y Pydantic
-- **PostgreSQL** - Base de datos principal
-- **JWT** - Autenticación de tokens
-- **Pytesseract** - OCR para documentos
-- **OpenCV** - Procesamiento de imágenes
-- **Pillow** - Manipulación de imágenes
+## Instalación rápida
 
-### Frontend
-- **React 18** - Biblioteca de UI
-- **TypeScript** - Tipado estático
-- **Vite** - Build tool moderno
-- **Bootstrap 5** - Framework CSS
-- **Radix UI** - Componentes accesibles
-- **TanStack Query** - Gestión de estado del servidor
-- **Wouter** - Enrutamiento ligero
-- **React Hook Form** - Formularios eficientes
-- **Zod** - Validación de esquemas
-- **Lucide React** - Iconos modernos
+### Opción 1: Docker (recomendado)
 
-## 📋 Requisitos del Sistema
-
-### Software Requerido
-- **Python 3.11+** - [Descargar](https://python.org/)
-- **Node.js 18+** - [Descargar](https://nodejs.org/)
-- **PostgreSQL 14+** - [Descargar](https://postgresql.org/)
-- **Tesseract OCR** - [Descargar](https://github.com/UB-Mannheim/tesseract/wiki)
-
-### Hardware Recomendado
-- **RAM**: 4GB mínimo, 8GB recomendado
-- **Almacenamiento**: 2GB de espacio libre
-- **Procesador**: Dual-core mínimo
-
-## 🚀 Instalación Rápida
-
-### Opción 1: Instalación Automática (Windows)
-
-1. **Clona el repositorio**:
-   ```bash
-   git clone <repository-url>
-   cd xmedical
-   ```
-
-2. **Ejecuta el script de inicio**:
-   ```bash
-   start_xmedical.bat
-   ```
-
-3. **Sigue las instrucciones** en pantalla
-
-### Opción 2: Instalación Manual
-
-#### Paso 1: Configurar Backend
-
-1. **Navega al directorio del servidor**:
-   ```bash
-   cd server
-   ```
-
-2. **Crea entorno virtual**:
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate  # Windows
-   source venv/bin/activate  # Linux/Mac
-   ```
-
-3. **Instala dependencias**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configura la base de datos**:
-   - Instala PostgreSQL
-   - Crea base de datos `xmedical`
-   - Copia `env.example` a `config.env`
-   - Edita `config.env` con tus credenciales
-
-5. **Inicializa la base de datos**:
-   ```bash
-   python init_db.py
-   ```
-
-6. **Inicia el servidor**:
-   ```bash
-   python start_server.py
-   ```
-
-#### Paso 2: Configurar Frontend
-
-1. **Navega al directorio del cliente**:
-   ```bash
-   cd client
-   ```
-
-2. **Instala dependencias**:
-   ```bash
-   npm install
-   ```
-
-3. **Configura variables de entorno**:
-   ```bash
-   copy env.local .env.local
-   ```
-
-4. **Inicia el servidor de desarrollo**:
-   ```bash
-   npm run dev
-   ```
-
-## ⚙️ Configuración Detallada
-
-### Base de Datos PostgreSQL
-
-1. **Instalar PostgreSQL**:
-   - Descarga desde [postgresql.org](https://postgresql.org/)
-   - Instala con pgAdmin incluido
-   - Anota la contraseña del usuario `postgres`
-
-2. **Crear base de datos**:
-   ```sql
-   CREATE DATABASE xmedical;
-   ```
-
-3. **Configurar conexión** en `server/config.env`:
-   ```env
-   DATABASE_URL=postgresql://postgres:tu_password@localhost:5432/xmedical
-   ```
-
-### Tesseract OCR
-
-1. **Instalar Tesseract**:
-   - Windows: Descarga desde [UB-Mannheim](https://github.com/UB-Mannheim/tesseract/wiki)
-   - Linux: `sudo apt install tesseract-ocr`
-   - Mac: `brew install tesseract`
-
-2. **Configurar ruta** en `server/config.env`:
-   ```env
-   TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
-   ```
-
-### Variables de Entorno
-
-#### Backend (`server/config.env`)
-```env
-# Base de Datos
-DATABASE_URL=postgresql://postgres:password@localhost:5432/xmedical
-
-# JWT
-JWT_SECRET_KEY=tu_clave_secreta_muy_larga_y_segura
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
-
-# Servidor
-HOST=0.0.0.0
-PORT=8000
-DEBUG=true
-
-# CORS
-ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-
-# Upload
-UPLOAD_DIR=uploads
-MAX_FILE_SIZE=10485760
-
-# Tesseract
-TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
-```
-
-#### Frontend (`client/.env.local`)
-```env
-VITE_API_URL=http://localhost:8000
-VITE_DEV_MODE=true
-VITE_ENABLE_LOGS=true
-VITE_APP_NAME=XMedical
-VITE_APP_VERSION=1.0.0
-VITE_ENABLE_BIOMETRIC=true
-VITE_OCR_ENDPOINT=/biometric/ocr/process
-VITE_FACIAL_ENDPOINT=/biometric/facial/verify
-VITE_UPLOAD_ENDPOINT=/upload/
-VITE_MAX_FILE_SIZE=10485760
-```
-
-## 🎯 Uso del Sistema
-
-### Acceso Inicial
-- **URL**: http://localhost:3000
-- **Usuario**: admin
-- **Contraseña**: admin123
-
-### Funcionalidades Principales
-
-#### 🔐 Autenticación
-- Registro de nuevos usuarios
-- Login con JWT
-- Recuperación de contraseña
-- Gestión de sesiones
-
-#### 📄 Documentos
-- Subida de documentos de identidad
-- OCR automático para extracción de datos
-- Verificación de autenticidad
-- Almacenamiento seguro
-
-#### 👤 Perfil de Usuario
-- Información personal completa
-- Gestión de direcciones
-- Beneficiarios y dependientes
-- Preferencias de contacto
-
-#### 🏥 Centros Médicos
-- Registro de centros médicos
-- Información de contacto
-- Servicios disponibles
-- Horarios de atención
-
-#### 💬 Feedback
-- Encuestas de satisfacción
-- Análisis de respuestas
-- Reportes de calidad
-- Mejoras continuas
-
-## 🔧 Scripts Útiles
-
-### Backend
 ```bash
-# Verificar conexión a base de datos
-python test_db.py
-
-# Inicializar base de datos
-python init_db.py
-
-# Iniciar servidor de desarrollo
-python start_server.py
-
-# Ejecutar tests
-python -m pytest
+git clone <repository-url>
+cd xmedical
+cp .env.example .env
+docker compose up -d
 ```
 
-### Frontend
+Servicios disponibles:
+
+- Django: http://localhost:8000
+- PostgreSQL: localhost:5432
+- Redis: localhost:6379
+
+### Opción 2: Desarrollo local (Windows)
+
 ```bash
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo
-npm run dev
-
-# Construir para producción
-npm run build
-
-# Ejecutar tests
-npm test
+levantar_xmedical.bat
+venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py loaddata fixtures/initial_data.json
+python manage.py runserver
 ```
 
-## 📚 Documentación API
+### Opción 3: Desarrollo local (Linux)
 
-Una vez iniciado el backend, accede a:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-## 🐛 Solución de Problemas
-
-### Error de Conexión a Base de Datos
 ```bash
-# Verificar que PostgreSQL esté ejecutándose
-# Windows
-services.msc  # Buscar "PostgreSQL"
-
-# Verificar credenciales en config.env
-# Probar conexión manual
-psql -h localhost -U postgres -d xmedical
+./setup_venv.sh
+./levantar_xmedical.sh
+source venv/bin/activate
+cp .env.example .env
+python manage.py migrate
+python manage.py loaddata fixtures/initial_data.json
+python manage.py runserver
 ```
 
-### Error de Tesseract
+O todo en uno:
+
 ```bash
-# Verificar instalación
-tesseract --version
-
-# Verificar ruta en config.env
-# Windows: C:\Program Files\Tesseract-OCR\tesseract.exe
-# Linux: /usr/bin/tesseract
+./start_xmedical.sh
 ```
 
-### Error de Dependencias Python
+## Acceso al sistema
+
+- **Producción**: https://xmedical.cloud/auth/login/
+- **Local**: http://localhost:8000/auth/login/
+- **Usuarios de prueba**: ver [`USUARIOS_PRUEBA.md`](USUARIOS_PRUEBA.md)
+
+## Estructura del proyecto
+
+```
+xmedical/
+├── apps/              # Módulos Django (core, auth, pacientes, citas, preclínica, consulta)
+├── xmedical/          # Configuración del proyecto Django
+├── templates/         # Plantillas base compartidas
+├── static/            # Archivos estáticos
+├── fixtures/          # Datos iniciales de prueba
+├── docs/              # Documentación de producto y arquitectura
+├── docker-compose.yml # PostgreSQL + Redis + Django + Celery
+└── manage.py
+```
+
+## Módulos Django
+
+| App | Responsabilidad |
+|---|---|
+| `apps.core` | Instituciones, profesionales, horarios, respaldos, dashboard |
+| `apps.auth_app` | Login, registro y preferencias de usuario |
+| `apps.pacientes` | Registro y gestión de pacientes |
+| `apps.citas` | Agendamiento y calendario de citas |
+| `apps.preclinica` | Signos vitales y triaje |
+| `apps.consulta` | Consulta médica (wizard de 7 pasos) |
+
+## Variables de entorno
+
+Copiar `.env.example` a `.env` y ajustar valores. Ver `.env.example` para la lista completa.
+
+## Scripts útiles
+
 ```bash
-# Actualizar pip
-python -m pip install --upgrade pip
-
-# Reinstalar dependencias
-pip install -r requirements.txt --force-reinstall
+python manage.py migrate
+python manage.py loaddata fixtures/initial_data.json
+python manage.py createsuperuser
+python manage.py runserver
+python manage.py collectstatic --noinput
+./run_tests.sh                    # pruebas automatizadas
+python manage.py test apps.core   # solo tests
 ```
 
-### Error de Dependencias Node.js
-```bash
-# Limpiar cache
-npm cache clean --force
+### Scripts Linux
 
-# Reinstalar dependencias
-rm -rf node_modules package-lock.json
-npm install
-```
+| Script | Acción |
+|---|---|
+| `setup_venv.sh` | Crea o recrea el entorno virtual Linux |
+| `levantar_xmedical.sh` | Inicia PostgreSQL y Redis con Docker |
+| `bajar_xmedical.sh` | Detiene servicios Docker |
+| `start_xmedical.sh` | Levanta Docker + Django en desarrollo |
 
-## 🔒 Seguridad
+### Scripts Windows
 
-### Recomendaciones
-- Cambia la contraseña del administrador por defecto
-- Usa HTTPS en producción
-- Configura firewall apropiado
-- Mantén dependencias actualizadas
-- Usa variables de entorno para secretos
+| Script | Acción |
+|---|---|
+| `levantar_xmedical.bat` | Inicia PostgreSQL y Redis con Docker |
+| `bajar_xmedical.bat` | Detiene servicios Docker |
+| `reiniciar_xmedical.bat` | Reinicia PostgreSQL y Redis |
+| `start_xmedical.bat` | Inicia Django en desarrollo (requiere Docker activo) |
 
-### Configuración de Producción
-- Configura `DEBUG=false`
-- Usa base de datos PostgreSQL en servidor dedicado
-- Configura CORS apropiadamente
-- Usa proxy reverso (nginx)
-- Configura SSL/TLS
+## Documentación
 
-## 📞 Soporte
+| Documento | Contenido |
+|---|---|
+| [`GUIA_CONFIGURACION.md`](GUIA_CONFIGURACION.md) | Configuración paso a paso |
+| [`USUARIOS_PRUEBA.md`](USUARIOS_PRUEBA.md) | Credenciales y rutas de prueba |
+| [`docs/README.md`](docs/README.md) | Índice y estado de implementación |
+| [`docs/4 Documento Arquitectura de alto nivel.md`](docs/4%20Documento%20Arquitectura%20de%20alto%20nivel.md) | Arquitectura Django |
+| [`docs/13 App movil y API REST.md`](docs/13%20App%20movil%20y%20API%20REST.md) | Hoja de ruta app móvil |
 
-### Recursos
-- **Documentación**: `/docs` en el servidor
-- **Issues**: GitHub Issues
-- **Wiki**: Documentación detallada
+## Roadmap
 
-### Contacto
-- **Email**: soporte@xmedical.com
-- **Telegram**: @xmedical_support
+| Fase | Entregable | Estado |
+|------|------------|--------|
+| MVP web | Django + flujos clínicos | ✅ En producción |
+| API REST + JWT | `/api/v1/` para integraciones y móvil | 🔮 Planificado |
+| App móvil | iOS/Android (repo separado) | 🔮 Planificado |
+| IA (OCR, biometría) | Microservicio FastAPI (Fase 4 producto) | 🔮 Futuro |
 
-## 📄 Licencia
+## Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Por favor:
-1. Fork el proyecto
-2. Crea una rama para tu feature
-3. Commit tus cambios
-4. Push a la rama
-5. Abre un Pull Request
-
----
-
-**XMedical** - Transformando la asistencia médica con tecnología inteligente 🏥✨ 
+Este proyecto está bajo la Licencia MIT.

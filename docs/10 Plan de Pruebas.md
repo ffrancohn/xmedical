@@ -4,6 +4,26 @@
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
 | 1.0 | 2026 | Agente de Documentación Técnica | **Aprobado** |
+| 1.1 | 2026-07 | Implementación stack real | **Vigente** |
+
+---
+
+## Stack de pruebas implementado (2026-07)
+
+| Capa | Herramienta | Ubicación |
+|------|-------------|-----------|
+| Infra / SSL / humo | Bash (`verify_*.sh`) | [`scripts/`](../scripts/) |
+| Unitarias + integración HTTP | `manage.py test` | `apps/*/tests.py` |
+| Cobertura | `coverage` (umbral 60%) | [`run_tests.sh`](../run_tests.sh) |
+| E2E navegador | Playwright + pytest | [`tests/e2e/`](../tests/e2e/) |
+| Carga | Locust | [`tests/load/locustfile.py`](../tests/load/locustfile.py) |
+| UAT manual | Checklist | [`CHECKLIST-UAT.md`](CHECKLIST-UAT.md) |
+| Informes | Markdown datado | [`informes/`](informes/) |
+| API REST (futuro) | DRF + pytest | [`apps/api/tests/`](../apps/api/tests/) |
+
+**Orquestador:** `./scripts/run_all_verifications.sh` — infra + SSL + humo + Django + informe.
+
+**IDs de casos:** INF-*, SSL-*, SMK-*, FUN-*, BAK-*, E2E-*, LOAD-*, API-* (ver secciones siguientes).
 
 ---
 
@@ -29,13 +49,13 @@ Este documento define la **estrategia de calidad y pruebas** para XMedical, incl
 │                                                                                      │
 │                              ┌─────────────────┐                                     │
 │                              │   E2E / UI      │  ← 10%                              │
-│                              │   (Selenium)     │                                     │
+│                              │  (Playwright)   │                                     │
 │                          ┌───┴─────────────────┴───┐                                 │
-│                          │    Integración / API    │  ← 20%                          │
-│                          │     (pytest + DRF)      │                                 │
+│                          │    Integración HTTP     │  ← 20%                          │
+│                          │  (manage.py test + DRF)   │                                 │
 │                      ┌───┴─────────────────────────┴───┐                            │
 │                      │          Unitarias              │  ← 70%                      │
-│                      │          (pytest)               │                            │
+│                      │     (django.test.TestCase)      │                            │
 │                      └─────────────────────────────────┘                            │
 │                                                                                      │
 │  Adicionales:                                                                        │
@@ -55,9 +75,9 @@ Este documento define la **estrategia de calidad y pruebas** para XMedical, incl
 | Propiedad | Valor |
 |-----------|-------|
 | **Objetivo** | Validar funciones y métodos individuales |
-| **Herramienta** | pytest, pytest-django |
-| **Cobertura objetivo** | > 80% |
-| **Ejecución** | En cada commit (CI/CD) |
+| **Herramienta** | `django.test.TestCase`, `manage.py test` |
+| **Cobertura objetivo** | ≥ 60% en `apps/` (meta inicial) |
+| **Ejecución** | `./run_tests.sh` en cada deploy |
 | **Duración** | < 2 minutos |
 
 **Ejemplo:**
@@ -369,14 +389,24 @@ zap-api-scan.py -t https://test.xmedical.com/api/v1/ \
 
 **Casos de prueba de seguridad:**
 
-| ID | Prueba | Método | Criterio |
-|----|--------|--------|----------|
-| SEC-01 | SQL Injection | Enviar `' OR '1'='1` en campos | Debe ser sanitizado |
-| SEC-02 | XSS | Enviar `<script>alert(1)</script>` | Debe ser escapado |
-| SEC-03 | CSRF | POST sin token CSRF | Debe ser rechazado |
-| SEC-04 | Auth Bypass | Intentar acceder sin token | 401 Unauthorized |
-| SEC-05 | Tenant Isolation | Intentar ver datos de otro tenant | 403 Forbidden |
-| SEC-06 | Rate Limiting | 200 requests en 1 minuto | Bloqueo temporal |
+| ID | Prueba | Método | Criterio | Estado |
+|----|--------|--------|----------|--------|
+| SEC-01 | SQL Injection | GET `/pacientes/?q=...` | Sin error SQL, queryset acotado | Implementado |
+| SEC-02 | XSS | POST nombre con `<script>` | Escapado en HTML | Implementado |
+| SEC-03 | CSRF | POST sin token | 403 Forbidden | Implementado |
+| SEC-04 | Auth Bypass | GET sin sesión | 302 → login | Implementado |
+| SEC-05 | Tenant Isolation | 2 instituciones en fixture | 404 / queryset filtrado | Implementado |
+| SEC-06 | Rate Limiting | 200 req/min | 429 | **Planificado Fase 2** |
+| SEC-07 | RBAC superadmin | médico POST backup | 302/403 | Implementado |
+| SEC-08 | Headers HTTP | curl prod | Ver SEC-08a..g | Implementado |
+| SEC-09 | IDOR citas | cancelar cita otro tenant | 404 | Implementado |
+| SEC-10 | Endpoints sin login | CIE-10, historia | 302/403 | Implementado (fix 2026-07) |
+| SEC-11 | Cookie flags | login exitoso | Secure + HttpOnly | Implementado |
+| SEC-12 | Clickjacking | X-Frame-Options | DENY/SAMEORIGIN | Implementado |
+| SEC-S01..03 | SAST | bandit, pip-audit | Ver script | Implementado |
+| SEC-Z01..03 | OWASP ZAP | Docker mensual | 0 High | Script listo |
+
+Roadmap completo: [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md).
 
 ---
 
@@ -566,7 +596,36 @@ Semanas 9-14 (Fase 3) ░░░░░░░░░░░░░░█████�
 
 ---
 
-## 10. APROBACIÓN
+---
+
+## 10. MAPA DE CASOS IMPLEMENTADOS
+
+| ID | Módulo | Archivo de prueba |
+|----|--------|-------------------|
+| INF-01..08 | Infraestructura | [`scripts/verify_infra.sh`](../scripts/verify_infra.sh) |
+| SSL-01..08 | SSL / DNS | [`scripts/verify_ssl.sh`](../scripts/verify_ssl.sh) |
+| SMK-01..06 | Humo curl | [`scripts/verify_smoke.sh`](../scripts/verify_smoke.sh) |
+| SMK-07..11 | Humo autenticado | [`apps/core/tests.py`](../apps/core/tests.py) |
+| FUN-A01..05 | Auth | [`apps/auth_app/tests.py`](../apps/auth_app/tests.py) |
+| FUN-P01..06 | Pacientes | [`apps/pacientes/tests.py`](../apps/pacientes/tests.py) |
+| FUN-C01..05 | Citas | [`apps/citas/tests.py`](../apps/citas/tests.py) |
+| FUN-PR01..05 | Preclínica | [`apps/preclinica/tests.py`](../apps/preclinica/tests.py) |
+| FUN-Q01..09 | Consulta wizard | [`apps/consulta/tests.py`](../apps/consulta/tests.py) |
+| FUN-K01..04 | Core / tenant | [`apps/core/tests.py`](../apps/core/tests.py) |
+| BAK-01..05 | Backup | [`apps/core/tests_backup.py`](../apps/core/tests_backup.py) |
+| E2E-01..05 | E2E Playwright | [`tests/e2e/`](../tests/e2e/) |
+| LOAD-01..04 | Carga Locust | [`tests/load/locustfile.py`](../tests/load/locustfile.py) |
+| API-01..06 | API REST (futuro) | [`apps/api/tests/`](../apps/api/tests/) |
+| SEC-01..12 | Seguridad Django | [`apps/core/tests_security.py`](../apps/core/tests_security.py) |
+| SEC-S01..03 | SAST (bandit, pip-audit) | [`scripts/verify_security_static.sh`](../scripts/verify_security_static.sh) |
+| SEC-08a..g | Headers HTTP prod | [`scripts/verify_security_headers.sh`](../scripts/verify_security_headers.sh) |
+| SEC-Z01..03 | OWASP ZAP (mensual) | [`scripts/verify_security_zap.sh`](../scripts/verify_security_zap.sh) |
+| UAT-SEC | Checklist manual | [`CHECKLIST-SEGURIDAD.md`](CHECKLIST-SEGURIDAD.md) |
+| SEC-P01..25 | Roadmap pendiente | [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md) |
+
+---
+
+## 11. APROBACIÓN
 
 | Rol | Nombre | Firma | Fecha |
 |-----|--------|-------|-------|
@@ -585,11 +644,9 @@ Semanas 9-14 (Fase 3) ░░░░░░░░░░░░░░█████�
 | Aspecto | Valor |
 |---------|-------|
 | **Tipos de pruebas** | 8 (unitarias, integración, API, UI, rendimiento, seguridad, UAT, DR) |
-| **Cobertura objetivo** | > 80% |
-| **Herramientas** | 12 |
-| **Ambientes** | 5 |
-| **Criterios de éxito** | Por tipo y severidad |
-| **Casos de prueba** | 10 UAT, 6 seguridad, 4 DR |
-| **Cronograma** | 14 semanas (3 fases) |
+| **Cobertura objetivo** | ≥ 60% (`apps/`) |
+| **Herramientas** | manage.py test, coverage, Playwright, Locust, Bash |
+| **Informes** | [`docs/informes/`](informes/) |
+| **Casos automatizados** | 58+ Django, 8 infra/SSL/smoke, 5 E2E, 4 carga |
 
 ---

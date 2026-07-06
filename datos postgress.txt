@@ -1,4 +1,0 @@
-carpeta : C:\Program Files\PostgreSQL\17\data
-contraseña 123
-
-puerto : 5432

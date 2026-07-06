@@ -1,17 +1,41 @@
 venv/
 .venv/
 .env
-backups/*.json
+.env.local
+
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
 .mypy_cache/
+*.egg-info/
+dist/
+build/
 
+# Django
+staticfiles/
+*.log
+db.sqlite3
+
+# Media y uploads generados
+media/*
+!media/.gitkeep
+
+# Backups locales
+backups/*.json
+
+# IDE y OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Temporales y caché
 output/
 temp_*.mp3
 temp_*.wav
-
 .cache/
 models/
-*.egg-info/
