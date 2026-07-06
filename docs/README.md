@@ -46,4 +46,5 @@
 | [`../README.md`](../README.md) | Instalación y uso |
 | [`../GUIA_CONFIGURACION.md`](../GUIA_CONFIGURACION.md) | Configuración local y producción |
 | [`../USUARIOS_PRUEBA.md`](../USUARIOS_PRUEBA.md) | Credenciales demo |
+| [`run_tests.sh`](../run_tests.sh) | Ejecutar suite de pruebas automatizadas |
 | [Informe verificación 2026-07-06](INFORME-VERIFICACION-2026-07-06.md) | **Última revisión operativa** |

@@ -200,3 +200,11 @@ python manage.py collectstatic --noinput
 ```
 
 URL producción: https://xmedical.cloud/auth/login/
+
+**Apache SSL** (`/etc/apache2/sites-available/xmedical-le-ssl.conf`): el vhost HTTPS debe enviar `X-Forwarded-Proto "https"` a Gunicorn (no `"http"`).
+
+**Pruebas automatizadas:**
+
+```bash
+./run_tests.sh
+```

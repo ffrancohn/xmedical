@@ -121,6 +121,8 @@ python manage.py loaddata fixtures/initial_data.json
 python manage.py createsuperuser
 python manage.py runserver
 python manage.py collectstatic --noinput
+./run_tests.sh                    # pruebas automatizadas
+python manage.py test apps.core   # solo tests
 ```
 
 ### Scripts Linux
