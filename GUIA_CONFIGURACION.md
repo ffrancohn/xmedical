@@ -1,8 +1,6 @@
 # Guía de Configuración - XMedical
 
-Guía paso a paso para configurar y ejecutar XMedical con la arquitectura **Django** (stack activo).
-
-> Las carpetas `server/` (FastAPI) y `client/` (React) son de un prototipo anterior y **no se usan** en esta guía.
+Guía paso a paso para configurar y ejecutar XMedical con Django.
 
 ## Checklist de preparación
 

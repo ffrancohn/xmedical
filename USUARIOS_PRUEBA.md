@@ -11,7 +11,7 @@ Xmedical123!
 URL de login:
 
 ```text
-http://localhost:8000/auth/login/
+https://xmedical.cloud/auth/login/
 ```
 
 ## Credenciales

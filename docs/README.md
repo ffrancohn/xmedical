@@ -1,8 +1,8 @@
 # Documentación XMedical
 
-Índice de documentación del proyecto. La arquitectura activa es **Django** (gestión clínica multi-tenant).
+Índice de documentación del proyecto. Arquitectura activa: **Django** (gestión clínica multi-tenant).
 
-## Documentos de producto (activos)
+## Documentos de producto
 
 | # | Documento | Descripción |
 |---|---|---|
@@ -20,21 +20,10 @@
 | 11 | [Plan de Despliegue](11%20Plan%20de%20Deespliegue.md) | Despliegue en producción |
 | 12 | [Sprint backlog](12%20Sprint%20backlog.md) | Backlog de desarrollo |
 
-## Guías operativas (activas)
+## Guías operativas
 
 | Documento | Descripción |
 |---|---|
-| [`../README.md`](../README.md) | Instalación y uso del stack Django |
+| [`../README.md`](../README.md) | Instalación y uso |
 | [`../GUIA_CONFIGURACION.md`](../GUIA_CONFIGURACION.md) | Configuración paso a paso |
 | [`../USUARIOS_PRUEBA.md`](../USUARIOS_PRUEBA.md) | Credenciales y rutas de prueba |
-
-## Documentos legados (prototipo FastAPI + React)
-
-Estos documentos describen el prototipo inicial en `server/` y `client/`. **No reflejan el stack activo.**
-
-| Documento | Descripción |
-|---|---|
-| [informe-tecnico.md](informe-tecnico.md) | Informe técnico del backend FastAPI |
-| [guia-integracion.md](guia-integracion.md) | Integración React ↔ FastAPI |
-| [`../server/README.md`](../server/README.md) | Backend FastAPI (legado) |
-| [`../client/README.md`](../client/README.md) | Frontend React (legado) |
