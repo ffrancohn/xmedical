@@ -46,5 +46,8 @@
 | [`../README.md`](../README.md) | Instalación y uso |
 | [`../GUIA_CONFIGURACION.md`](../GUIA_CONFIGURACION.md) | Configuración local y producción |
 | [`../USUARIOS_PRUEBA.md`](../USUARIOS_PRUEBA.md) | Credenciales demo |
-| [`run_tests.sh`](../run_tests.sh) | Ejecutar suite de pruebas automatizadas |
-| [Informe verificación 2026-07-06](INFORME-VERIFICACION-2026-07-06.md) | **Última revisión operativa** |
+| [`run_tests.sh`](../run_tests.sh) | Suite Django + cobertura |
+| [`scripts/run_all_verifications.sh`](../scripts/run_all_verifications.sh) | Verificación completa + informe |
+| [Checklist UAT](CHECKLIST-UAT.md) | Aceptación manual por rol |
+| [Informes de verificación](informes/) | Informes automáticos semanales |
+| [Informe verificación 2026-07-06](INFORME-VERIFICACION-2026-07-06.md) | Revisión operativa inicial |
