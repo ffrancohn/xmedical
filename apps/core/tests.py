@@ -2,15 +2,20 @@
 Pruebas funcionales de XMedical.
 Ejecutar: python manage.py test apps.core
 """
+from datetime import time
+
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import Client, RequestFactory, TestCase
+from django.utils import timezone
 
 from apps.citas.models import Cita
+from apps.core.middleware import TenantMiddleware
 from apps.core.models import Institucion, Profesional
+from apps.core.test_utils import HOST, PASSWORD, auth_client
 from apps.pacientes.models import Paciente
 
-PASSWORD = "Xmedical123!"
-HOST = {"HTTP_HOST": "xmedical.cloud"}
+PASSWORD = PASSWORD
+HOST = HOST
 
 
 class FixtureLoadedTests(TestCase):
@@ -109,3 +114,68 @@ class TenantMiddlewareTests(TestCase):
         institucion = Institucion.objects.get(subdominio="demo")
         self.assertEqual(institucion.nombre, "Clinica Demo")
         self.assertTrue(institucion.activo)
+
+    def test_fun_k01_tenant_middleware_subdominio(self):
+        factory = RequestFactory()
+        request = factory.get("/", HTTP_HOST="demo.xmedical.cloud")
+        request.session = {}
+        TenantMiddleware(lambda r: r)(request)
+        self.assertEqual(request.institucion.subdominio, "demo")
+
+
+class SmokeHttpTests(TestCase):
+    fixtures = ["initial_data.json"]
+
+    def test_smk07_medico_dashboard(self):
+        client = auth_client("medico.demo")
+        self.assertEqual(client.get("/dashboard/", **HOST).status_code, 200)
+
+    def test_smk08_recepcion_pacientes_citas(self):
+        client = auth_client("recepcion.demo")
+        self.assertEqual(client.get("/pacientes/", **HOST).status_code, 200)
+        self.assertEqual(client.get("/citas/", **HOST).status_code, 200)
+
+    def test_smk09_enfermera_preclinica(self):
+        client = auth_client("enfermera.demo")
+        self.assertEqual(client.get("/preclinica/", **HOST).status_code, 200)
+
+    def test_smk10_superadmin_panel(self):
+        client = auth_client("superadmin.demo")
+        self.assertEqual(client.get("/superadmin/", **HOST).status_code, 200)
+
+    def test_smk11_admin_registro(self):
+        client = auth_client("admin.demo")
+        self.assertEqual(client.get("/auth/registro/", **HOST).status_code, 200)
+
+
+class CoreFunctionalTests(TestCase):
+    fixtures = ["initial_data.json"]
+
+    def test_fun_k02_superadmin_filtro_instituciones(self):
+        client = auth_client("superadmin.demo")
+        response = client.get("/pacientes/?instituciones=1", **HOST)
+        self.assertEqual(response.status_code, 200)
+        for paciente in response.context["pacientes"]:
+            self.assertEqual(paciente.institucion_id, 1)
+
+    def test_fun_k03_dashboard_medico_citas_hoy(self):
+        institucion = Institucion.objects.get(pk=1)
+        medico = Profesional.objects.get(pk=2)
+        Cita.objects.create(
+            institucion=institucion,
+            paciente=Paciente.objects.first(),
+            profesional=medico,
+            fecha=timezone.localdate(),
+            hora=time(9, 30),
+            estado="pendiente",
+        )
+        client = auth_client("medico.demo")
+        response = client.get("/dashboard/", **HOST)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(response.context["citas_hoy"]), 1)
+
+    def test_fun_k04_home_autenticado_redirect(self):
+        client = auth_client("medico.demo")
+        response = client.get("/", **HOST)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/dashboard/", response.url)
