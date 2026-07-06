@@ -695,6 +695,44 @@ citas_hoy = Gauge('citas_hoy', 'Citas agendadas para hoy')
 
 ---
 
+## ANEXO A: DESPLIEGUE ACTUAL (xmedical.cloud)
+
+> Registro del despliegue real en producción (julio 2026). Complementa las secciones genéricas anteriores.
+
+| Elemento | Valor real |
+|----------|------------|
+| **Dominio** | `xmedical.cloud`, `www.xmedical.cloud` |
+| **Servidor** | Linux (Hostinger VPS) |
+| **Proxy / SSL** | Apache 2 + Let's Encrypt (Certbot) |
+| **App server** | Gunicorn (`systemd`: servicio `xmedical`) |
+| **Bind interno** | `127.0.0.1:8000` |
+| **Base de datos** | PostgreSQL 15 (Docker) |
+| **Cache / Celery** | Redis 7 (Docker) |
+| **Código** | `/var/www/xmedical` |
+| **Repositorio** | https://github.com/ffrancohn/xmedical |
+| **Auth web** | Sesión Django + CSRF |
+| **Auth API** | No implementada aún |
+
+**Flujo de peticiones:**
+
+```
+Cliente HTTPS → Apache (:443) → Gunicorn (:8000) → Django
+```
+
+**Comandos de operación:**
+
+```bash
+systemctl status xmedical
+systemctl restart xmedical
+systemctl reload apache2
+docker compose -f /var/www/xmedical/docker-compose.yml ps
+certbot renew --dry-run
+```
+
+**Pendiente para app móvil:** subdominio `api.xmedical.cloud`, Django REST Framework, JWT. Ver [Documento 13](13%20App%20movil%20y%20API%20REST.md).
+
+---
+
 **Fin del Documento 11: Plan de Despliegue**
 
 ---

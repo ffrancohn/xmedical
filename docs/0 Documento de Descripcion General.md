@@ -59,8 +59,10 @@ El sistema opera como **SaaS (Software as a Service)** o **on-premise**, permiti
 
 | Capa | Tecnología |
 |------|------------|
-| **Frontend** | Django templates + DaisyUI + Tailwind |
-| **Backend** | Django (FastAPI para IA post-MVP) |
+| **Frontend web** | Django templates (HTML server-side) — ✅ en producción |
+| **Backend** | Django 4.2 — ✅ en producción |
+| **App móvil** | Cliente nativo/híbrido + API REST — 🔮 [Doc 13](13%20App%20movil%20y%20API%20REST.md) |
+| **IA (futuro)** | Microservicio FastAPI para OCR/biometría — 🔮 Fase 4 |
 | **Base de Datos** | PostgreSQL (con RLS para multi-tenant) |
 | **IA** | Visión artificial, modelos predictivos, LLM para sugerencias |
 | **Tareas programadas** | Celery + Redis (por tenant o compartidas) |

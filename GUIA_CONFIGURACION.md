@@ -97,12 +97,12 @@ python manage.py runserver
 
 ## Paso 6: Verificar acceso
 
-| Recurso | URL |
-|---|---|
-| Login | http://localhost:8000/auth/login/ |
-| Dashboard médico | http://localhost:8000/dashboard/ |
-| Admin Django | http://localhost:8000/admin/ |
-| Superadmin | http://localhost:8000/superadmin/ |
+| Recurso | URL (local) | URL (producción) |
+|---|---|---|
+| Login | http://localhost:8000/auth/login/ | https://xmedical.cloud/auth/login/ |
+| Dashboard médico | http://localhost:8000/dashboard/ | https://xmedical.cloud/dashboard/ |
+| Admin Django | http://localhost:8000/admin/ | https://xmedical.cloud/admin/ |
+| Superadmin | http://localhost:8000/superadmin/ | https://xmedical.cloud/superadmin/ |
 
 Credenciales de prueba: ver [`USUARIOS_PRUEBA.md`](USUARIOS_PRUEBA.md).
 
@@ -174,3 +174,29 @@ python manage.py runserver 8001
 1. Revisar [`docs/`](docs/) para arquitectura y plan de despliegue
 2. Cambiar contraseñas de usuarios demo en entornos reales
 3. Configurar `DEBUG=False` y `SECRET_KEY` seguro para producción
+
+---
+
+## Producción (xmedical.cloud)
+
+Despliegue actual en servidor Linux:
+
+| Componente | Ubicación / comando |
+|---|---|
+| Código | `/var/www/xmedical` |
+| Servicio Gunicorn | `systemctl status xmedical` |
+| Apache vhost | `/etc/apache2/sites-available/xmedical-le-ssl.conf` |
+| SSL | Certbot / Let's Encrypt |
+| Variables | `/var/www/xmedical/.env` (no en Git) |
+
+Comandos útiles:
+
+```bash
+sudo systemctl restart xmedical    # reiniciar Django
+sudo systemctl reload apache2      # recargar Apache
+./bajar_xmedical.sh                # detener Docker (BD)
+./levantar_xmedical.sh             # levantar PostgreSQL + Redis
+python manage.py collectstatic --noinput
+```
+
+URL producción: https://xmedical.cloud/auth/login/

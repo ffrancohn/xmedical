@@ -319,7 +319,11 @@ OBX|1|NM|GLUC^Glucosa||95|mg/dL|70-99|N|||F|
 
 ## 5. APIS EXPUESTAS POR XMEDICAL
 
-### 5.1 API REST (para integraciones externas)
+### 5.1 API REST (para integraciones externas y app móvil)
+
+> **Estado:** 🔮 Planificada — no implementada en código. Especificación objetivo. Ver [Documento 13](13%20App%20movil%20y%20API%20REST.md).
+
+La API se implementará con **Django REST Framework + JWT** dentro del monolito Django (no un backend separado).
 
 | Endpoint | Método | Descripción | Autenticación |
 |----------|--------|-------------|---------------|
@@ -484,10 +488,10 @@ Cada institución puede configurar sus propias integraciones:
 
 | Fase | Integración | Estado |
 |------|-------------|--------|
-| **Fase 1 (MVP)** | Email (SMTP) | ✅ Disponible |
-| **Fase 2** | IA - Visión (Google/AWS) | ✅ Disponible |
-| **Fase 2** | Almacenamiento S3/NFS | ✅ Disponible |
-| **Fase 2** | API REST (salida) | ✅ Disponible |
+| **Fase 1 (MVP)** | Email (SMTP) | 🔮 Planificado |
+| **Fase 2** | IA - Visión (Google/AWS) | 🔮 Planificado |
+| **Fase 2** | Almacenamiento S3/NFS | 🔮 Planificado |
+| **Fase 2** | API REST (salida) + app móvil | 🔮 Planificado — [Doc 13](13%20App%20movil%20y%20API%20REST.md) |
 | **Fase 3** | IA - LLM (OpenAI/Local) | 🔮 Planificado |
 | **Fase 3** | Webhooks | 🔮 Planificado |
 | **Fase 3** | Monitoreo (Prometheus) | 🔮 Planificado |
@@ -516,8 +520,8 @@ Cada institución puede configurar sus propias integraciones:
 
 | Aspecto | Valor |
 |---------|-------|
-| **Integraciones actuales** | 4 (Email, Visión IA, Storage, API REST) |
-| **Integraciones futuras** | 7 (LLM, Webhooks, Laboratorio, Imágenes, Facturación, WhatsApp, Monitoreo) |
+| **Integraciones actuales** | 0 en producción (web Django operativa) |
+| **Integraciones planificadas** | Email, IA, Storage, API REST, app móvil |
 | **APIs expuestas** | 8 endpoints |
 | **Webhooks** | 5 eventos |
 | **Formatos soportados** | JSON, CSV, HL7/FHIR (futuro) |
