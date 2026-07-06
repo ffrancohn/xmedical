@@ -14,8 +14,18 @@ docs/informes/evidencia/2026-07-06_143022/
 ├── 05-django-deploy-check.txt
 ├── 06-django-tests.txt        ← suite completa
 ├── 07-cobertura-report.txt
-└── 07-cobertura-html/         ← cobertura en navegador (index.html)
+├── 07-cobertura-html/         ← cobertura en navegador (index.html)
+├── 08-seguridad-estatica.txt  ← SEC-S* (bandit, pip-audit)
+├── 09-seguridad-headers.txt   ← SEC-08* (headers prod)
+├── 11-django-security-tests.txt ← SEC-* Django
+└── 10-seguridad-zap.html      ← ZAP mensual (verify_security_zap.sh)
 ```
+
+## Warnings aceptados
+
+- **W008:** `SECURE_SSL_REDIRECT=False` — Apache redirige HTTP→HTTPS.
+- **W021:** `SECURE_HSTS_PRELOAD=False` — preload opcional.
+- **SEC-06:** rate limiting pendiente (API futura).
 
 ## Última ejecución
 
@@ -38,4 +48,10 @@ También se actualiza: [`../INFORME-VERIFICACION-YYYY-MM-DD.md`](../INFORME-VERI
 
 ```cron
 0 6 * * 1  /var/www/xmedical/scripts/run_all_verifications.sh >> /var/log/xmedical/weekly-verify.log 2>&1
+```
+
+## Cron mensual (ZAP)
+
+```cron
+0 3 1 * *  /var/www/xmedical/scripts/verify_security_zap.sh >> /var/log/xmedical/zap-scan.log 2>&1
 ```

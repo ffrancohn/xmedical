@@ -51,4 +51,5 @@
 | [Checklist UAT](CHECKLIST-UAT.md) | Aceptación manual por rol |
 | [Informes de verificación](informes/) | Informes automáticos semanales |
 | [Evidencia de pruebas](informes/evidencia/) | **Logs y resultados completos por ejecución** |
+| [Checklist seguridad](CHECKLIST-SEGURIDAD.md) | Revisión manual pre-release |
 | [Informe verificación 2026-07-06](INFORME-VERIFICACION-2026-07-06.md) | Revisión operativa inicial |

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -85,12 +86,14 @@ class ConsultaWizardView(LoginRequiredMixin, View):
         }
 
 
+@login_required
 def cie10_search(request):
     q = request.GET.get("q", "").lower()
     results = [item for item in CIE10_MVP if q in item["codigo"].lower() or q in item["nombre"].lower()] if q else CIE10_MVP
     return JsonResponse({"results": results[:10]})
 
 
+@login_required
 def historia_clinica(request, paciente_id):
     institucion = current_institucion(request)
     paciente_qs = Paciente.objects.all()

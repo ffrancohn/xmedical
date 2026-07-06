@@ -606,6 +606,11 @@ Semanas 9-14 (Fase 3) ░░░░░░░░░░░░░░█████�
 | E2E-01..05 | E2E Playwright | [`tests/e2e/`](../tests/e2e/) |
 | LOAD-01..04 | Carga Locust | [`tests/load/locustfile.py`](../tests/load/locustfile.py) |
 | API-01..06 | API REST (futuro) | [`apps/api/tests/`](../apps/api/tests/) |
+| SEC-01..12 | Seguridad Django | [`apps/core/tests_security.py`](../apps/core/tests_security.py) |
+| SEC-S01..03 | SAST (bandit, pip-audit) | [`scripts/verify_security_static.sh`](../scripts/verify_security_static.sh) |
+| SEC-08a..g | Headers HTTP prod | [`scripts/verify_security_headers.sh`](../scripts/verify_security_headers.sh) |
+| SEC-Z01..03 | OWASP ZAP (mensual) | [`scripts/verify_security_zap.sh`](../scripts/verify_security_zap.sh) |
+| UAT-SEC | Checklist manual | [`CHECKLIST-SEGURIDAD.md`](CHECKLIST-SEGURIDAD.md) |
 
 ---
 
