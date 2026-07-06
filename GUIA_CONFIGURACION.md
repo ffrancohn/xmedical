@@ -32,16 +32,16 @@ Editar `.env` si necesitas cambiar credenciales de base de datos o `SECRET_KEY`.
 
 ### Con Docker (recomendado)
 
+**Linux / macOS:**
+
+```bash
+./levantar_xmedical.sh
+```
+
 **Windows:**
 
 ```bash
 levantar_xmedical.bat
-```
-
-**Linux / macOS:**
-
-```bash
-docker compose up -d db redis
 ```
 
 Servicios:
@@ -61,19 +61,18 @@ GRANT ALL PRIVILEGES ON DATABASE xmedical TO xmedical_user;
 
 ## Paso 3: Configurar entorno Python
 
+**Linux / macOS:**
+
+```bash
+./setup_venv.sh
+source venv/bin/activate
+```
+
 **Windows:**
 
 ```bash
 python -m venv venv
 venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-**Linux / macOS:**
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
 pip install -r requirements.txt
 ```
 
