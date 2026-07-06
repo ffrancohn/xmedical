@@ -1,8 +1,12 @@
-# Informe Técnico - Backend XMedical
+# Informe Técnico - Backend XMedical (FastAPI — LEGADO)
+
+> **Documento histórico.** Describe el prototipo FastAPI en `server/`, que ya no es el stack activo.
+>
+> La arquitectura actual usa **Django** (ver [`README.md`](../README.md) y [`4 Documento Arquitectura de alto nivel.md`](4%20Documento%20Arquitectura%20de%20alto%20nivel.md)).
 
 ## Resumen Ejecutivo
 
-El backend de XMedical ha sido desarrollado como un sistema completo de asistencia médica inteligente utilizando FastAPI (Python 3.11+). El sistema incluye autenticación JWT, verificación biométrica, gestión de usuarios, documentos, direcciones, beneficiarios, feedback y centros médicos.
+El backend de XMedical fue desarrollado inicialmente como un sistema de asistencia médica inteligente utilizando FastAPI (Python 3.11+). El sistema incluye autenticación JWT, verificación biométrica, gestión de usuarios, documentos, direcciones, beneficiarios, feedback y centros médicos.
 
 ## Arquitectura del Sistema
 

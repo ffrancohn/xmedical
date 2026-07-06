@@ -1,116 +1,73 @@
 @echo off
-title XMedical - Sistema de Asistencia Médica Inteligente
+title XMedical - Sistema de Gestion Clinica
 color 0A
 
 echo.
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║                    XMEDICAL SYSTEM                          ║
-echo ║              Sistema de Asistencia Médica Inteligente       ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo ================================================================
+echo                    XMEDICAL - Django
+echo              Sistema de Gestion Clinica Multi-tenant
+echo ================================================================
 echo.
 
-echo 🚀 Iniciando sistema XMedical...
-echo.
+cd /d "%~dp0"
 
-REM Verificar que Python esté instalado
+REM Verificar Python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Python no está instalado
-    echo 🔧 Instala Python desde: https://python.org/
+    echo [ERROR] Python no esta instalado
+    echo Instala Python 3.11+ desde https://python.org/
     pause
     exit /b 1
 )
 
-REM Verificar que Node.js esté instalado
-node --version >nul 2>&1
+REM Verificar Docker
+docker --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Node.js no está instalado
-    echo 🔧 Instala Node.js desde: https://nodejs.org/
+    echo [ERROR] Docker no esta instalado
+    echo Instala Docker Desktop desde https://docker.com/
     pause
     exit /b 1
 )
 
-echo ✅ Dependencias básicas verificadas
-echo.
+echo [1/4] Levantando PostgreSQL y Redis...
+docker compose up -d db redis
+if errorlevel 1 (
+    echo [ERROR] No se pudieron iniciar los servicios Docker
+    pause
+    exit /b 1
+)
 
-REM Verificar PostgreSQL
-echo 🔍 Verificando PostgreSQL...
-echo    Asegúrate de que PostgreSQL esté instalado y ejecutándose
-echo    en el puerto 5432
 echo.
-
-REM Iniciar backend
-echo 🖥️  Iniciando Backend...
-echo.
-cd server
-
-REM Activar entorno virtual
+echo [2/4] Activando entorno virtual...
 if exist "venv\Scripts\activate.bat" (
     call venv\Scripts\activate.bat
-    echo ✅ Entorno virtual activado
 ) else (
-    echo ❌ Entorno virtual no encontrado
-    echo 🔧 Ejecuta: python -m venv venv
-    pause
-    exit /b 1
+    echo Creando entorno virtual...
+    python -m venv venv
+    call venv\Scripts\activate.bat
+    pip install -r requirements.txt
 )
 
-REM Verificar base de datos
-echo 🔍 Verificando base de datos...
-python test_db.py
-if errorlevel 1 (
-    echo.
-    echo ⚠️  Problemas con la base de datos
-    echo 🔧 Verifica que PostgreSQL esté ejecutándose
-    echo 🔧 Verifica las credenciales en config.env
-    echo.
-    pause
-)
-
-REM Inicializar base de datos si es necesario
-echo 🔍 Inicializando base de datos...
-python init_db.py
+echo.
+echo [3/4] Aplicando migraciones y cargando datos de prueba...
+python manage.py migrate
+python manage.py loaddata fixtures/initial_data.json
 
 echo.
-echo 🚀 Iniciando servidor backend...
-echo    Puerto: 8000
-echo    Documentación: http://localhost:8000/docs
+echo [4/4] Iniciando servidor Django...
+echo.
+echo   URL:      http://localhost:8000
+echo   Login:    http://localhost:8000/auth/login/
+echo   Usuarios: ver USUARIOS_PRUEBA.md
 echo.
 
-REM Iniciar servidor backend en segundo plano
-start "XMedical Backend" cmd /k "venv\Scripts\activate.bat && python start_server.py"
-
-REM Esperar un momento para que el backend inicie
-timeout /t 5 /nobreak >nul
-
-REM Volver al directorio raíz
-cd ..
-
-REM Iniciar frontend
-echo 🌐 Iniciando Frontend...
-echo    Puerto: 3000
-echo    URL: http://localhost:3000
-echo.
-
-REM Iniciar frontend en segundo plano
-start "XMedical Frontend" cmd /k "cd client && npm run dev"
+start "XMedical Django" cmd /k "cd /d %~dp0 && venv\Scripts\activate.bat && python manage.py runserver"
 
 echo.
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║                    SISTEMA INICIADO                         ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo ================================================================
+echo                    SISTEMA INICIADO
+echo ================================================================
 echo.
-echo 🎯 URLs del sistema:
-echo    Frontend: http://localhost:3000
-echo    Backend:  http://localhost:8000
-echo    API Docs: http://localhost:8000/docs
+echo Para detener: cierra la ventana de Django y ejecuta bajar_xmedical.bat
 echo.
-echo 📋 Credenciales por defecto:
-echo    Usuario: admin
-echo    Contraseña: admin123
-echo.
-echo ⚠️  IMPORTANTE: Cambia la contraseña del administrador
-echo.
-echo 🛑 Para detener el sistema, cierra las ventanas de comandos
-echo.
-pause 
+pause

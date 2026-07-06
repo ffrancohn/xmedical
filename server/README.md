@@ -1,44 +1,44 @@
-# XMedical Backend
+# XMedical Backend (FastAPI) — LEGADO
 
-Backend para el sistema de asistencia médica inteligente XMedical desarrollado con FastAPI.
+> **Este directorio corresponde a un prototipo anterior y no forma parte del stack activo de XMedical.**
+>
+> La arquitectura actual usa **Django** en la raíz del repositorio. Consulta el [`README.md`](../README.md) principal para instalación y uso.
 
-## Instalación
+## Qué contenía este prototipo
 
-1. Crear entorno virtual:
+Backend de verificación de identidad y asistencia médica con:
+
+- Autenticación JWT con refresh tokens
+- OCR de documentos (Tesseract)
+- Verificación facial (biometría)
+- Gestión de usuarios, direcciones, beneficiarios y centros médicos
+- Sistema de feedback
+
+## Tecnologías
+
+- FastAPI 0.104+
+- SQLModel / PostgreSQL
+- Pydantic, OpenCV, Pillow
+
+## Ejecución (solo referencia histórica)
+
 ```bash
-python -m venv env
-source env/bin/activate  # Windows: .\env\Scripts\activate
-```
-
-2. Instalar dependencias:
-```bash
+cd server
+python -m venv venv
+venv\Scripts\activate       # Windows
+source venv/bin/activate    # Linux
 pip install -r requirements.txt
+cp env.example config.env
+python init_db.py
+python start_server.py
 ```
 
-3. Configurar variables de entorno:
-```bash
-cp env.example .env
-# Editar .env con tus valores
-```
+- API: http://localhost:8000
+- Swagger: http://localhost:8000/docs
 
-4. Ejecutar el servidor:
-```bash
-uvicorn main:app --reload
-```
+> **Conflicto de puerto:** Django también usa el puerto 8000. No ejecutar ambos stacks simultáneamente.
 
-## Endpoints Disponibles
+## Documentación relacionada (legado)
 
-### Autenticación
-- `POST /auth/register` - Registro de usuarios
-- `POST /auth/login` - Login con JWT
-- `POST /auth/refresh` - Refresh de tokens
-
-### Usuarios
-- `GET /users/` - Listar usuarios (solo administradores)
-- `GET /users/me` - Obtener perfil del usuario actual
-
-## Documentación API
-
-Una vez ejecutado el servidor, accede a:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc 
+- [`docs/informe-tecnico.md`](../docs/informe-tecnico.md)
+- [`docs/guia-integracion.md`](../docs/guia-integracion.md)

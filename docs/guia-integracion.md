@@ -1,8 +1,12 @@
-# Guía de Integración - XMedical Backend
+# Guía de Integración - XMedical Backend (FastAPI — LEGADO)
+
+> **Documento histórico.** Describe la integración del frontend React (`client/`) con el backend FastAPI (`server/`).
+>
+> El stack activo usa **Django con plantillas server-side** y no requiere esta guía. Ver [`README.md`](../README.md).
 
 ## Descripción General
 
-Esta guía proporciona toda la información necesaria para integrar el frontend de XMedical con el backend desarrollado en FastAPI.
+Esta guía proporcionaba la información necesaria para integrar el frontend React de XMedical con el backend FastAPI del prototipo inicial.
 
 ## Configuración Base
 
