@@ -2,7 +2,8 @@
 
 Revisión manual pre-release. Marcar **PASS** / **FAIL** / **N/A**.
 
-Referencia: [`docs/7 Documento de Seguridad.md`](7%20Documento%20de%20Seguridad.md)
+Referencia: [`docs/7 Documento de Seguridad.md`](7%20Documento%20de%20Seguridad.md)  
+**Planificación (implementado vs pendiente):** [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md)
 
 ---
 
@@ -32,7 +33,7 @@ Referencia: [`docs/7 Documento de Seguridad.md`](7%20Documento%20de%20Seguridad.
 | Rutas clínicas requieren login | | | |
 | Superadmin solo para `is_superuser` | | | |
 | Aislamiento tenant (subdominio/sesión) | | | |
-| RBAC por rol documentado (gaps conocidos) | | | |
+| RBAC por rol estricto (SEC-P01) | | | Planificado — ver [Roadmap §4](14%20Roadmap%20Seguridad.md#4-planificado--fase-1-corto-plazo-12-semanas) |
 
 ## Datos e infraestructura
 
@@ -47,7 +48,8 @@ Referencia: [`docs/7 Documento de Seguridad.md`](7%20Documento%20de%20Seguridad.
 
 | Caso | PASS | FAIL | Notas |
 |------|:----:|:----:|-------|
-| `verify_security_static.sh` (bandit, pip-audit) | | | |
+| pip-audit 0 CVE High (SEC-P02) | | | Planificado Fase 1 |
+| bandit 0 High (SEC-P03) | | | Planificado Fase 1 |
 | `apps.core.tests_security` (SEC-*) | | | |
 | `verify_security_headers.sh` | | | |
 | OWASP ZAP baseline mensual | | | |

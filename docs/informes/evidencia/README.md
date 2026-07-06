@@ -27,6 +27,8 @@ docs/informes/evidencia/2026-07-06_143022/
 - **W021:** `SECURE_HSTS_PRELOAD=False` — preload opcional.
 - **SEC-06:** rate limiting pendiente (API futura).
 
+Ver planificación completa: [`14 Roadmap Seguridad.md`](../../14%20Roadmap%20Seguridad.md).
+
 ## Última ejecución
 
 Ver ruta en [`ULTIMA.txt`](ULTIMA.txt).
