@@ -2,6 +2,7 @@ import calendar
 from datetime import timedelta
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
@@ -72,6 +73,7 @@ class CitaCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
+@login_required
 def cancelar_cita(request, pk):
     qs = Cita.objects.all()
     institucion = current_institucion(request)

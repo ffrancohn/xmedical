@@ -1,0 +1,93 @@
+[
+  {
+    "model": "core.institucion",
+    "pk": 2,
+    "fields": {
+      "nombre": "Clinica Norte",
+      "subdominio": "norte",
+      "tipo": "privada",
+      "configuracion": {},
+      "activo": true,
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.especialidad",
+    "pk": 2,
+    "fields": {
+      "institucion": 2,
+      "nombre": "Medicina General Norte",
+      "codigo": "MGN",
+      "nivel": "primero",
+      "duracion_consulta_minutos": 20,
+      "activo": true
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$xmedicaldemo$/nunQvbRaJvjR5oy9wI0FR4jOw5LzDKUpZwZv8CTWhw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "medico.norte",
+      "first_name": "Pedro",
+      "last_name": "Norte",
+      "email": "medico@norte.test",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.profesional",
+    "pk": 10,
+    "fields": {
+      "institucion": 2,
+      "usuario": 10,
+      "especialidad": 2,
+      "nombre": "Dr. Pedro Norte",
+      "tipo": "medico",
+      "registro_medico": "MED-2001",
+      "activo": true
+    }
+  },
+  {
+    "model": "pacientes.paciente",
+    "pk": 100,
+    "fields": {
+      "institucion": 2,
+      "documento": "NORTE-001",
+      "nombre": "Paciente",
+      "apellido": "Institucion Norte",
+      "fecha_nacimiento": "1990-01-01",
+      "sexo": "M",
+      "telefono": "",
+      "telefono_fijo": "",
+      "email": "",
+      "direccion": "",
+      "ciudad": "",
+      "departamento": "",
+      "contacto_emergencia_nombre": "",
+      "contacto_emergencia_telefono": "",
+      "observaciones": "",
+      "activo": true
+    }
+  },
+  {
+    "model": "citas.cita",
+    "pk": 100,
+    "fields": {
+      "institucion": 2,
+      "paciente": 100,
+      "profesional": 10,
+      "fecha": "2026-07-06",
+      "hora": "10:00:00",
+      "estado": "pendiente",
+      "tipo_agendamiento": "especifico",
+      "creado_en": "2026-06-04T00:00:00Z"
+    }
+  }
+]

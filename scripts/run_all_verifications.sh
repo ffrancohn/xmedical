@@ -33,6 +33,8 @@ run_step() {
 run_step "01" "infraestructura" bash scripts/verify_infra.sh
 run_step "02" "ssl" bash scripts/verify_ssl.sh
 run_step "03" "humo-http" bash scripts/verify_smoke.sh
+run_step "08" "seguridad-estatica" bash scripts/verify_security_static.sh
+run_step "09" "seguridad-headers" bash scripts/verify_security_headers.sh
 
 source venv/bin/activate
 
@@ -41,6 +43,7 @@ run_step "05" "django-deploy-check" bash -c "python manage.py check --deploy || 
 
 APPS="apps.core apps.auth_app apps.pacientes apps.citas apps.preclinica apps.consulta apps.api.tests"
 run_step "06" "django-tests" python manage.py test $APPS --verbosity=2
+run_step "11" "django-security-tests" python manage.py test apps.core.tests_security --verbosity=2
 
 if python -c "import coverage" 2>/dev/null; then
   log "--- 07: cobertura ---"
@@ -76,6 +79,9 @@ Archivos:
   06-django-tests.txt       Suite completa Django
   07-cobertura-report.txt   Resumen de cobertura
   07-cobertura-html/        Reporte HTML de cobertura
+  08-seguridad-estatica.txt   Bandit + pip-audit (SEC-S*)
+  09-seguridad-headers.txt    Headers HTTP prod (SEC-08*)
+  11-django-security-tests.txt Pruebas SEC-* Django
   INFORME.md                Resumen consolidado (empezar aquí)
 
 Última ejecución registrada en: docs/informes/evidencia/ULTIMA.txt
