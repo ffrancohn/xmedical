@@ -377,6 +377,26 @@ SP
 | 10 | Plan de Pruebas | ✅ |
 | 11 | Plan de Despliegue | ✅ |
 | 12 | Sprint Backlog | ✅ |
+| 14 | Roadmap Seguridad | ✅ |
+
+---
+
+## 8. BACKLOG POST-MVP — SEGURIDAD
+
+Items planificados tras el MVP. Detalle en [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md).
+
+| ID | Historia / tarea | SP est. | Fase | Dependencias |
+|----|------------------|---------|------|--------------|
+| SEC-P01 | RBAC estricto por rol (mixins + tests SEC-13) | 5 | Fase 1 | HU-SEG-002 |
+| SEC-P02 | Remediar CVE pip-audit | 2 | Fase 1 | — |
+| SEC-P03 | Remediar bandit High | 2 | Fase 1 | — |
+| SEC-P04 | Apache ServerTokens Prod | 1 | Fase 1 | — |
+| SEC-P10 | Rate limiting API (SEC-06) | 3 | Fase 2 | API REST doc 13 |
+| SEC-P11 | JWT + tests API-01..06 | 8 | Fase 2 | doc 13 |
+| SEC-P20 | HSTS preload | 1 | Fase 3 | SEC-P04 |
+| SEC-P21 | 2FA administradores | 5 | Fase 3 | django-otp |
+
+**Completado 2026-07:** tests SEC-01..12, scripts verify_security_*, login_required en rutas expuestas.
 
 ---
 

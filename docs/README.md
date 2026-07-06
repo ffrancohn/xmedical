@@ -38,6 +38,7 @@
 | 11 | [Plan de Despliegue](11%20Plan%20de%20Deespliegue.md) | Despliegue en producción |
 | 12 | [Sprint backlog](12%20Sprint%20backlog.md) | Backlog de desarrollo |
 | 13 | [App móvil y API REST](13%20App%20movil%20y%20API%20REST.md) | **Hoja de ruta móvil** |
+| 14 | [Roadmap Seguridad](14%20Roadmap%20Seguridad.md) | **Implementado vs planificado SEC** |
 
 ## Guías operativas
 
@@ -52,4 +53,5 @@
 | [Informes de verificación](informes/) | Informes automáticos semanales |
 | [Evidencia de pruebas](informes/evidencia/) | **Logs y resultados completos por ejecución** |
 | [Checklist seguridad](CHECKLIST-SEGURIDAD.md) | Revisión manual pre-release |
+| [Roadmap seguridad](14%20Roadmap%20Seguridad.md) | **Plan SEC: hecho vs pendiente** |
 | [Informe verificación 2026-07-06](INFORME-VERIFICACION-2026-07-06.md) | Revisión operativa inicial |

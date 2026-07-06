@@ -389,14 +389,24 @@ zap-api-scan.py -t https://test.xmedical.com/api/v1/ \
 
 **Casos de prueba de seguridad:**
 
-| ID | Prueba | Método | Criterio |
-|----|--------|--------|----------|
-| SEC-01 | SQL Injection | Enviar `' OR '1'='1` en campos | Debe ser sanitizado |
-| SEC-02 | XSS | Enviar `<script>alert(1)</script>` | Debe ser escapado |
-| SEC-03 | CSRF | POST sin token CSRF | Debe ser rechazado |
-| SEC-04 | Auth Bypass | Intentar acceder sin token | 401 Unauthorized |
-| SEC-05 | Tenant Isolation | Intentar ver datos de otro tenant | 403 Forbidden |
-| SEC-06 | Rate Limiting | 200 requests en 1 minuto | Bloqueo temporal |
+| ID | Prueba | Método | Criterio | Estado |
+|----|--------|--------|----------|--------|
+| SEC-01 | SQL Injection | GET `/pacientes/?q=...` | Sin error SQL, queryset acotado | Implementado |
+| SEC-02 | XSS | POST nombre con `<script>` | Escapado en HTML | Implementado |
+| SEC-03 | CSRF | POST sin token | 403 Forbidden | Implementado |
+| SEC-04 | Auth Bypass | GET sin sesión | 302 → login | Implementado |
+| SEC-05 | Tenant Isolation | 2 instituciones en fixture | 404 / queryset filtrado | Implementado |
+| SEC-06 | Rate Limiting | 200 req/min | 429 | **Planificado Fase 2** |
+| SEC-07 | RBAC superadmin | médico POST backup | 302/403 | Implementado |
+| SEC-08 | Headers HTTP | curl prod | Ver SEC-08a..g | Implementado |
+| SEC-09 | IDOR citas | cancelar cita otro tenant | 404 | Implementado |
+| SEC-10 | Endpoints sin login | CIE-10, historia | 302/403 | Implementado (fix 2026-07) |
+| SEC-11 | Cookie flags | login exitoso | Secure + HttpOnly | Implementado |
+| SEC-12 | Clickjacking | X-Frame-Options | DENY/SAMEORIGIN | Implementado |
+| SEC-S01..03 | SAST | bandit, pip-audit | Ver script | Implementado |
+| SEC-Z01..03 | OWASP ZAP | Docker mensual | 0 High | Script listo |
+
+Roadmap completo: [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md).
 
 ---
 
@@ -611,6 +621,7 @@ Semanas 9-14 (Fase 3) ░░░░░░░░░░░░░░█████�
 | SEC-08a..g | Headers HTTP prod | [`scripts/verify_security_headers.sh`](../scripts/verify_security_headers.sh) |
 | SEC-Z01..03 | OWASP ZAP (mensual) | [`scripts/verify_security_zap.sh`](../scripts/verify_security_zap.sh) |
 | UAT-SEC | Checklist manual | [`CHECKLIST-SEGURIDAD.md`](CHECKLIST-SEGURIDAD.md) |
+| SEC-P01..25 | Roadmap pendiente | [`14 Roadmap Seguridad.md`](14%20Roadmap%20Seguridad.md) |
 
 ---
 
