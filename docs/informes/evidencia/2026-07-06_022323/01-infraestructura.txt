@@ -1,0 +1,10 @@
+=== INF: Infraestructura ===
+| INF-01 | Gunicorn activo | PASS |
+| INF-02 | Apache activo | PASS |
+| INF-03 | PostgreSQL Docker | PASS |
+| INF-04 | Redis Docker | PASS |
+| INF-05 | Gunicorn puerto 8000 | PASS |
+| INF-06 | Apache puerto 443 | PASS |
+| INF-07 | Logs sin traceback | PASS |
+| INF-08 | Backups escribible | PASS |
+--- INF: 8 PASS, 0 FAIL ---

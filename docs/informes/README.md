@@ -1,12 +1,20 @@
 # Informes de verificación
 
-Los informes automáticos se generan con:
+## Carpeta de evidencia (revisar todo aquí)
+
+Cada ejecución guarda **todos** los resultados en:
+
+**[`evidencia/`](evidencia/)** — subcarpeta por fecha/hora con logs, tests, cobertura HTML e informe.
+
+La ruta de la última ejecución está en [`evidencia/ULTIMA.txt`](evidencia/ULTIMA.txt).
 
 ```bash
 ./scripts/run_all_verifications.sh
 ```
 
-Salida: `INFORME-VERIFICACION-YYYY-MM-DD.md` en esta carpeta.
+## Resumen del día
+
+`INFORME-VERIFICACION-YYYY-MM-DD.md` en esta carpeta (enlace al informe más reciente del día).
 
 ## Cron sugerido (servidor)
 

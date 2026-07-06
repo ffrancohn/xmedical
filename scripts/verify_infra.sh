@@ -14,7 +14,7 @@ record() {
     PASS=$((PASS + 1))
     RESULTS+=("| $id | $name | PASS |")
   else
-    FAIL=$((FAIL + 1)
+    FAIL=$((FAIL + 1))
     RESULTS+=("| $id | $name | FAIL |")
   fi
 }

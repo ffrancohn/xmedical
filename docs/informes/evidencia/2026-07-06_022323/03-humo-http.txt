@@ -1,0 +1,9 @@
+=== SMK: Humo HTTP ===
+| SMK-01 | Home | PASS |
+| SMK-02 | Login | PASS |
+| SMK-03 | Admin | PASS |
+| SMK-04 | Dashboard protegido | PASS |
+| SMK-05 | Pacientes protegido | PASS |
+| SMK-06 | Static admin CSS | PASS |
+--- SMK: 6 PASS, 0 FAIL ---
+Nota: SMK-07..11 requieren sesion; ver apps.core.tests SmokeHttpTests

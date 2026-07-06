@@ -1,0 +1,10 @@
+=== SSL: Conectividad y certificado ===
+| SSL-01 | DNS A | PASS |
+| SSL-02 | HTTPS responde | PASS |
+| SSL-03 | HTTP a HTTPS | PASS |
+| SSL-04 | Certificado valido | PASS |
+| SSL-05 | Certbot dominio | PASS |
+| SSL-06 | Renovacion dry-run | PASS |
+| SSL-07 | Header HSTS | PASS |
+| SSL-08 | www alias | PASS |
+--- SSL: 8 PASS, 0 FAIL ---

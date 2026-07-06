@@ -1,0 +1,6 @@
+System check identified no issues (0 silenced).
+----------------------------------------------------------------------
+Ran 60 tests in 18.102s
+
+OK (skipped=2)
+Installed 21 object(s) from 1 fixture(s)
