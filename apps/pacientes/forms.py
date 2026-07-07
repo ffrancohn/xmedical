@@ -68,3 +68,15 @@ class PacientePublicForm(forms.ModelForm):
             "telefono": "Telefono movil",
             "email": "Correo electronico",
         }
+
+
+class DocumentoIdentidadForm(forms.Form):
+    documento_imagen = forms.ImageField(label="Imagen de cedula o pasaporte")
+
+
+class PacienteOCRReviewForm(forms.Form):
+    documento = forms.CharField(max_length=20, label="Documento")
+    nombre = forms.CharField(max_length=100, label="Nombre")
+    apellido = forms.CharField(max_length=100, label="Apellido")
+    fecha_nacimiento = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date"}))
+    sexo = forms.ChoiceField(choices=Paciente.SEXO_CHOICES, required=False)

@@ -63,6 +63,21 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
         messages.error(request, "No tienes permiso para registrar pacientes.")
         return redirect("dashboard")
 
+    def get_initial(self):
+        initial = super().get_initial()
+        data = self.request.session.pop("ocr_paciente_data", None)
+        if data and data.get("confirmado"):
+            initial.update(
+                {
+                    "documento": data.get("documento", ""),
+                    "nombre": data.get("nombre", ""),
+                    "apellido": data.get("apellido", ""),
+                    "fecha_nacimiento": data.get("fecha_nacimiento") or None,
+                    "sexo": data.get("sexo", ""),
+                }
+            )
+        return initial
+
     def form_valid(self, form):
         form.instance.institucion = current_institucion(self.request)
         return super().form_valid(form)
