@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 from apps.core.models import Institucion
@@ -29,3 +30,19 @@ class Paciente(models.Model):
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
+
+
+class DocumentoOCRLog(models.Model):
+    institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    proveedor = models.CharField(max_length=50)
+    confianza = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    resultado = models.JSONField(default=dict, blank=True)
+    texto_raw = models.TextField(blank=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-creado_en"]
+
+    def __str__(self):
+        return f"OCR {self.proveedor} {self.creado_en:%Y-%m-%d %H:%M}"
