@@ -42,6 +42,12 @@
 | 14 | [Roadmap Seguridad](14%20Roadmap%20Seguridad.md) | **Implementado vs planificado SEC** |
 | 15 | [Recepción Virtual Omnicanal](15%20Recepcion%20Virtual%20Omnicanal.md) | **Borrador**: email, WhatsApp y voz con IA |
 
+### Planificación por módulo
+
+| Módulo | Documentos |
+|--------|-----------|
+| [Recepción Virtual](recepcion-virtual/README.md) | PRD, Flujo, UI/UX, TRD, Backend/Esquema, Plan (6 documentos) |
+
 ## Guías operativas
 
 | Documento | Descripción |
