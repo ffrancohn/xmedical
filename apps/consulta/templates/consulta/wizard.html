@@ -23,15 +23,21 @@
             {% elif step == 4 %}
                 {% include 'consulta/paso4_examen_fisico.html' %}
             {% elif step == 5 %}
-                {% include 'consulta/paso5_diagnostico.html' %}
+                {% include 'consulta/paso5_variables_clinicas.html' %}
             {% elif step == 6 %}
-                {% include 'consulta/paso6_plan.html' %}
+                {% include 'consulta/paso5_diagnostico.html' %}
             {% elif step == 7 %}
+                {% include 'consulta/paso6_plan.html' %}
+            {% elif step == 8 %}
                 {% include 'consulta/paso7_resumen.html' %}
             {% endif %}
             <div class="flex justify-between pt-4">
-                {% if step > 1 %}<a href="{% url 'consulta_wizard' cita.id step|add:'-1' %}" class="btn btn-ghost">Anterior</a>{% else %}<span></span>{% endif %}
-                <button class="btn btn-primary">{% if step == 7 %}Finalizar{% else %}Continuar{% endif %}</button>
+                {% if step > 1 %}
+                    <a href="{% url 'consulta_wizard' cita.id paso_anterior %}" class="btn btn-ghost">Anterior</a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+                <button class="btn btn-primary">{% if step == 8 %}Finalizar{% else %}Continuar{% endif %}</button>
             </div>
         </form>
     </div>

@@ -9,6 +9,13 @@
             <h2 class="card-title">{{ consulta.creado_en|date:"d/m/Y H:i" }}</h2>
             <p><strong>Motivo:</strong> {{ consulta.motivo_consulta }}</p>
             <p><strong>Plan:</strong> {{ consulta.plan_terapeutico }}</p>
+            {% if consulta.valores_variables.all %}
+            <div class="text-sm opacity-80">
+                {% for valor in consulta.valores_variables.all %}
+                    <p><strong>{{ valor.variable.nombre }}:</strong> {{ valor.valor_mostrar }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
             <div>{% for dx in consulta.diagnosticos.all %}<span class="badge badge-primary">{{ dx.codigo_cie10 }} {{ dx.nombre }}</span>{% endfor %}</div>
         </div>
     </div>
