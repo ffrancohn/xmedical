@@ -13,5 +13,5 @@ def test_e2e02_flujo_enfermera(page: Page, base_url):
     page.fill('input[name="username"]', "enfermera.demo")
     page.fill('input[name="password"]', PASSWORD)
     page.click('button[type="submit"]')
-    expect(page).to_have_url(re.compile(r"/preclinica/"))
-    expect(page.locator("body")).to_contain_text("Preclinica")
+    expect(page).to_have_url(re.compile(r"/dashboards/enfermeria/"))
+    expect(page.locator("body")).to_contain_text("Dashboard de enfermeria")

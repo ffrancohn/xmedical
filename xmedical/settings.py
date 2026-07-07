@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "apps.referencias",
     "apps.qr",
     "apps.variables_clinicas",
+    "apps.dashboards",
 ]
 
 MIDDLEWARE = [

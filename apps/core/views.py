@@ -61,7 +61,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if profesional and profesional.tipo == "recepcionista":
             return redirect("citas_agendar")
         if profesional and profesional.tipo == "enfermera":
-            return redirect("preclinica_lista")
+            return redirect("dashboards_enfermeria")
+        if profesional and profesional.tipo == "admin":
+            return redirect("dashboards_administracion")
+        if (
+            profesional
+            and profesional.tipo == "medico"
+            and profesional.especialidad
+            and profesional.especialidad.nivel == "segundo"
+        ):
+            return redirect("dashboards_especialista")
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
