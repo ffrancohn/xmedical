@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.consulta",
     "apps.referencias",
     "apps.qr",
+    "apps.notificaciones",
 ]
 
 MIDDLEWARE = [
@@ -113,6 +114,16 @@ LOGOUT_REDIRECT_URL = "/auth/login/"
 
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://localhost:6379/0")
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+DEFAULT_FROM_EMAIL = env("EMAIL_FROM", default="noreply@xmedical.local")
+SENDGRID_API_KEY = env("SENDGRID_API_KEY", default="")
 
 # IA (Fase 2) - claves solo en entorno, nunca en base de datos
 AI_PROVIDER = env("AI_PROVIDER", default="openai")

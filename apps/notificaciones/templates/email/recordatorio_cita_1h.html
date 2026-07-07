@@ -1,0 +1,9 @@
+<p>Hola {{ paciente.nombre }},</p>
+<p><strong>Su cita es en 1 hora</strong> en {{ institucion.nombre }}.</p>
+<ul>
+    <li><strong>Fecha:</strong> {{ cita.fecha|date:"d/m/Y" }}</li>
+    <li><strong>Hora:</strong> {{ cita.hora|time:"H:i" }}</li>
+    <li><strong>Profesional:</strong> {{ profesional.nombre }}</li>
+</ul>
+<p>Por favor llegue con unos minutos de anticipacion.</p>
+<p>— {{ institucion.nombre }}</p>
