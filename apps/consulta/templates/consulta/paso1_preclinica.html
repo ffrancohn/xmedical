@@ -9,6 +9,15 @@
 {% if preclinica.alertas %}
 <div class="alert alert-warning">{% for alerta in preclinica.alertas %}<span>{{ alerta }}</span>{% endfor %}</div>
 {% endif %}
+{% if alertas_riesgo %}
+<div class="space-y-2">
+    {% for alerta in alertas_riesgo %}
+    <div class="alert {% if alerta.nivel == 'alto' %}alert-error{% else %}alert-warning{% endif %}">
+        <span><strong>{{ alerta.get_tipo_display }}:</strong> {{ alerta.mensaje }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% else %}
 <div class="alert">No hay preclinica registrada para esta cita.</div>
 {% endif %}

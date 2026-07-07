@@ -34,7 +34,9 @@ class CitaListView(LoginRequiredMixin, ListView):
         return redirect("dashboard")
 
     def get_queryset(self):
-        qs = Cita.objects.select_related("paciente", "profesional").all()
+        qs = Cita.objects.select_related(
+            "paciente", "profesional", "prediccion_ausentismo"
+        ).all()
         instituciones, _ = selected_instituciones(self.request)
         qs = qs.filter(institucion__in=instituciones)
         return qs.order_by("fecha", "hora")

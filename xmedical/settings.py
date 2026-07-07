@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.variables_clinicas",
     "apps.dashboards",
     "apps.notificaciones",
+    "apps.ia_predictiva",
 ]
 
 MIDDLEWARE = [
