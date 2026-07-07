@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.variables_clinicas",
     "apps.dashboards",
     "apps.notificaciones",
+    "apps.portal_paciente",
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.institucion",
                 "apps.core.context_processors.user_profesional",
+                "apps.core.context_processors.user_perfil_paciente",
                 "apps.core.context_processors.visual_preferences",
             ],
         },

@@ -11,6 +11,7 @@ from apps.core.backup_utils import create_global_backup, create_institution_back
 from apps.core.decorators import get_profesional
 from apps.core.models import BackupLog, Institucion, LogAuditoria, Profesional
 from apps.pacientes.models import Paciente
+from apps.portal_paciente.decorators import get_perfil_paciente
 
 
 def current_institucion(request):
@@ -57,6 +58,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser:
             return redirect("superadmin_dashboard")
+        perfil = get_perfil_paciente(request.user, current_institucion(request))
+        if perfil:
+            return redirect("portal_dashboard")
         profesional = Profesional.objects.filter(usuario=request.user, activo=True).first()
         if profesional and profesional.tipo == "recepcionista":
             return redirect("citas_agendar")
@@ -92,6 +96,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 def home(request):
     if request.user.is_authenticated:
+        if get_perfil_paciente(request.user, current_institucion(request)):
+            return redirect("portal_dashboard")
         return redirect("dashboard")
     return render(request, "home.html")
 
