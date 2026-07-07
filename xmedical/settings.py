@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.consulta",
     "apps.referencias",
     "apps.qr",
+    "apps.dashboards",
 ]
 
 MIDDLEWARE = [

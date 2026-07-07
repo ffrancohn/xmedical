@@ -79,12 +79,19 @@ class RoleRoutingTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/citas/", response.url)
 
-    def test_enfermera_redirects_to_preclinica(self):
+    def test_enfermera_redirects_to_dashboard_enfermeria(self):
         client = Client(**HOST)
         client.login(username="enfermera.demo", password=PASSWORD)
         response = client.get("/dashboard/", **HOST)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/preclinica/", response.url)
+        self.assertIn("/dashboards/enfermeria/", response.url)
+
+    def test_admin_redirects_to_dashboard_administracion(self):
+        client = Client(**HOST)
+        client.login(username="admin.demo", password=PASSWORD)
+        response = client.get("/dashboard/", **HOST)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/dashboards/administracion/", response.url)
 
 
 class ClinicalRouteTests(TestCase):
