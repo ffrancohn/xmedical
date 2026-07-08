@@ -13,6 +13,7 @@ from apps.core.views import current_institucion
 from apps.pacientes.models import Paciente
 from apps.variables_clinicas.forms import build_variables_form, guardar_valores_variables
 from apps.variables_clinicas.services import variables_para_cita
+from apps.ia_predictiva.services import alertas_activas_paciente
 from .forms import AnamnesisForm, DiagnosticoForm, ExamenFisicoForm, MotivoForm, PlanForm
 from .models import Consulta, Diagnostico
 from .services import sugerir_diagnosticos
@@ -117,6 +118,7 @@ class ConsultaWizardView(LoginRequiredMixin, View):
             "cita": cita,
             "consulta": consulta,
             "preclinica": getattr(cita, "preclinica", None),
+            "alertas_riesgo": alertas_activas_paciente(cita.paciente, institucion) if step == 1 else [],
             "cie10": CIE10_MVP,
             "variables": variables,
             "paso_anterior": paso_anterior(step, cita),

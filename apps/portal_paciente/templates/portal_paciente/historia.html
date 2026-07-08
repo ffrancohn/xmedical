@@ -1,0 +1,33 @@
+{% extends 'portal_paciente/base.html' %}
+{% block portal_content %}
+<h1 class="text-2xl font-bold mb-1">Mi historia clinica</h1>
+<p class="mb-4 opacity-80">{{ perfil.paciente.nombre }} {{ perfil.paciente.apellido }} - {{ perfil.paciente.documento }}</p>
+
+<div class="flex flex-wrap gap-2 mb-6">
+    <a href="{% url 'portal_exportar_hce' 'pdf' %}" class="btn btn-primary btn-sm">Exportar PDF</a>
+    <a href="{% url 'portal_exportar_hce' 'json' %}" class="btn btn-outline btn-sm">Exportar JSON</a>
+</div>
+
+<div class="space-y-4">
+{% for consulta in consultas %}
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">{{ consulta.creado_en|date:"d/m/Y H:i" }}</h2>
+            <p class="text-sm opacity-70">{{ consulta.cita.profesional.nombre }}</p>
+            <p><strong>Motivo:</strong> {{ consulta.motivo_consulta|default:"-" }}</p>
+            <p><strong>Plan:</strong> {{ consulta.plan_terapeutico|default:"-" }}</p>
+            {% if consulta.valores_variables.all %}
+            <div class="text-sm opacity-80">
+                {% for valor in consulta.valores_variables.all %}
+                    <p><strong>{{ valor.variable.nombre }}:</strong> {{ valor.valor_mostrar }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div>{% for dx in consulta.diagnosticos.all %}<span class="badge badge-primary mr-1">{{ dx.codigo_cie10 }} {{ dx.nombre }}</span>{% endfor %}</div>
+        </div>
+    </div>
+{% empty %}
+    <div class="alert">Aun no tienes consultas registradas.</div>
+{% endfor %}
+</div>
+{% endblock %}

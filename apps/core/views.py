@@ -1,6 +1,9 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.generic import ListView, TemplateView
@@ -10,7 +13,15 @@ from apps.consulta.models import Consulta
 from apps.core.backup_utils import create_global_backup, create_institution_backup, restore_fixture
 from apps.core.decorators import get_profesional
 from apps.core.models import BackupLog, Institucion, LogAuditoria, Profesional
+from apps.core.tenant_transfer import (
+    TenantTransferError,
+    export_tenant_json,
+    import_tenant_package,
+    log_tenant_operation,
+    tenant_stats,
+)
 from apps.pacientes.models import Paciente
+from apps.portal_paciente.decorators import get_perfil_paciente
 
 
 def current_institucion(request):
@@ -57,6 +68,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser:
             return redirect("superadmin_dashboard")
+        perfil = get_perfil_paciente(request.user, current_institucion(request))
+        if perfil:
+            return redirect("portal_dashboard")
         profesional = Profesional.objects.filter(usuario=request.user, activo=True).first()
         if profesional and profesional.tipo == "recepcionista":
             return redirect("citas_agendar")
@@ -92,6 +106,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 def home(request):
     if request.user.is_authenticated:
+        if get_perfil_paciente(request.user, current_institucion(request)):
+            return redirect("portal_dashboard")
         return redirect("dashboard")
     return render(request, "home.html")
 
@@ -189,4 +205,70 @@ def superadmin_restore(request):
         return redirect("superadmin_dashboard")
     path = restore_fixture(uploaded_file, alcance, request.user, institucion)
     messages.success(request, f"Restauracion aplicada desde: {path}")
+    return redirect("superadmin_dashboard")
+
+
+@user_passes_test(is_superadmin)
+def superadmin_export_tenant(request, institucion_id):
+    institucion = get_object_or_404(Institucion, pk=institucion_id)
+    contenido = export_tenant_json(institucion)
+    log_tenant_operation(
+        "backup",
+        institucion,
+        request.user,
+        detalle="Descarga directa de paquete tenant.",
+    )
+    response = HttpResponse(contenido, content_type="application/json; charset=utf-8")
+    response["Content-Disposition"] = (
+        f'attachment; filename="xmedical_tenant_{institucion.subdominio}_{timezone.localtime():%Y%m%d}.json"'
+    )
+    return response
+
+
+@user_passes_test(is_superadmin)
+def superadmin_import_tenant(request):
+    if request.method != "POST":
+        return redirect("superadmin_dashboard")
+    uploaded_file = request.FILES.get("archivo")
+    if not uploaded_file:
+        messages.error(request, "Selecciona un archivo JSON de tenant.")
+        return redirect("superadmin_dashboard")
+
+    try:
+        package = json.loads(uploaded_file.read().decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        messages.error(request, "El archivo no es un JSON valido.")
+        return redirect("superadmin_dashboard")
+
+    mode = request.POST.get("modo", "new")
+    nombre = request.POST.get("nombre", "").strip() or None
+    subdominio = request.POST.get("subdominio", "").strip() or None
+    target_institucion = None
+    if mode == "replace":
+        target_institucion = get_object_or_404(Institucion, pk=request.POST.get("institucion_id"))
+
+    try:
+        institucion, _ = import_tenant_package(
+            package,
+            mode=mode,
+            nombre=nombre,
+            subdominio=subdominio,
+            target_institucion=target_institucion,
+        )
+    except TenantTransferError as exc:
+        messages.error(request, str(exc))
+        return redirect("superadmin_dashboard")
+
+    log_tenant_operation(
+        "restore",
+        institucion,
+        request.user,
+        detalle=f"Importacion tenant modo={mode}.",
+    )
+    stats = tenant_stats(institucion)
+    messages.success(
+        request,
+        f"Tenant importado: {institucion.nombre} ({institucion.subdominio}). "
+        f"Pacientes: {stats['pacientes']}, citas: {stats['citas']}, consultas: {stats['consultas']}.",
+    )
     return redirect("superadmin_dashboard")
