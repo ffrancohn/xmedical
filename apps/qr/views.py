@@ -26,7 +26,7 @@ class QRGenerarView(LoginRequiredMixin, View):
         profesional = get_profesional(request.user)
         if not request.user.is_superuser and (not profesional or profesional.tipo not in ("medico", "admin")):
             messages.error(request, "No tienes permiso para generar codigos QR.")
-            return redirect("consulta_wizard", cita_id=consulta.cita_id, step=7)
+            return redirect("consulta_wizard", cita_id=consulta.cita_id, step=8)
 
         service = QRService(institucion=consulta.institucion)
         if tipo == "receta":
@@ -38,7 +38,7 @@ class QRGenerarView(LoginRequiredMixin, View):
             documento = service.generar_checkin(consulta.cita, usuario=request.user)
         else:
             messages.error(request, "Tipo de QR no valido.")
-            return redirect("consulta_wizard", cita_id=consulta.cita_id, step=7)
+            return redirect("consulta_wizard", cita_id=consulta.cita_id, step=8)
 
         return redirect("qr_mostrar", token=documento.token)
 

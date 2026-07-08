@@ -2,6 +2,16 @@
     <section><h3 class="font-bold">Motivo</h3><p>{{ consulta.motivo_consulta|linebreaksbr }}</p></section>
     <section><h3 class="font-bold">Anamnesis</h3><p>{{ consulta.anamnesis|linebreaksbr }}</p></section>
     <section><h3 class="font-bold">Examen fisico</h3><p>{{ consulta.examen_fisico|linebreaksbr }}</p></section>
+    {% if consulta.valores_variables.all %}
+    <section>
+        <h3 class="font-bold">Variables clinicas</h3>
+        <ul class="list-disc pl-6">
+            {% for valor in consulta.valores_variables.all %}
+                <li><strong>{{ valor.variable.nombre }}:</strong> {{ valor.valor_mostrar }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
     <section>
         <h3 class="font-bold">Diagnosticos</h3>
         <ul class="list-disc pl-6">{% for dx in consulta.diagnosticos.all %}<li>{{ dx.codigo_cie10 }} - {{ dx.nombre }}{% if dx.es_principal %} (principal){% endif %}</li>{% endfor %}</ul>
