@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.0 | 2026-07 | Equipo XMedical | **Planificado** |
+| 1.1 | 2026-07 | Equipo XMedical | **Implementado (backend API)** |
 
 ---
 
@@ -19,10 +19,10 @@ Definir cómo XMedical dará soporte a una **aplicación móvil** (iOS/Android) 
 |------------|---------------|----------------|
 | Backend Django | ✅ Implementado | Se mantiene |
 | Frontend web (plantillas) | ✅ Implementado | Coexiste con la app |
-| Autenticación | ✅ Sesión/cookies (web) | ➕ JWT (API) |
-| API REST (`/api/v1/`) | ❌ No implementada | 🔮 A implementar |
-| CORS | ⚠️ Dependencia instalada, sin configurar | 🔮 Activar en settings |
-| Multi-tenant | ✅ Subdominio (web) | ➕ `institucion_id` en JWT o header |
+| Autenticación | ✅ Sesión/cookies (web) | ✅ JWT (API) |
+| API REST (`/api/v1/`) | ✅ Implementada | Consumible por app móvil |
+| CORS | ✅ Configurado en settings | Variable `CORS_ALLOWED_ORIGINS` |
+| Multi-tenant | ✅ Subdominio (web) | ✅ `institucion_id` + `rol` en JWT |
 | Push notifications | ❌ | 🔮 Fase posterior (FCM/APNs) |
 
 > El prototipo FastAPI/React fue eliminado del repositorio. La API móvil se construirá **dentro de Django** con Django REST Framework.
@@ -170,7 +170,7 @@ Documentación interactiva: `/api/v1/docs/` (drf-spectacular).
 | Dominio | `xmedical.cloud` | `api.xmedical.cloud` |
 | SSL | ✅ Let's Encrypt | Certificado adicional |
 | Auth | Sesión Django | JWT Bearer |
-| Rate limit | — | 100 req/min (doc. seguridad) |
+| Rate limit | — | ✅ 100 req/min usuario (DRF throttling) |
 
 Variables `.env` adicionales previstas:
 
@@ -215,14 +215,15 @@ Funcionalidades por fase:
 
 ## 10. PLAN DE IMPLEMENTACIÓN
 
-| Fase | Entregable | Duración estimada |
-|------|------------|-------------------|
-| 1 | DRF + JWT + login API | 1–2 semanas |
-| 2 | API pacientes + citas (lectura/escritura) | 2 semanas |
-| 3 | API preclínica + consulta | 2–3 semanas |
-| 4 | `api.xmedical.cloud` + CORS + OpenAPI | 1 semana |
-| 5 | App móvil MVP (repo aparte) | 4–6 semanas |
-| 6 | Push notifications | 2 semanas |
+| Fase | Entregable | Estado |
+|------|------------|--------|
+| 1 | DRF + JWT + login API | ✅ Completado |
+| 2 | API pacientes + citas (lectura/escritura) | ✅ Completado |
+| 3 | API preclínica + consulta + dashboard | ✅ Completado |
+| 4 | CORS + OpenAPI (`/api/v1/docs/`) | ✅ Completado |
+| 5 | `api.xmedical.cloud` (subdominio Apache) | 🔮 Pendiente despliegue |
+| 6 | App móvil MVP (repo aparte) | 🔮 Planificado |
+| 7 | Push notifications | 🔮 Fase posterior |
 
 ---
 
