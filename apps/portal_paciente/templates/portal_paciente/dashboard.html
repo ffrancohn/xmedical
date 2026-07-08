@@ -1,0 +1,56 @@
+{% extends 'portal_paciente/base.html' %}
+{% block portal_content %}
+<h1 class="text-2xl font-bold mb-2">Bienvenido, {{ perfil.paciente.nombre }}</h1>
+<p class="opacity-80 mb-6">Gestiona tus citas y consulta tu historia clinica desde el portal.</p>
+
+<div class="grid md:grid-cols-3 gap-4 mb-8">
+    <a href="{% url 'portal_citas' %}" class="card bg-base-100 shadow hover:shadow-md transition">
+        <div class="card-body">
+            <h2 class="card-title text-lg">Mis citas</h2>
+            <p class="text-sm opacity-70">Ver proximas citas, cancelar o registrar llegada.</p>
+        </div>
+    </a>
+    <a href="{% url 'portal_solicitar_cita' %}" class="card bg-base-100 shadow hover:shadow-md transition">
+        <div class="card-body">
+            <h2 class="card-title text-lg">Solicitar cita</h2>
+            <p class="text-sm opacity-70">Agenda en linea con disponibilidad flexible.</p>
+        </div>
+    </a>
+    <a href="{% url 'portal_historia' %}" class="card bg-base-100 shadow hover:shadow-md transition">
+        <div class="card-body">
+            <h2 class="card-title text-lg">Mi historia clinica</h2>
+            <p class="text-sm opacity-70">Consulta y exporta tu HCE en PDF o JSON.</p>
+        </div>
+    </a>
+</div>
+
+<h2 class="text-xl font-semibold mb-3">Proximas citas</h2>
+{% if proximas %}
+<div class="overflow-x-auto">
+    <table class="table bg-base-100 shadow">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Medico</th>
+                <th>Especialidad</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cita in proximas %}
+            <tr>
+                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                <td>{{ cita.hora|time:"H:i" }}</td>
+                <td>{{ cita.profesional.nombre }}</td>
+                <td>{{ cita.profesional.especialidad.nombre|default:"-" }}</td>
+                <td><span class="badge">{{ cita.get_estado_display }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert">No tienes citas proximas. <a href="{% url 'portal_solicitar_cita' %}" class="link">Solicitar una cita</a></div>
+{% endif %}
+{% endblock %}

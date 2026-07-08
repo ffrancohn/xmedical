@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-2">Registro en el portal</h1>
+<p class="mb-4 opacity-80">Crea tu cuenta para gestionar citas y consultar tu historia clinica en {{ institucion.nombre }}.</p>
+
+<form method="post" class="card bg-base-100 shadow max-w-lg">
+    <div class="card-body space-y-3">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-control">
+            <label class="label"><span class="label-text">{{ field.label }}</span></label>
+            {{ field }}
+            {% if field.errors %}<p class="text-error text-sm mt-1">{{ field.errors|join:", " }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Crear cuenta</button>
+        <p class="text-sm">¿Ya tienes cuenta? <a href="{% url 'login' %}" class="link">Iniciar sesion</a></p>
+    </div>
+</form>
+{% endblock %}

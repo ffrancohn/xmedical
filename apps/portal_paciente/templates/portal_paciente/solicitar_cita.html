@@ -1,0 +1,22 @@
+{% extends 'portal_paciente/base.html' %}
+{% block portal_content %}
+<h1 class="text-2xl font-bold mb-4">Solicitar cita en linea</h1>
+
+{% if sin_turnos %}
+<div class="alert alert-warning mb-4">No hay turnos disponibles en el rango seleccionado. Intenta con otras fechas o jornada.</div>
+{% endif %}
+
+<form method="post" class="card bg-base-100 shadow max-w-lg">
+    <div class="card-body space-y-3">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-control">
+            <label class="label"><span class="label-text">{{ field.label }}</span></label>
+            {{ field }}
+            {% if field.errors %}<p class="text-error text-sm mt-1">{{ field.errors|join:", " }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Buscar y confirmar cita</button>
+    </div>
+</form>
+{% endblock %}

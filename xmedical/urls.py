@@ -13,6 +13,7 @@ urlpatterns = [
     path("referencias/", include("apps.referencias.urls")),
     path("qr/", include("apps.qr.urls")),
     path("dashboards/", include("apps.dashboards.urls")),
+    path("portal/", include("apps.portal_paciente.urls")),
     path("", include("apps.core.urls")),
 ]
 

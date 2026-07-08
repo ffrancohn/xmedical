@@ -7,6 +7,8 @@ from django.views import View
 
 from apps.core.models import Profesional
 
+from apps.portal_paciente.models import PerfilPaciente
+
 from .forms import ProfesionalRegistroForm, UserPreferenceForm, XMedicalAuthenticationForm
 from .models import UserPreference
 
@@ -38,7 +40,10 @@ class XMedicalLoginView(LoginView):
             profesional = Profesional.objects.filter(
                 usuario=user, institucion=institucion, activo=True
             ).first()
-            if not profesional:
+            perfil_paciente = PerfilPaciente.objects.filter(
+                usuario=user, institucion=institucion, activo=True
+            ).first()
+            if not profesional and not perfil_paciente:
                 messages.error(
                     self.request,
                     "Tu usuario no tiene acceso a la institucion seleccionada.",

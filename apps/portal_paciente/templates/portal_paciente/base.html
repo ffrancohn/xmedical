@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="navbar bg-primary text-primary-content rounded-box mb-4">
+    <div class="flex-1">
+        <span class="font-bold text-lg px-2">Portal del paciente</span>
+    </div>
+    <div class="flex-none gap-1">
+        <a href="{% url 'portal_dashboard' %}" class="btn btn-sm btn-ghost">Inicio</a>
+        <a href="{% url 'portal_citas' %}" class="btn btn-sm btn-ghost">Mis citas</a>
+        <a href="{% url 'portal_solicitar_cita' %}" class="btn btn-sm btn-ghost">Solicitar cita</a>
+        <a href="{% url 'portal_historia' %}" class="btn btn-sm btn-ghost">Historia clinica</a>
+        <a href="{% url 'preferencias_visuales' %}" class="btn btn-sm btn-ghost">Configuracion</a>
+    </div>
+</div>
+{% block portal_content %}{% endblock %}
+{% endblock %}

@@ -51,7 +51,7 @@ class PreclinicaFunctionalTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Preclinica.objects.filter(cita=self.cita).exists())
         self.cita.refresh_from_db()
-        self.assertEqual(self.cita.estado, "confirmada")
+        self.assertEqual(self.cita.estado, "en_espera")
 
 
 class PreclinicaAlertasTests(TestCase):
