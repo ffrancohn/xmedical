@@ -15,6 +15,7 @@
 | App móvil | 🔮 Planificado | Repo separado, consume API |
 | Celery workers | ⚠️ Configurado | Docker compose, no en systemd prod. |
 | Microservicio IA (FastAPI) | 🔮 Fase 4 | Visión producto, no el prototipo eliminado |
+| Recepción Virtual (email/WhatsApp/voz) | 🔮 Planificado | Borrador de diseño, [doc 15](15%20Recepcion%20Virtual%20Omnicanal.md) |
 
 **Producción actual:** `https://xmedical.cloud` — Apache → Gunicorn → Django.
 
@@ -39,6 +40,13 @@
 | 12 | [Sprint backlog](12%20Sprint%20backlog.md) | Backlog de desarrollo |
 | 13 | [App móvil y API REST](13%20App%20movil%20y%20API%20REST.md) | **Hoja de ruta móvil** |
 | 14 | [Roadmap Seguridad](14%20Roadmap%20Seguridad.md) | **Implementado vs planificado SEC** |
+| 15 | [Recepción Virtual Omnicanal](15%20Recepcion%20Virtual%20Omnicanal.md) | **Borrador**: email, WhatsApp y voz con IA |
+
+### Planificación por módulo
+
+| Módulo | Documentos |
+|--------|-----------|
+| [Recepción Virtual](recepcion-virtual/README.md) | PRD, Flujo, UI/UX, TRD, Backend/Esquema, Plan (6 documentos) |
 
 ## Guías operativas
 
