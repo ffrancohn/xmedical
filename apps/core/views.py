@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import ListView, TemplateView
 
 from apps.citas.models import Cita
 from apps.consulta.models import Consulta
 from apps.core.backup_utils import create_global_backup, create_institution_backup, restore_fixture
-from apps.core.models import BackupLog, Institucion, Profesional
+from apps.core.decorators import get_profesional
+from apps.core.models import BackupLog, Institucion, LogAuditoria, Profesional
 from apps.pacientes.models import Paciente
 
 
@@ -60,7 +61,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if profesional and profesional.tipo == "recepcionista":
             return redirect("citas_agendar")
         if profesional and profesional.tipo == "enfermera":
-            return redirect("preclinica_lista")
+            return redirect("dashboards_enfermeria")
+        if profesional and profesional.tipo == "admin":
+            return redirect("dashboards_administracion")
+        if (
+            profesional
+            and profesional.tipo == "medico"
+            and profesional.especialidad
+            and profesional.especialidad.nivel == "segundo"
+        ):
+            return redirect("dashboards_especialista")
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -75,7 +85,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             citas = citas.filter(profesional=profesional)
         context["profesional"] = profesional
         context["citas_hoy"] = citas.order_by("hora")
-        context["pacientes_espera"] = citas.filter(estado__in=["pendiente", "confirmada"])
+        context["pacientes_espera"] = citas.filter(estado__in=["pendiente", "confirmada", "en_espera"])
         context["atendidos"] = citas.filter(estado="atendida").count()
         return context
 
@@ -114,6 +124,40 @@ def superadmin_dashboard(request):
         "backup_logs": BackupLog.objects.select_related("institucion", "usuario")[:10],
     }
     return render(request, "core/superadmin_dashboard.html", context)
+
+
+class AuditoriaListView(LoginRequiredMixin, ListView):
+    model = LogAuditoria
+    template_name = "core/auditoria_lista.html"
+    context_object_name = "registros"
+    paginate_by = 50
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo == "admin":
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para ver la auditoria.")
+        return redirect("dashboard")
+
+    def get_queryset(self):
+        qs = LogAuditoria.objects.select_related("institucion", "usuario")
+        if self.request.user.is_superuser:
+            institucion_id = self.request.GET.get("institucion")
+            if institucion_id:
+                qs = qs.filter(institucion_id=institucion_id)
+            return qs
+        institucion = current_institucion(self.request)
+        if institucion:
+            qs = qs.filter(institucion=institucion)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["all_instituciones"] = Institucion.objects.filter(activo=True).order_by("nombre")
+        context["is_superadmin_view"] = self.request.user.is_superuser
+        return context
 
 
 @user_passes_test(is_superadmin)

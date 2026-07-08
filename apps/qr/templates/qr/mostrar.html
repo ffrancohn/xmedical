@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-lg mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body items-center text-center">
+        <h1 class="card-title">Codigo QR generado</h1>
+        <p class="text-sm opacity-70">{{ documento.get_tipo_display }} — {{ documento.paciente }}</p>
+        <img src="data:image/png;base64,{{ imagen_base64 }}" alt="Codigo QR" class="my-4 border rounded-lg p-2 bg-white">
+        <p class="text-xs break-all opacity-60">{{ validation_url }}</p>
+        <p class="text-sm">Expira: {{ documento.expira_en|date:"Y-m-d H:i" }}</p>
+        <div class="card-actions mt-4">
+            <a href="{% url 'qr_validar' documento.token %}" class="btn btn-outline btn-sm" target="_blank">Probar validacion</a>
+            {% if documento.consulta %}
+            <a href="{% url 'consulta_wizard' documento.consulta.cita_id 7 %}" class="btn btn-ghost btn-sm">Volver a consulta</a>
+            {% elif documento.cita %}
+            <a href="{% url 'citas_lista' %}" class="btn btn-ghost btn-sm">Volver a citas</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

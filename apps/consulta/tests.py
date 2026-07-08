@@ -79,7 +79,7 @@ class ConsultaWizardTests(TestCase):
     def test_fun_q05_paso5_diagnostico(self):
         Consulta.objects.create(institucion=self.institucion, cita=self.cita)
         response = self.client.post(
-            f"/consulta/cita/{self.cita.pk}/paso/5/",
+            f"/consulta/cita/{self.cita.pk}/paso/6/",
             {
                 "codigo_cie10": "I10",
                 "nombre": "Hipertension esencial primaria",
@@ -94,7 +94,7 @@ class ConsultaWizardTests(TestCase):
     def test_fun_q06_paso6_plan(self):
         Consulta.objects.create(institucion=self.institucion, cita=self.cita)
         response = self.client.post(
-            f"/consulta/cita/{self.cita.pk}/paso/6/",
+            f"/consulta/cita/{self.cita.pk}/paso/7/",
             {"plan_terapeutico": "Reposo e hidratacion", "conducta": "alta"},
             **{"HTTP_HOST": "xmedical.cloud"},
         )
@@ -110,7 +110,7 @@ class ConsultaWizardTests(TestCase):
             plan_terapeutico="Plan",
         )
         response = self.client.post(
-            f"/consulta/cita/{self.cita.pk}/paso/7/",
+            f"/consulta/cita/{self.cita.pk}/paso/8/",
             **{"HTTP_HOST": "xmedical.cloud"},
         )
         self.assertEqual(response.status_code, 302)

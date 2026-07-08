@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Auditoria de cambios</h1>
+        {% if is_superadmin_view %}
+        <form method="get" class="flex gap-2 mb-4">
+            <select name="institucion" class="select select-bordered">
+                <option value="">Todas las instituciones</option>
+                {% for inst in all_instituciones %}
+                <option value="{{ inst.id }}" {% if request.GET.institucion == inst.id|stringformat:'s' %}selected{% endif %}>{{ inst.nombre }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary">Filtrar</button>
+        </form>
+        {% endif %}
+        <div class="overflow-x-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Institucion</th>
+                        <th>Usuario</th>
+                        <th>Accion</th>
+                        <th>Tabla</th>
+                        <th>Registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                    <tr>
+                        <td>{{ registro.creado_en|date:"Y-m-d H:i" }}</td>
+                        <td>{{ registro.institucion.nombre }}</td>
+                        <td>{{ registro.usuario.username|default:"-" }}</td>
+                        <td>{{ registro.accion }}</td>
+                        <td>{{ registro.tabla_afectada }}</td>
+                        <td>#{{ registro.registro_id }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">Sin registros de auditoria.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -5,9 +5,28 @@
         <h1 class="card-title">Iniciar sesion</h1>
         <form method="post" class="space-y-4">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% if show_institucion %}
+            <div class="form-control">
+                <label class="label" for="id_institucion"><span class="label-text">Institucion</span></label>
+                {{ form.institucion }}
+            </div>
+            {% endif %}
+            <div class="form-control">
+                <label class="label" for="id_username"><span class="label-text">Usuario</span></label>
+                {{ form.username }}
+            </div>
+            <div class="form-control">
+                <label class="label" for="id_password"><span class="label-text">Contrasena</span></label>
+                {{ form.password }}
+            </div>
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
             <button class="btn btn-primary w-full">Entrar</button>
         </form>
+        <p class="text-sm mt-4 opacity-70">
+            <a href="{% url 'pacientes_registro_publico' %}" class="link">Registro de pacientes</a>
+        </p>
     </div>
 </div>
 {% endblock %}

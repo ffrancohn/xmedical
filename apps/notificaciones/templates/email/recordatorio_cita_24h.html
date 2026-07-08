@@ -1,0 +1,9 @@
+<p>Hola {{ paciente.nombre }},</p>
+<p>Le recordamos que tiene una cita programada para <strong>manana</strong> en {{ institucion.nombre }}.</p>
+<ul>
+    <li><strong>Fecha:</strong> {{ cita.fecha|date:"d/m/Y" }}</li>
+    <li><strong>Hora:</strong> {{ cita.hora|time:"H:i" }}</li>
+    <li><strong>Profesional:</strong> {{ profesional.nombre }}</li>
+</ul>
+<p>Si no puede asistir, contacte a la clinica con anticipacion.</p>
+<p>— {{ institucion.nombre }}</p>

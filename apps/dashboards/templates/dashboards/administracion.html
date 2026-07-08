@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-1">Dashboard administrativo</h1>
+<p class="opacity-70 mb-4">Metricas de la clinica — {{ fecha|date:"d/m/Y" }}</p>
+{% include 'partials/institution_filter.html' %}
+
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+    <div class="stat bg-primary/10 rounded-box">
+        <div class="stat-title">Ocupacion agenda hoy</div>
+        <div class="stat-value">{{ ocupacion_agenda }}%</div>
+        <div class="stat-desc">Citas activas sobre el total programado</div>
+    </div>
+    <div class="stat bg-warning/10 rounded-box">
+        <div class="stat-title">Ausentismo (7 dias)</div>
+        <div class="stat-value">{{ ausentismo_semana }}%</div>
+        <div class="stat-desc">Citas canceladas en la semana</div>
+    </div>
+    <div class="stat bg-error/10 rounded-box">
+        <div class="stat-title">Canceladas hoy</div>
+        <div class="stat-value">{{ citas_canceladas_hoy }}</div>
+        <div class="stat-desc">{{ citas_canceladas_semana }} en la semana</div>
+    </div>
+    <div class="stat bg-success/10 rounded-box">
+        <div class="stat-title">Consultas atendidas</div>
+        <div class="stat-value">{{ consultas_atendidas_hoy }}</div>
+        <div class="stat-desc">Hoy</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Agenda de hoy</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Profesional</th><th>Estado</th></tr></thead>
+                    <tbody>
+                    {% for cita in citas_hoy %}
+                        <tr>
+                            {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
+                            <td>{{ cita.hora|time:"H:i" }}</td>
+                            <td>{{ cita.paciente }}</td>
+                            <td>{{ cita.profesional.nombre }}</td>
+                            <td><span class="badge {% if cita.estado == 'cancelada' %}badge-error{% else %}badge-ghost{% endif %}">{{ cita.get_estado_display }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin citas programadas hoy.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Cancelaciones recientes</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Fecha</th><th>Paciente</th><th>Profesional</th></tr></thead>
+                    <tbody>
+                    {% for cita in citas_canceladas_recientes %}
+                        <tr>
+                            {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
+                            <td>{{ cita.fecha|date:"d/m/Y" }} {{ cita.hora|time:"H:i" }}</td>
+                            <td>{{ cita.paciente }}</td>
+                            <td>{{ cita.profesional.nombre }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}">Sin cancelaciones en los ultimos 7 dias.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

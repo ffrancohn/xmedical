@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     "apps.citas",
     "apps.preclinica",
     "apps.consulta",
+    "apps.referencias",
+    "apps.qr",
+    "apps.variables_clinicas",
+    "apps.dashboards",
+    "apps.notificaciones",
 ]
 
 MIDDLEWARE = [
@@ -65,6 +70,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.institucion",
+                "apps.core.context_processors.user_profesional",
                 "apps.core.context_processors.visual_preferences",
             ],
         },
@@ -81,7 +87,7 @@ DATABASES = {
         "USER": env("DB_USER", default="xmedical_user"),
         "PASSWORD": env("DB_PASSWORD", default="password"),
         "HOST": env("DB_HOST", default="localhost"),
-        "PORT": env("DB_PORT", default="5432"),
+        "PORT": env("DB_PORT", default="5433"),
     }
 }
 
@@ -110,3 +116,35 @@ LOGOUT_REDIRECT_URL = "/auth/login/"
 
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://localhost:6379/0")
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+DEFAULT_FROM_EMAIL = env("EMAIL_FROM", default="noreply@xmedical.local")
+SENDGRID_API_KEY = env("SENDGRID_API_KEY", default="")
+
+# IA (Fase 2) - claves solo en entorno, nunca en base de datos
+AI_PROVIDER = env("AI_PROVIDER", default="openai")
+OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
+OPENAI_MODEL = env("OPENAI_MODEL", default="")
+OPENAI_BASE_URL = env("OPENAI_BASE_URL", default="https://api.openai.com/v1")
+OPENROUTER_API_KEY = env("OPENROUTER_API_KEY", default="")
+OPENROUTER_MODEL = env("OPENROUTER_MODEL", default="")
+OPENROUTER_BASE_URL = env("OPENROUTER_BASE_URL", default="https://openrouter.ai/api/v1")
+OPENROUTER_HTTP_REFERER = env("OPENROUTER_HTTP_REFERER", default="http://localhost:8000")
+OPENROUTER_APP_NAME = env("OPENROUTER_APP_NAME", default="XMedical")
+
+# QR (Fase 2)
+QR_BASE_URL = env("QR_BASE_URL", default="http://localhost:8000/qr")
+QR_EXPIRATION_DAYS = env.int("QR_EXPIRATION_DAYS", default=30)
+
+# Vision / OCR (Fase 2)
+GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS", default="")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
+AWS_REGION = env("AWS_REGION", default="us-east-1")
+VISION_PROVIDER_ORDER = env.list("VISION_PROVIDER_ORDER", default=["openai", "openrouter", "google", "aws"])

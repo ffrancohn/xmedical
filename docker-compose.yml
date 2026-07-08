@@ -39,5 +39,17 @@ services:
       - web
       - redis
 
+  celery-beat:
+    build: .
+    command: celery -A xmedical beat -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - db
+
 volumes:
   postgres_data:
