@@ -61,7 +61,17 @@ class PreclinicaRegistroView(LoginRequiredMixin, View):
     def get(self, request, cita_id):
         cita = get_scoped_cita(request, cita_id)
         preclinica = self.get_object(cita)
-        return render(request, self.template_name, {"cita": cita, "form": PreclinicaForm(instance=preclinica)})
+        from apps.ia_predictiva.services import alertas_activas_paciente
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "cita": cita,
+                "form": PreclinicaForm(instance=preclinica),
+                "alertas_riesgo": alertas_activas_paciente(cita.paciente, cita.institucion),
+            },
+        )
 
     def post(self, request, cita_id):
         cita = get_scoped_cita(request, cita_id)

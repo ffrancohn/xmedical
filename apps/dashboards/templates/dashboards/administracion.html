@@ -41,7 +41,12 @@
                             <td>{{ cita.hora|time:"H:i" }}</td>
                             <td>{{ cita.paciente }}</td>
                             <td>{{ cita.profesional.nombre }}</td>
-                            <td><span class="badge {% if cita.estado == 'cancelada' %}badge-error{% else %}badge-ghost{% endif %}">{{ cita.get_estado_display }}</span></td>
+                            <td>
+                                <span class="badge {% if cita.estado == 'cancelada' %}badge-error{% else %}badge-ghost{% endif %}">{{ cita.get_estado_display }}</span>
+                                {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
+                                <span class="badge badge-warning ml-1">{{ cita.prediccion_ausentismo.probabilidad }}% ausentismo</span>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% empty %}
                         <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin citas programadas hoy.</td></tr>
@@ -68,6 +73,57 @@
                         </tr>
                     {% empty %}
                         <tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}">Sin cancelaciones en los ultimos 7 dias.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Alertas de ausentismo predictivo</h2>
+            <p class="text-sm opacity-70 mb-2">Citas con probabilidad alta de inasistencia. Considere recordatorio adicional u overbooking.</p>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Fecha</th><th>Paciente</th><th>Prob.</th><th>Sugerencia</th></tr></thead>
+                    <tbody>
+                    {% for pred in alertas_ausentismo %}
+                        <tr>
+                            {% if is_superadmin_view %}<td>{{ pred.cita.institucion.nombre }}</td>{% endif %}
+                            <td>{{ pred.cita.fecha|date:"d/m/Y" }} {{ pred.cita.hora|time:"H:i" }}</td>
+                            <td>{{ pred.cita.paciente }}</td>
+                            <td><span class="badge badge-warning">{{ pred.probabilidad }}%</span></td>
+                            <td class="text-sm">Recordatorio adicional</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin alertas de ausentismo.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Demanda esperada (top)</h2>
+            <p class="text-sm opacity-70 mb-2">Citas semanales estimadas por especialidad, dia y franja horaria.</p>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead><tr><th>Especialidad</th><th>Dia</th><th>Franja</th><th>Demanda/sem</th></tr></thead>
+                    <tbody>
+                    {% for item in demanda_top %}
+                        <tr>
+                            <td>{{ item.especialidad.nombre }}</td>
+                            <td>{{ item.get_dia_semana_display|default:item.dia_semana }}</td>
+                            <td>{{ item.franja_horaria }}</td>
+                            <td>{{ item.demanda_esperada }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4">Sin datos de demanda calculados.</td></tr>
                     {% endfor %}
                     </tbody>
                 </table>

@@ -70,6 +70,30 @@
 
 <div class="card bg-base-100 shadow mt-4">
     <div class="card-body">
+        <h2 class="card-title">Alertas de riesgo cronico</h2>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra">
+                <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Paciente</th><th>Tipo</th><th>Nivel</th><th>Mensaje</th></tr></thead>
+                <tbody>
+                {% for item in alertas_riesgo %}
+                    <tr>
+                        {% if is_superadmin_view %}<td>{{ item.preclinica.institucion.nombre }}</td>{% endif %}
+                        <td>{{ item.preclinica.cita.paciente }}</td>
+                        <td>{{ item.alerta.get_tipo_display }}</td>
+                        <td><span class="badge {% if item.alerta.nivel == 'alto' %}badge-error{% else %}badge-warning{% endif %}">{{ item.alerta.get_nivel_display }}</span></td>
+                        <td>{{ item.alerta.mensaje }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin alertas de riesgo cronico hoy.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-base-100 shadow mt-4">
+    <div class="card-body">
         <h2 class="card-title">Alertas vitales</h2>
         <div class="overflow-x-auto">
             <table class="table table-zebra">

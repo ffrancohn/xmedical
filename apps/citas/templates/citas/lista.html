@@ -101,7 +101,12 @@
                         <td>{{ cita.hora|time:"H:i" }}</td>
                         <td>{{ cita.paciente }}</td>
                         <td>{{ cita.profesional.nombre }}</td>
-                        <td><span class="badge">{{ cita.get_estado_display }}</span></td>
+                        <td>
+                            <span class="badge">{{ cita.get_estado_display }}</span>
+                            {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
+                            <span class="badge badge-warning ml-1" title="Riesgo de ausentismo {{ cita.prediccion_ausentismo.probabilidad }}%">Ausentismo {{ cita.prediccion_ausentismo.probabilidad }}%</span>
+                            {% endif %}
+                        </td>
                         <td><a href="{% url 'citas_cancelar' cita.id %}" class="btn btn-sm btn-outline">Cancelar</a></td>
                     </tr>
                 {% empty %}

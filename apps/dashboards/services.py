@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from apps.citas.models import Cita
 from apps.consulta.models import Consulta
+from apps.ia_predictiva.services import demanda_resumen, predicciones_alerta
 from apps.preclinica.models import Preclinica
 from apps.referencias.models import Referencia
 
@@ -28,16 +29,24 @@ def enfermeria_dashboard_data(instituciones, fecha=None):
     alertas_vitales = []
     for preclinica in preclinicas_hoy:
         for mensaje in preclinica.alertas():
-            alertas_vitales.append({"preclinica": preclinica, "mensaje": mensaje})
+            alertas_vitales.append({"preclinica": preclinica, "mensaje": mensaje, "tipo": "vital"})
+
+    from apps.ia_predictiva.services import alertas_activas_paciente
+
+    alertas_riesgo = []
+    for preclinica in preclinicas_hoy:
+        for alerta in alertas_activas_paciente(preclinica.cita.paciente, preclinica.institucion):
+            alertas_riesgo.append({"preclinica": preclinica, "alerta": alerta})
 
     return {
         "fecha": fecha,
         "pendientes_preclinica": pendientes.order_by("hora"),
         "evaluados_preclinica": evaluados,
         "alertas_vitales": alertas_vitales,
+        "alertas_riesgo": alertas_riesgo,
         "total_pendientes": pendientes.count(),
         "total_evaluados": evaluados.count(),
-        "total_alertas": len(alertas_vitales),
+        "total_alertas": len(alertas_vitales) + len(alertas_riesgo),
     }
 
 
@@ -62,6 +71,8 @@ def administracion_dashboard_data(instituciones, fecha=None):
         cita__estado="atendida",
     ).count()
 
+    alertas_ausentismo = list(predicciones_alerta(instituciones, fecha=fecha)[:10])
+
     return {
         "fecha": fecha,
         "ocupacion_agenda": ocupacion,
@@ -69,8 +80,12 @@ def administracion_dashboard_data(instituciones, fecha=None):
         "citas_canceladas_hoy": canceladas_hoy,
         "citas_canceladas_semana": canceladas_semana,
         "consultas_atendidas_hoy": consultas_atendidas,
-        "citas_hoy": citas_hoy.order_by("hora"),
+        "citas_hoy": citas_hoy.select_related(
+            "prediccion_ausentismo", "profesional__especialidad"
+        ).order_by("hora"),
         "citas_canceladas_recientes": citas_semana.filter(estado="cancelada").order_by("-fecha", "-hora")[:10],
+        "alertas_ausentismo": alertas_ausentismo,
+        "demanda_top": demanda_resumen(instituciones),
     }
 
 

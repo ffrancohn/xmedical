@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "apps.dashboards",
     "apps.notificaciones",
     "apps.portal_paciente",
+    "apps.ia_predictiva",
 ]
 
 MIDDLEWARE = [

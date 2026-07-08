@@ -8,6 +8,16 @@
             {{ form.as_p }}
             <button class="btn btn-primary">Guardar preclinica</button>
         </form>
+        {% if alertas_riesgo %}
+            <div class="alert alert-error mt-4">
+                <div class="space-y-1">
+                    <strong>Alertas de riesgo:</strong>
+                    {% for alerta in alertas_riesgo %}
+                    <div>{{ alerta.get_tipo_display }} ({{ alerta.get_nivel_display }}): {{ alerta.mensaje }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
         {% if form.instance.pk and form.instance.alertas %}
             <div class="alert alert-warning mt-4">
                 <div>

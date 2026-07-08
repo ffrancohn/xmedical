@@ -17,4 +17,8 @@ app.conf.beat_schedule = {
         "task": "apps.notificaciones.tasks.enviar_recordatorios_medicamentos",
         "schedule": 3600.0,
     },
+    "reentrenar-modelos-predictivos": {
+        "task": "apps.ia_predictiva.tasks.reentrenar_modelos_predictivos",
+        "schedule": 604800.0,
+    },
 }
