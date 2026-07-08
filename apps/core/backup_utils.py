@@ -1,16 +1,11 @@
 from pathlib import Path
 
 from django.conf import settings
-from django.core import serializers
 from django.core.management import call_command
 from django.utils import timezone
 
-from apps.citas.models import Cita
-from apps.consulta.models import Consulta, Diagnostico
-from apps.pacientes.models import Paciente
-from apps.preclinica.models import Preclinica
-from .models import BackupLog, Especialidad, Horario, Institucion, Profesional
-
+from .models import BackupLog, Institucion
+from .tenant_transfer import export_tenant_json, log_tenant_operation
 
 BACKUP_DIR = Path(settings.BASE_DIR) / "backups"
 
@@ -39,21 +34,16 @@ def create_global_backup(user):
 
 def create_institution_backup(institucion, user):
     BACKUP_DIR.mkdir(exist_ok=True)
-    filename = f"xmedical_{institucion.subdominio}_{timestamp()}.json"
+    filename = f"xmedical_tenant_{institucion.subdominio}_{timestamp()}.json"
     path = BACKUP_DIR / filename
-    objects = []
-    objects.extend(Institucion.objects.filter(pk=institucion.pk))
-    objects.extend(Especialidad.objects.filter(institucion=institucion))
-    objects.extend(Profesional.objects.filter(institucion=institucion))
-    objects.extend(Horario.objects.filter(institucion=institucion))
-    objects.extend(Paciente.objects.filter(institucion=institucion))
-    objects.extend(Cita.objects.filter(institucion=institucion))
-    objects.extend(Preclinica.objects.filter(institucion=institucion))
-    objects.extend(Consulta.objects.filter(institucion=institucion))
-    objects.extend(Diagnostico.objects.filter(institucion=institucion))
-    data = serializers.serialize("json", objects, indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    path.write_text(data, encoding="utf-8")
-    BackupLog.objects.create(tipo="backup", alcance="institucion", institucion=institucion, archivo=str(path), usuario=user)
+    path.write_text(export_tenant_json(institucion), encoding="utf-8")
+    log_tenant_operation(
+        "backup",
+        institucion,
+        user,
+        archivo=str(path),
+        detalle="Exportacion completa de tenant (Fase 3).",
+    )
     return path
 
 
