@@ -33,6 +33,7 @@
             {% endif %}
             {% if user.is_superuser or profesional.tipo == 'admin' %}
             <a href="{% url 'dashboards_administracion' %}" class="btn btn-sm btn-ghost">Dashboard admin</a>
+            <a href="{% url 'dashboards_epidemiologia' %}" class="btn btn-sm btn-ghost">Epidemiologia</a>
             {% endif %}
             {% if user.is_superuser or profesional.tipo == 'medico' and profesional.especialidad and profesional.especialidad.nivel == 'segundo' %}
             <a href="{% url 'dashboards_especialista' %}" class="btn btn-sm btn-ghost">Dashboard especialista</a>

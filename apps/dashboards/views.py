@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from apps.core.decorators import get_profesional
 from apps.core.views import institution_filter_context, selected_instituciones
 
+from .epidemiologia import epidemiologia_dashboard_data
 from .services import administracion_dashboard_data, enfermeria_dashboard_data, especialista_dashboard_data
 
 
@@ -73,4 +74,22 @@ class EspecialistaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Temp
         profesional = get_profesional(self.request.user)
         context["profesional"] = profesional
         context.update(especialista_dashboard_data(self.get_instituciones(), profesional=profesional))
+        return context
+
+
+class EpidemiologiaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, TemplateView):
+    template_name = "dashboards/epidemiologia.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        profesional = get_profesional(request.user)
+        if profesional and profesional.tipo == "admin":
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, "No tienes permiso para ver el dashboard epidemiologico.")
+        return redirect("dashboard")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(epidemiologia_dashboard_data(self.get_instituciones()))
         return context
