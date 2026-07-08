@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-1">Dashboard epidemiologico</h1>
+<p class="opacity-70 mb-4">Alertas de brotes y tendencias de enfermedades — {{ fecha|date:"d/m/Y" }}</p>
+{% include 'partials/institution_filter.html' %}
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="stat bg-error/10 rounded-box">
+        <div class="stat-title">Alertas de brote</div>
+        <div class="stat-value">{{ total_brotes }}</div>
+        <div class="stat-desc">{{ config.ventana_dias }} dias, umbral {{ config.umbral_brote }}+ casos</div>
+    </div>
+    <div class="stat bg-primary/10 rounded-box">
+        <div class="stat-title">Diagnosticos (30 dias)</div>
+        <div class="stat-value">{{ total_diagnosticos_mes }}</div>
+        <div class="stat-desc">Registros CIE-10 en el periodo</div>
+    </div>
+    <div class="stat bg-info/10 rounded-box">
+        <div class="stat-title">Tendencia</div>
+        <div class="stat-value">{{ config.meses_tendencia }}</div>
+        <div class="stat-desc">Meses analizados</div>
+    </div>
+</div>
+
+<div class="card bg-base-100 shadow mb-6">
+    <div class="card-body">
+        <h2 class="card-title">Alertas de brotes</h2>
+        <p class="text-sm opacity-70 mb-3">Enfermedades con {{ config.umbral_brote }} o mas casos en los ultimos {{ config.ventana_dias }} dias.</p>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        {% if is_superadmin_view %}<th>Clinica</th>{% endif %}
+                        <th>CIE-10</th>
+                        <th>Enfermedad</th>
+                        <th>Casos</th>
+                        <th>Periodo</th>
+                        <th>Accion sugerida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for alerta in alertas_brote %}
+                    <tr>
+                        {% if is_superadmin_view %}
+                        <td>
+                            {% for inst in all_instituciones %}
+                                {% if inst.id == alerta.institucion_id %}{{ inst.nombre }}{% endif %}
+                            {% endfor %}
+                        </td>
+                        {% endif %}
+                        <td><span class="badge badge-error">{{ alerta.codigo_cie10 }}</span></td>
+                        <td>{{ alerta.nombre }}</td>
+                        <td><strong>{{ alerta.total }}</strong></td>
+                        <td>{{ alerta.desde|date:"d/m" }} - {{ alerta.hasta|date:"d/m/Y" }}</td>
+                        <td class="text-sm">Investigar posible brote y reforzar vigilancia</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="{% if is_superadmin_view %}6{% else %}5{% endif %}">Sin alertas de brote en el periodo.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Top diagnosticos (30 dias)</h2>
+            <div class="space-y-3 mt-2">
+                {% for item in top_diagnosticos_mes %}
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>{{ item.codigo_cie10 }} — {{ item.nombre|truncatechars:40 }}</span>
+                        <span class="font-semibold">{{ item.total }}</span>
+                    </div>
+                    <div class="w-full bg-base-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: {% widthratio item.total top_diagnosticos_max 100 %}%"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert">Sin diagnosticos en los ultimos 30 dias.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Tendencia mensual por enfermedad</h2>
+            {% if tendencias.series %}
+            <div class="overflow-x-auto">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>CIE-10</th>
+                            {% for mes in tendencias.meses %}
+                            <th class="text-xs">{{ mes }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for serie in tendencias.series %}
+                        <tr>
+                            <td class="text-xs font-medium">{{ serie.codigo_cie10 }}</td>
+                            {% for valor in serie.puntos %}
+                            <td>
+                                {% if valor %}
+                                <span class="badge badge-sm {% if valor >= config.umbral_brote %}badge-error{% else %}badge-ghost{% endif %}">{{ valor }}</span>
+                                {% else %}
+                                <span class="opacity-30">-</span>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert">Sin datos suficientes para tendencias.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
