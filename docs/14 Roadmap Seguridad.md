@@ -104,12 +104,12 @@ Ver [`informes/evidencia/README.md`](informes/evidencia/README.md).
 
 Vinculado a [`docs/13 App movil y API REST.md`](13%20App%20movil%20y%20API%20REST.md).
 
-| ID | Tarea | Entregable | Criterio |
-|----|-------|------------|----------|
-| SEC-P10 | Rate limiting (100 req/min) | DRF throttling + test SEC-06 activo | 429 tras umbral |
-| SEC-P11 | JWT + refresh tokens | `apps/api/` + tests API-01..06 | Sin token → 401 |
-| SEC-P12 | RBAC en API | `permissions.py` DRF | Claims `institucion_id`, `rol` |
-| SEC-P13 | ZAP con contexto autenticado | Hook ZAP + SEC-Z02/Z03 | Spider rutas protegidas |
+| ID | Tarea | Entregable | Criterio | Estado |
+|----|-------|------------|----------|--------|
+| SEC-P10 | Rate limiting (100 req/min) | DRF throttling + test API-06 | 429 tras umbral | ✅ |
+| SEC-P11 | JWT + refresh tokens | `apps/api/` + tests API-01..06 | Sin token → 401 | ✅ |
+| SEC-P12 | RBAC en API | `permissions.py` DRF | Claims `institucion_id`, `rol` | ✅ |
+| SEC-P13 | ZAP con contexto autenticado | Hook ZAP + SEC-Z02/Z03 | Spider rutas protegidas | 🔮 |
 
 ---
 

@@ -2,6 +2,7 @@
 import unittest
 from datetime import time
 
+from django.conf import settings
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
@@ -97,10 +98,12 @@ class TenantIsolationTests(TestCase):
         self.assertNotIn(100, ids)
 
 
-@unittest.skip("Rate limit no implementado")
 class RateLimitTests(TestCase):
-    def test_sec_06_rate_limiting(self):
-        self.fail("Implementar cuando exista throttling")
+    def test_sec_06_rate_limiting_configurado(self):
+        rf = settings.REST_FRAMEWORK
+        self.assertIn("DEFAULT_THROTTLE_CLASSES", rf)
+        self.assertIn("user", rf["DEFAULT_THROTTLE_RATES"])
+        self.assertEqual(rf["DEFAULT_THROTTLE_RATES"]["user"], "100/min")
 
 
 class RBACStrictTests(TestCase):

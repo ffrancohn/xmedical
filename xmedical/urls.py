@@ -14,6 +14,7 @@ urlpatterns = [
     path("qr/", include("apps.qr.urls")),
     path("dashboards/", include("apps.dashboards.urls")),
     path("portal/", include("apps.portal_paciente.urls")),
+    path("api/v1/", include("apps.api.urls")),
     path("", include("apps.core.urls")),
 ]
 
