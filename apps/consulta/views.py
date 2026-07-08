@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 
 from apps.citas.models import Cita
 from apps.core.ai_services import AIClient, AIConfigurationError, AIRequestError
+from apps.core.permissions import CAN_CONSULTA, CAN_VIEW_HISTORIA, MedicoRequiredMixin, role_required
 from apps.core.views import current_institucion
 from apps.pacientes.models import Paciente
 from apps.variables_clinicas.forms import build_variables_form, guardar_valores_variables
@@ -28,7 +29,7 @@ AUTOSAVE_STEPS = {
 DIAGNOSTICO_STEP = 6
 
 
-class ConsultaWizardView(LoginRequiredMixin, View):
+class ConsultaWizardView(LoginRequiredMixin, MedicoRequiredMixin, View):
     template_name = "consulta/wizard.html"
 
     def get_consulta(self, request, cita):
@@ -133,6 +134,7 @@ class ConsultaWizardView(LoginRequiredMixin, View):
 
 
 @login_required
+@role_required(*CAN_CONSULTA)
 @require_POST
 def wizard_autosave(request, cita_id):
     institucion = current_institucion(request)
@@ -165,6 +167,7 @@ def wizard_autosave(request, cita_id):
 
 
 @login_required
+@role_required(*CAN_CONSULTA)
 @require_POST
 def sugerir_diagnostico(request, cita_id):
     institucion = current_institucion(request)
@@ -188,6 +191,7 @@ def sugerir_diagnostico(request, cita_id):
 
 
 @login_required
+@role_required(*CAN_CONSULTA)
 def cie10_search(request):
     q = request.GET.get("q", "").lower()
     results = [item for item in CIE10_MVP if q in item["codigo"].lower() or q in item["nombre"].lower()] if q else CIE10_MVP
@@ -195,6 +199,7 @@ def cie10_search(request):
 
 
 @login_required
+@role_required(*CAN_VIEW_HISTORIA)
 def historia_clinica(request, paciente_id):
     institucion = current_institucion(request)
     paciente_qs = Paciente.objects.all()

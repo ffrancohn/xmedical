@@ -10,28 +10,25 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import ListView
 
-from apps.core.decorators import role_required
+from apps.core.permissions import (
+    CAN_AGENDAR_CITAS,
+    CAN_CANCELAR_CITAS,
+    CAN_LIST_CITAS,
+    RecepcionRequiredMixin,
+    RoleRequiredMixin,
+    role_required,
+)
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from .forms import CitaFlexibleForm, CitaForm
 from .models import Cita
 from .services import FlexibleAgendamientoService, SinTurnosDisponiblesError
 
 
-class CitaListView(LoginRequiredMixin, ListView):
+class CitaListView(LoginRequiredMixin, RoleRequiredMixin, ListView):
+    allowed_roles = CAN_LIST_CITAS
     model = Cita
     template_name = "citas/lista.html"
     context_object_name = "citas"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        from apps.core.decorators import get_profesional
-
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("recepcionista", "admin", "medico"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para acceder a esta seccion.")
-        return redirect("dashboard")
 
     def get_queryset(self):
         qs = Cita.objects.select_related(
@@ -69,19 +66,8 @@ class CitaListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CitaCreateView(LoginRequiredMixin, View):
+class CitaCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
     template_name = "citas/form.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        from apps.core.decorators import get_profesional
-
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("recepcionista", "admin"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para agendar citas.")
-        return redirect("dashboard")
 
     def get(self, request):
         return render(request, self.template_name, {"form": CitaForm(institucion=current_institucion(request))})
@@ -99,20 +85,9 @@ class CitaCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
-class CitaFlexibleCreateView(LoginRequiredMixin, View):
+class CitaFlexibleCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
     template_name = "citas/form_flexible.html"
     resultado_template = "citas/flexible_resultado.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        from apps.core.decorators import get_profesional
-
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("recepcionista", "admin"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para agendar citas.")
-        return redirect("dashboard")
 
     def get(self, request):
         institucion = current_institucion(request)
@@ -146,7 +121,7 @@ class CitaFlexibleCreateView(LoginRequiredMixin, View):
 
 
 @login_required
-@role_required("recepcionista", "admin")
+@role_required(*CAN_CANCELAR_CITAS)
 def cancelar_cita(request, pk):
     qs = Cita.objects.all()
     institucion = current_institucion(request)

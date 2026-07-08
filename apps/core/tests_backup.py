@@ -64,7 +64,7 @@ class BackupViewTests(TestCase):
     def test_bak04_vista_post_superadmin(self):
         client = auth_client("superadmin.demo")
         with patch("apps.core.views.create_global_backup") as mock_backup:
-            mock_backup.return_value = Path("/tmp/test_backup.json")
+            mock_backup.return_value = Path(tempfile.mkdtemp()) / "test_backup.json"
             response = client.post(
                 "/superadmin/backup/",
                 {"alcance": "global"},

@@ -6,26 +6,16 @@ from django.views import View
 from django.views.generic import ListView
 
 from apps.citas.models import Cita
+from apps.core.permissions import EnfermeraRequiredMixin
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from .forms import PreclinicaForm
 from .models import Preclinica
 
 
-class PreclinicaListView(LoginRequiredMixin, ListView):
+class PreclinicaListView(LoginRequiredMixin, EnfermeraRequiredMixin, ListView):
     model = Cita
     template_name = "preclinica/lista.html"
     context_object_name = "citas"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        from apps.core.decorators import get_profesional
-
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("enfermera", "admin"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para acceder a preclinica.")
-        return redirect("dashboard")
 
     def get_queryset(self):
         qs = Cita.objects.select_related("paciente", "profesional").filter(
@@ -41,19 +31,8 @@ class PreclinicaListView(LoginRequiredMixin, ListView):
         return context
 
 
-class PreclinicaRegistroView(LoginRequiredMixin, View):
+class PreclinicaRegistroView(LoginRequiredMixin, EnfermeraRequiredMixin, View):
     template_name = "preclinica/form.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        from apps.core.decorators import get_profesional
-
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("enfermera", "admin"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para registrar preclinica.")
-        return redirect("dashboard")
 
     def get_object(self, cita):
         return Preclinica.objects.filter(cita=cita).first()

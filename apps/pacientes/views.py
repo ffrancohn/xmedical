@@ -1,21 +1,23 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from apps.core.decorators import get_profesional
+from apps.core.permissions import CAN_VIEW_HISTORIA, CAN_VIEW_PACIENTES, CAN_EDIT_PACIENTES, role_required, user_has_role
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from .forms import PacienteForm, PacientePublicForm
 from .models import Paciente
 
 
+def can_view_pacientes(user):
+    return user_has_role(user, *CAN_VIEW_PACIENTES)
+
+
 def can_manage_pacientes(user):
-    if user.is_superuser:
-        return True
-    profesional = get_profesional(user)
-    return profesional and profesional.tipo in ("recepcionista", "admin", "medico")
+    return user_has_role(user, *CAN_EDIT_PACIENTES)
 
 
 class PacienteListView(LoginRequiredMixin, ListView):
@@ -24,7 +26,7 @@ class PacienteListView(LoginRequiredMixin, ListView):
     context_object_name = "pacientes"
 
     def dispatch(self, request, *args, **kwargs):
-        if can_manage_pacientes(request.user):
+        if can_view_pacientes(request.user):
             return super().dispatch(request, *args, **kwargs)
         messages.error(request, "No tienes permiso para acceder a pacientes.")
         return redirect("dashboard")
@@ -57,8 +59,7 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
     success_url = "/pacientes/"
 
     def dispatch(self, request, *args, **kwargs):
-        profesional = get_profesional(request.user)
-        if request.user.is_superuser or (profesional and profesional.tipo in ("recepcionista", "admin")):
+        if can_manage_pacientes(request.user):
             return super().dispatch(request, *args, **kwargs)
         messages.error(request, "No tienes permiso para registrar pacientes.")
         return redirect("dashboard")
@@ -109,7 +110,7 @@ class PacienteDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "paciente"
 
     def dispatch(self, request, *args, **kwargs):
-        if can_manage_pacientes(request.user):
+        if can_view_pacientes(request.user):
             return super().dispatch(request, *args, **kwargs)
         messages.error(request, "No tienes permiso para ver pacientes.")
         return redirect("dashboard")
@@ -151,6 +152,8 @@ class PacientePublicRegistroView(View):
         return render(request, self.template_name, {"form": form, "institucion": institucion})
 
 
+@login_required
+@role_required(*CAN_VIEW_HISTORIA)
 def paciente_historia_redirect(request, pk):
     qs = Paciente.objects.all()
     institucion = current_institucion(request)

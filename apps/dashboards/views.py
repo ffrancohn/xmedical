@@ -1,9 +1,14 @@
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from apps.core.decorators import get_profesional
+from apps.core.permissions import (
+    CAN_DASHBOARD_ADMIN,
+    CAN_DASHBOARD_ENFERMERIA,
+    CAN_DASHBOARD_EPIDEMIOLOGIA,
+    RoleRequiredMixin,
+)
 from apps.core.views import institution_filter_context, selected_instituciones
 
 from .epidemiologia import epidemiologia_dashboard_data
@@ -21,17 +26,9 @@ class InstitutionFilterMixin:
         return context
 
 
-class EnfermeriaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, TemplateView):
+class EnfermeriaDashboardView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, TemplateView):
+    allowed_roles = CAN_DASHBOARD_ENFERMERIA
     template_name = "dashboards/enfermeria.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("enfermera", "admin"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para ver este dashboard.")
-        return redirect("dashboard")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -39,17 +36,9 @@ class EnfermeriaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Templa
         return context
 
 
-class AdministracionDashboardView(LoginRequiredMixin, InstitutionFilterMixin, TemplateView):
+class AdministracionDashboardView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, TemplateView):
+    allowed_roles = CAN_DASHBOARD_ADMIN
     template_name = "dashboards/administracion.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo == "admin":
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para ver este dashboard.")
-        return redirect("dashboard")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -77,17 +66,9 @@ class EspecialistaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Temp
         return context
 
 
-class EpidemiologiaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, TemplateView):
+class EpidemiologiaDashboardView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, TemplateView):
+    allowed_roles = CAN_DASHBOARD_EPIDEMIOLOGIA
     template_name = "dashboards/epidemiologia.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo == "admin":
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para ver el dashboard epidemiologico.")
-        return redirect("dashboard")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

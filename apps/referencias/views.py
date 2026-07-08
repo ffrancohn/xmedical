@@ -7,6 +7,7 @@ from django.views.generic import ListView
 
 from apps.consulta.models import Consulta
 from apps.core.decorators import get_profesional
+from apps.core.permissions import CAN_REFERENCIAS, RoleRequiredMixin
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 
 from .forms import ContrarreferenciaForm, ReferenciaAgendarForm, ReferenciaForm, ReferenciaRespuestaForm
@@ -40,19 +41,11 @@ def scoped_referencias(request):
     return qs.none()
 
 
-class ReferenciaListView(LoginRequiredMixin, ListView):
+class ReferenciaListView(LoginRequiredMixin, RoleRequiredMixin, ListView):
+    allowed_roles = CAN_REFERENCIAS
     model = Referencia
     template_name = "referencias/lista.html"
     context_object_name = "referencias"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo in ("medico", "admin"):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para ver referencias.")
-        return redirect("dashboard")
 
     def get_queryset(self):
         qs = scoped_referencias(self.request)

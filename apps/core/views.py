@@ -11,7 +11,7 @@ from django.views.generic import ListView, TemplateView
 from apps.citas.models import Cita
 from apps.consulta.models import Consulta
 from apps.core.backup_utils import create_global_backup, create_institution_backup, restore_fixture
-from apps.core.decorators import get_profesional
+from apps.core.permissions import AdminRequiredMixin
 from apps.core.models import BackupLog, Institucion, LogAuditoria, Profesional
 from apps.core.tenant_transfer import (
     TenantTransferError,
@@ -142,20 +142,11 @@ def superadmin_dashboard(request):
     return render(request, "core/superadmin_dashboard.html", context)
 
 
-class AuditoriaListView(LoginRequiredMixin, ListView):
+class AuditoriaListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
     model = LogAuditoria
     template_name = "core/auditoria_lista.html"
     context_object_name = "registros"
     paginate_by = 50
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().dispatch(request, *args, **kwargs)
-        profesional = get_profesional(request.user)
-        if profesional and profesional.tipo == "admin":
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para ver la auditoria.")
-        return redirect("dashboard")
 
     def get_queryset(self):
         qs = LogAuditoria.objects.select_related("institucion", "usuario")

@@ -15,9 +15,8 @@ Planificación de controles de seguridad: **implementado**, **aceptado** y **pen
 | Headers HTTP prod | Implementado | [`scripts/verify_security_headers.sh`](../scripts/verify_security_headers.sh) |
 | OWASP ZAP | Script listo, ejecución mensual | [`scripts/verify_security_zap.sh`](../scripts/verify_security_zap.sh) |
 | Login en rutas expuestas | Corregido 2026-07-06 | `cancelar_cita`, `cie10_search`, `historia_clinica` |
-| RBAC por rol | Planificado | Fase 1 abajo |
-| Rate limiting | Planificado | Fase 2 (API REST) |
-| CVE dependencias | Planificado | Fase 1 abajo |
+| RBAC por rol | Implementado | `apps/core/permissions.py` + tests SEC-13..15 |
+| CVE dependencias | Implementado | Django 4.2.30, Pillow 12.2.0, etc. |
 
 ---
 
@@ -45,6 +44,9 @@ Planificación de controles de seguridad: **implementado**, **aceptado** y **pen
 | SEC-10 | CIE-10 e historia requieren login | `tests_security.py` | PASS |
 | SEC-11 | Cookies Secure + HttpOnly | `tests_security.py` | PASS |
 | SEC-12 | X-Frame-Options | `tests_security.py` | PASS |
+| SEC-13 | Enfermera bloqueada de consulta | `tests_security.py` | PASS |
+| SEC-14 | Recepcionista bloqueada de preclinica | `tests_security.py` | PASS |
+| SEC-15 | Medico no crea pacientes / enfermera sin HCE | `tests_security.py` | PASS |
 | SEC-S01..03 | bandit, pip-audit, .env fuera de git | `verify_security_static.sh` | Automatizado |
 | SEC-08a..g | Headers en producción | `verify_security_headers.sh` | Automatizado |
 | SEC-Z01 | ZAP baseline | `verify_security_zap.sh` | Mensual |
@@ -59,6 +61,15 @@ Cada ejecución de [`scripts/run_all_verifications.sh`](../scripts/run_all_verif
 - `10-seguridad-zap.html` (ZAP aparte, mensual)
 
 Ver [`informes/evidencia/README.md`](informes/evidencia/README.md).
+
+### 2.4 Endurecimiento Fase 1 (2026-07)
+
+| ID | Cambio | Archivo |
+|----|--------|---------|
+| SEC-P01 | RBAC centralizado con mixins y decoradores | [`apps/core/permissions.py`](../apps/core/permissions.py) |
+| SEC-P02 | Dependencias sin CVE High/Critical | [`requirements.txt`](../requirements.txt) |
+| SEC-P04 | Apache `ServerTokens Prod` | [`deploy/apache/security-hardening.conf`](../deploy/apache/security-hardening.conf) |
+| SEC-P05 | Historia clinica y consulta restringidas por rol | `consulta/views.py`, `pacientes/views.py` |
 
 ---
 
