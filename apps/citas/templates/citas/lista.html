@@ -13,6 +13,7 @@
         <a href="{% url 'citas_lista' %}?vista=dos_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dos_meses' %}btn-primary{% else %}btn-outline{% endif %}">2 meses</a>
         <a href="{% url 'citas_lista' %}?vista=tres_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'tres_meses' %}btn-primary{% else %}btn-outline{% endif %}">3 meses</a>
         <a href="{% url 'citas_agendar' %}" class="btn btn-sm btn-primary">Agendar cita</a>
+        <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-sm btn-outline">Agendar flexible</a>
     </div>
 </div>
 
@@ -100,7 +101,12 @@
                         <td>{{ cita.hora|time:"H:i" }}</td>
                         <td>{{ cita.paciente }}</td>
                         <td>{{ cita.profesional.nombre }}</td>
-                        <td><span class="badge">{{ cita.get_estado_display }}</span></td>
+                        <td>
+                            <span class="badge">{{ cita.get_estado_display }}</span>
+                            {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
+                            <span class="badge badge-warning ml-1" title="Riesgo de ausentismo {{ cita.prediccion_ausentismo.probabilidad }}%">Ausentismo {{ cita.prediccion_ausentismo.probabilidad }}%</span>
+                            {% endif %}
+                        </td>
                         <td><a href="{% url 'citas_cancelar' cita.id %}" class="btn btn-sm btn-outline">Cancelar</a></td>
                     </tr>
                 {% empty %}

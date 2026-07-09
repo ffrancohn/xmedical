@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Agendar cita desde referencia</h1>
+        <p class="text-sm opacity-70">Paciente: {{ referencia.paciente }}</p>
+        <p class="text-sm opacity-70 mb-4">Especialista: {{ referencia.especialista.nombre }}</p>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}<p class="text-error text-sm">{{ field.errors|join:', ' }}</p>{% endif %}
+            </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <button class="btn btn-primary">Confirmar cita</button>
+            <a href="{% url 'referencias_detalle' referencia.id %}" class="btn btn-ghost">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

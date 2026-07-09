@@ -16,12 +16,37 @@
         </div>
         {% if user.is_authenticated %}
         <div class="flex-none gap-2">
+            {% if perfil_paciente %}
+            <a href="{% url 'portal_dashboard' %}" class="btn btn-sm btn-ghost">Portal paciente</a>
+            {% endif %}
             {% if user.is_superuser %}
             <a href="{% url 'superadmin_dashboard' %}" class="btn btn-sm btn-ghost">Superadmin</a>
             {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'admin' %}
+            <a href="{% url 'auditoria_lista' %}" class="btn btn-sm btn-ghost">Auditoria</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'recepcionista' or profesional and profesional.tipo == 'admin' or profesional and profesional.tipo == 'medico' %}
             <a href="{% url 'pacientes_lista' %}" class="btn btn-sm btn-ghost">Pacientes</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'recepcionista' or profesional and profesional.tipo == 'admin' or profesional and profesional.tipo == 'medico' %}
             <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-ghost">Citas</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'enfermera' or profesional and profesional.tipo == 'admin' %}
+            <a href="{% url 'dashboards_enfermeria' %}" class="btn btn-sm btn-ghost">Dashboard enfermeria</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'admin' %}
+            <a href="{% url 'dashboards_administracion' %}" class="btn btn-sm btn-ghost">Dashboard admin</a>
+            <a href="{% url 'dashboards_epidemiologia' %}" class="btn btn-sm btn-ghost">Epidemiologia</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'medico' and profesional.especialidad and profesional.especialidad.nivel == 'segundo' %}
+            <a href="{% url 'dashboards_especialista' %}" class="btn btn-sm btn-ghost">Dashboard especialista</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'enfermera' or profesional and profesional.tipo == 'admin' %}
             <a href="{% url 'preclinica_lista' %}" class="btn btn-sm btn-ghost">Preclinica</a>
+            {% endif %}
+            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'medico' or profesional and profesional.tipo == 'admin' %}
+            <a href="{% url 'referencias_lista' %}" class="btn btn-sm btn-ghost">Referencias</a>
+            {% endif %}
             <a href="{% url 'preferencias_visuales' %}" class="btn btn-sm btn-ghost">Configuracion</a>
             <span class="hidden md:inline text-sm">{{ user.get_full_name|default:user.username }}</span>
             <form method="post" action="{% url 'logout' %}">

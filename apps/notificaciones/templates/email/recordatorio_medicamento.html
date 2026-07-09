@@ -1,0 +1,9 @@
+<p>Hola {{ paciente.nombre }},</p>
+<p>Es hora de tomar su medicamento segun la indicacion medica:</p>
+<ul>
+    <li><strong>Medicamento:</strong> {{ recordatorio.medicamento }}</li>
+    {% if recordatorio.dosis %}<li><strong>Dosis:</strong> {{ recordatorio.dosis }}</li>{% endif %}
+    <li><strong>Frecuencia:</strong> {{ recordatorio.get_frecuencia_display }}</li>
+</ul>
+<p>Si desea desactivar este recordatorio, contacte a {{ institucion.nombre }}.</p>
+<p>— {{ institucion.nombre }}</p>

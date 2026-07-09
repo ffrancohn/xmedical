@@ -81,6 +81,30 @@ class Horario(models.Model):
         return f"{self.profesional} {self.get_dia_semana_display()} {self.hora_inicio}-{self.hora_fin}"
 
 
+class LogAuditoria(models.Model):
+    ACCION_CHOICES = [("CREATE", "CREATE"), ("UPDATE", "UPDATE"), ("DELETE", "DELETE")]
+
+    institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    accion = models.CharField(max_length=20, choices=ACCION_CHOICES)
+    tabla_afectada = models.CharField(max_length=50)
+    registro_id = models.IntegerField(null=True, blank=True)
+    valor_anterior = models.JSONField(null=True, blank=True)
+    valor_nuevo = models.JSONField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-creado_en"]
+        indexes = [
+            models.Index(fields=["institucion", "creado_en"]),
+            models.Index(fields=["tabla_afectada"]),
+        ]
+
+    def __str__(self):
+        return f"{self.accion} {self.tabla_afectada}#{self.registro_id}"
+
+
 class BackupLog(models.Model):
     ALCANCE_CHOICES = [("global", "Toda la base de datos"), ("institucion", "Por institucion")]
     TIPO_CHOICES = [("backup", "Respaldo"), ("restore", "Restauracion")]

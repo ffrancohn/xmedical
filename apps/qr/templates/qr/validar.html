@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-lg mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Validacion de codigo QR</h1>
+
+        {% if estado == 'no_encontrado' %}
+        <div class="alert alert-error">Codigo QR no encontrado o invalido.</div>
+        {% elif estado == 'vencido' %}
+        <div class="alert alert-warning">Este codigo QR esta vencido.</div>
+        {% elif estado == 'usado' %}
+        <div class="alert alert-info">Este codigo QR ya fue utilizado{% if documento.usado_en %} el {{ documento.usado_en|date:"Y-m-d H:i" }}{% endif %}.</div>
+        {% elif estado == 'valido' %}
+        <div class="alert alert-success">Codigo QR valido.</div>
+        {% endif %}
+
+        {% if documento %}
+        <div class="space-y-2 text-sm mt-4">
+            <p><strong>Tipo:</strong> {{ documento.get_tipo_display }}</p>
+            <p><strong>Institucion:</strong> {{ documento.institucion.nombre }}</p>
+            <p><strong>Paciente:</strong> {{ documento.paciente }}</p>
+            <p><strong>Documento:</strong> {{ documento.paciente.documento }}</p>
+            {% if documento.metadata.orden %}<p><strong>Orden:</strong> {{ documento.metadata.orden }}</p>{% endif %}
+            {% if documento.metadata.plan %}<p><strong>Plan:</strong> {{ documento.metadata.plan|truncatechars:120 }}</p>{% endif %}
+            {% if documento.cita %}<p><strong>Cita:</strong> {{ documento.cita.fecha }} {{ documento.cita.hora|time:"H:i" }}</p>{% endif %}
+            <p><strong>Expira:</strong> {{ documento.expira_en|date:"Y-m-d H:i" }}</p>
+        </div>
+
+        {% if puede_marcar %}
+        <form method="post" class="mt-6">
+            {% csrf_token %}
+            <button class="btn btn-primary w-full">
+                {% if documento.tipo == 'checkin' %}Registrar check-in{% else %}Marcar como usado{% endif %}
+            </button>
+        </form>
+        {% endif %}
+        {% endif %}
+
+        <a href="{% url 'home' %}" class="btn btn-ghost btn-sm mt-4">Inicio</a>
+    </div>
+</div>
+{% endblock %}

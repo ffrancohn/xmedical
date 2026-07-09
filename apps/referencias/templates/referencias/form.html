@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Nueva referencia</h1>
+        <p class="text-sm opacity-70">Paciente: <strong>{{ paciente }}</strong></p>
+        <p class="text-sm opacity-70 mb-4">Consulta del {{ consulta.creado_en|date:"Y-m-d" }}</p>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}<p class="text-error text-sm">{{ field.errors|join:', ' }}</p>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="flex gap-2">
+                <button class="btn btn-primary">Crear referencia</button>
+                <a href="{% url 'consulta_wizard' consulta.cita.id 7 %}" class="btn btn-ghost">Volver a consulta</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

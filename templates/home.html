@@ -5,7 +5,11 @@
         <p class="font-semibold text-primary">Gestion clinica multi-tenant</p>
         <h1 class="text-4xl md:text-5xl font-bold mt-2">XMedical MVP</h1>
         <p class="text-lg mt-4 opacity-80">Primer nivel de atencion con pacientes, citas, preclinica, consulta guiada, diagnosticos CIE-10 e historia clinica.</p>
-        <a href="{% url 'login' %}" class="btn btn-primary mt-6">Entrar</a>
+        <div class="flex flex-wrap gap-3 mt-6">
+            <a href="{% url 'login' %}" class="btn btn-primary">Entrar</a>
+            <a href="{% url 'portal_registro' %}" class="btn btn-secondary">Portal del paciente</a>
+            <a href="{% url 'pacientes_registro_publico' %}" class="btn btn-outline">Registro de pacientes</a>
+        </div>
     </div>
 </section>
 {% endblock %}

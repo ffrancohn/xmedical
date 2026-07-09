@@ -3,13 +3,23 @@
         {{ form.as_p }}
         <p class="text-sm opacity-70">Puede escribir codigo y nombre, o usar las sugerencias.</p>
     </div>
-    <div>
-        <label class="label">Sugerencias CIE-10</label>
-        <input id="cie10-q" class="input input-bordered w-full mb-2" placeholder="Buscar CIE-10">
-        <div id="cie10-results" class="space-y-2">
-            {% for item in cie10 %}
-                <button type="button" class="btn btn-sm btn-outline cie10-item" data-code="{{ item.codigo }}" data-name="{{ item.nombre }}">{{ item.codigo }} - {{ item.nombre }}</button>
-            {% endfor %}
+    <div class="space-y-4">
+        {% if ai_available %}
+        <div class="border rounded-box p-3 bg-base-200">
+            <h3 class="font-semibold mb-2">Sugerencias IA (apoyo clinico)</h3>
+            <p class="text-xs opacity-70 mb-2">Solo usa motivo, anamnesis y examen fisico. No reemplaza su criterio medico.</p>
+            <button type="button" id="btn-sugerir-diagnostico" class="btn btn-sm btn-secondary">Sugerir diagnosticos</button>
+            <div id="ia-sugerencias" class="mt-3"></div>
+        </div>
+        {% endif %}
+        <div>
+            <label class="label">Sugerencias CIE-10</label>
+            <input id="cie10-q" class="input input-bordered w-full mb-2" placeholder="Buscar CIE-10">
+            <div id="cie10-results" class="space-y-2">
+                {% for item in cie10 %}
+                    <button type="button" class="btn btn-sm btn-outline cie10-item" data-code="{{ item.codigo }}" data-name="{{ item.nombre }}">{{ item.codigo }} - {{ item.nombre }}</button>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

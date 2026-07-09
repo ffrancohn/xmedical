@@ -403,7 +403,7 @@ pip-audit fix  # Automático (experimental)
 | SAST bandit / pip-audit | Implementado (hallazgos abiertos → Fase 1) | [`scripts/verify_security_static.sh`](../scripts/verify_security_static.sh) |
 | Headers seguridad prod | Implementado | [`scripts/verify_security_headers.sh`](../scripts/verify_security_headers.sh) |
 | OWASP ZAP baseline | Script mensual | [`scripts/verify_security_zap.sh`](../scripts/verify_security_zap.sh) |
-| RBAC estricto por rol | **Planificado Fase 1** | [Roadmap §4](14%20Roadmap%20Seguridad.md#4-planificado--fase-1-corto-plazo-12-semanas) |
+| RBAC estricto por rol | **Implementado** | [Roadmap §2.4](14%20Roadmap%20Seguridad.md) |
 | Rate limiting | **Planificado Fase 2** | [Roadmap §5](14%20Roadmap%20Seguridad.md#5-planificado--fase-2-api-rest--móvil) |
 | Remediación CVE dependencias | **Planificado Fase 1** | SEC-P02 en roadmap |
 

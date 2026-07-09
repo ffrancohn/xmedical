@@ -3,6 +3,10 @@
 <div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
     <div class="card-body">
         <h1 class="card-title">Paciente</h1>
+        <div class="alert alert-info">
+            <span>Puede escanear un documento para autocompletar datos.</span>
+            <a href="{% url 'pacientes_ocr_subir' %}" class="btn btn-sm btn-outline">Escanear cedula/pasaporte</a>
+        </div>
         <form method="post" class="space-y-3">
             {% csrf_token %}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">

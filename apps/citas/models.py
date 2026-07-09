@@ -8,6 +8,7 @@ class Cita(models.Model):
     ESTADO_CHOICES = [
         ("pendiente", "Pendiente"),
         ("confirmada", "Confirmada"),
+        ("en_espera", "En espera de consulta"),
         ("cancelada", "Cancelada"),
         ("atendida", "Atendida"),
     ]

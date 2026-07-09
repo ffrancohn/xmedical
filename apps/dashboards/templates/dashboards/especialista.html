@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-1">Dashboard del especialista</h1>
+{% if profesional %}
+<p class="opacity-70 mb-4">{{ profesional.nombre }} — {{ profesional.especialidad.nombre }} — {{ fecha|date:"d/m/Y" }}</p>
+{% else %}
+<p class="opacity-70 mb-4">Vista global de referencias — {{ fecha|date:"d/m/Y" }}</p>
+{% endif %}
+{% include 'partials/institution_filter.html' %}
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="stat bg-warning/10 rounded-box">
+        <div class="stat-title">Referencias pendientes</div>
+        <div class="stat-value">{{ total_pendientes }}</div>
+    </div>
+    <div class="stat bg-info/10 rounded-box">
+        <div class="stat-title">Referencias aceptadas</div>
+        <div class="stat-value">{{ total_aceptadas }}</div>
+    </div>
+    <div class="stat bg-primary/10 rounded-box">
+        <div class="stat-title">Citas hoy</div>
+        <div class="stat-value">{{ total_citas_hoy }}</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Referencias pendientes</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Paciente</th><th>Referente</th><th>Prioridad</th><th></th></tr></thead>
+                    <tbody>
+                    {% for referencia in referencias_pendientes %}
+                        <tr>
+                            {% if is_superadmin_view %}<td>{{ referencia.institucion.nombre }}</td>{% endif %}
+                            <td>{{ referencia.paciente }}</td>
+                            <td>{{ referencia.medico_referente.nombre }}</td>
+                            <td><span class="badge">{{ referencia.get_prioridad_display }}</span></td>
+                            <td><a href="{% url 'referencias_detalle' referencia.id %}" class="btn btn-sm btn-outline">Revisar</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin referencias pendientes.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow">
+        <div class="card-body">
+            <h2 class="card-title">Referencias aceptadas</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Paciente</th><th>Especialidad</th><th></th></tr></thead>
+                    <tbody>
+                    {% for referencia in referencias_aceptadas %}
+                        <tr>
+                            {% if is_superadmin_view %}<td>{{ referencia.institucion.nombre }}</td>{% endif %}
+                            <td>{{ referencia.paciente }}</td>
+                            <td>{{ referencia.especialidad_destino.nombre }}</td>
+                            <td><a href="{% url 'referencias_detalle' referencia.id %}" class="btn btn-sm btn-outline">Ver</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}">Sin referencias aceptadas.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-base-100 shadow">
+    <div class="card-body">
+        <h2 class="card-title">Mi agenda de hoy</h2>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra">
+                <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                {% for cita in agenda_propia %}
+                    <tr>
+                        {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
+                        <td>{{ cita.hora|time:"H:i" }}</td>
+                        <td>{{ cita.paciente }}</td>
+                        <td><span class="badge">{{ cita.get_estado_display }}</span></td>
+                        <td><a href="{% url 'consulta_wizard' cita.id 1 %}" class="btn btn-sm btn-primary">Atender</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">No tienes citas hoy.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

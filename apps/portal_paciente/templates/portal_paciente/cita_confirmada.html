@@ -1,0 +1,18 @@
+{% extends 'portal_paciente/base.html' %}
+{% block portal_content %}
+<div class="card bg-base-100 shadow max-w-lg">
+    <div class="card-body">
+        <h1 class="card-title text-2xl">Cita confirmada</h1>
+        <p>Tu cita fue agendada automaticamente:</p>
+        <ul class="mt-2 space-y-1">
+            <li><strong>Fecha:</strong> {{ cita.fecha|date:"d/m/Y" }}</li>
+            <li><strong>Hora:</strong> {{ cita.hora|time:"H:i" }}</li>
+            <li><strong>Medico:</strong> {{ cita.profesional.nombre }}</li>
+            <li><strong>Especialidad:</strong> {{ cita.profesional.especialidad.nombre|default:"-" }}</li>
+        </ul>
+        <div class="card-actions justify-end mt-4">
+            <a href="{% url 'portal_citas' %}" class="btn btn-primary">Ver mis citas</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

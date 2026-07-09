@@ -6,12 +6,13 @@ from django.views import View
 from django.views.generic import ListView
 
 from apps.citas.models import Cita
+from apps.core.permissions import EnfermeraRequiredMixin
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from .forms import PreclinicaForm
 from .models import Preclinica
 
 
-class PreclinicaListView(LoginRequiredMixin, ListView):
+class PreclinicaListView(LoginRequiredMixin, EnfermeraRequiredMixin, ListView):
     model = Cita
     template_name = "preclinica/lista.html"
     context_object_name = "citas"
@@ -30,7 +31,7 @@ class PreclinicaListView(LoginRequiredMixin, ListView):
         return context
 
 
-class PreclinicaRegistroView(LoginRequiredMixin, View):
+class PreclinicaRegistroView(LoginRequiredMixin, EnfermeraRequiredMixin, View):
     template_name = "preclinica/form.html"
 
     def get_object(self, cita):
@@ -39,7 +40,17 @@ class PreclinicaRegistroView(LoginRequiredMixin, View):
     def get(self, request, cita_id):
         cita = get_scoped_cita(request, cita_id)
         preclinica = self.get_object(cita)
-        return render(request, self.template_name, {"cita": cita, "form": PreclinicaForm(instance=preclinica)})
+        from apps.ia_predictiva.services import alertas_activas_paciente
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "cita": cita,
+                "form": PreclinicaForm(instance=preclinica),
+                "alertas_riesgo": alertas_activas_paciente(cita.paciente, cita.institucion),
+            },
+        )
 
     def post(self, request, cita_id):
         cita = get_scoped_cita(request, cita_id)
@@ -51,7 +62,7 @@ class PreclinicaRegistroView(LoginRequiredMixin, View):
             obj.institucion = institucion
             obj.cita = cita
             obj.save()
-            cita.estado = "confirmada"
+            cita.estado = "en_espera"
             cita.save(update_fields=["estado"])
             messages.success(request, "Preclinica registrada.")
             return redirect("preclinica_lista")

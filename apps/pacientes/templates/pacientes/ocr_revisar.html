@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-xl mx-auto card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h1 class="card-title">Revisar datos extraidos</h1>
+        {% if ocr_meta.manual_fallback %}
+            <div class="alert alert-warning">No se pudo extraer automaticamente. Complete los campos manualmente.</div>
+        {% else %}
+            <p class="opacity-70">Proveedor: {{ ocr_meta.proveedor }} — Confianza: {{ ocr_meta.confianza|floatformat:2 }}</p>
+        {% endif %}
+        <form method="post" class="space-y-3">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>{{ form.documento.label_tag }}{{ form.documento }}</div>
+                <div>{{ form.fecha_nacimiento.label_tag }}{{ form.fecha_nacimiento }}</div>
+                <div>{{ form.nombre.label_tag }}{{ form.nombre }}</div>
+                <div>{{ form.apellido.label_tag }}{{ form.apellido }}</div>
+                <div>{{ form.sexo.label_tag }}{{ form.sexo }}</div>
+            </div>
+            {% if form.errors %}
+                <div class="alert alert-error">{{ form.errors }}</div>
+            {% endif %}
+            <div class="flex gap-2">
+                <button class="btn btn-primary">Confirmar y continuar</button>
+                <a href="{% url 'pacientes_ocr_subir' %}" class="btn btn-ghost">Volver a subir</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

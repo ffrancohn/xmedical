@@ -2,6 +2,7 @@
 import unittest
 from datetime import time
 
+from django.conf import settings
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
@@ -97,10 +98,40 @@ class TenantIsolationTests(TestCase):
         self.assertNotIn(100, ids)
 
 
-@unittest.skip("Rate limit no implementado")
 class RateLimitTests(TestCase):
-    def test_sec_06_rate_limiting(self):
-        self.fail("Implementar cuando exista throttling")
+    def test_sec_06_rate_limiting_configurado(self):
+        rf = settings.REST_FRAMEWORK
+        self.assertIn("DEFAULT_THROTTLE_CLASSES", rf)
+        self.assertIn("user", rf["DEFAULT_THROTTLE_RATES"])
+        self.assertEqual(rf["DEFAULT_THROTTLE_RATES"]["user"], "100/min")
+
+
+class RBACStrictTests(TestCase):
+    fixtures = SECURITY_FIXTURES
+
+    def test_sec_13_enfermera_no_accede_consulta(self):
+        client = auth_client("enfermera.demo")
+        response = client.get("/consulta/cita/1/paso/1/", **HOST)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/dashboard/")
+
+    def test_sec_14_recepcionista_no_accede_preclinica(self):
+        client = auth_client("recepcion.demo")
+        response = client.get("/preclinica/", **HOST)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/dashboard/")
+
+    def test_sec_15_medico_no_crea_pacientes(self):
+        client = auth_client("medico.demo")
+        response = client.get("/pacientes/nuevo/", **HOST)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/dashboard/")
+
+    def test_sec_15_enfermera_no_ve_historia_clinica(self):
+        client = auth_client("enfermera.demo")
+        response = client.get("/consulta/historia/1/", **HOST)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/dashboard/")
 
 
 class RBACTests(TestCase):
