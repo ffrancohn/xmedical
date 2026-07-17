@@ -1,54 +1,59 @@
 {% extends 'base.html' %}
+{% block title %}Agenda de citas{% endblock %}
 {% block content %}
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+<div class="xm-page-header">
     <div>
-        <h1 class="text-2xl font-bold">Agenda de citas</h1>
-        <p class="opacity-70">Vista seleccionada: {{ vista|title }} - {{ selected_date }}</p>
+        <p class="xm-page-header__subtitle">Agenda</p>
+        <h1 class="xm-page-header__title">Citas</h1>
+        <p class="xm-page-header__desc">Vista: {{ vista|title }} — {{ selected_date }}</p>
     </div>
-    <div class="flex flex-wrap gap-2">
-        <a href="{% url 'citas_lista' %}?vista=lista&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'lista' %}btn-primary{% else %}btn-outline{% endif %}">Lista</a>
-        <a href="{% url 'citas_lista' %}?vista=dia&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dia' %}btn-primary{% else %}btn-outline{% endif %}">Dia</a>
-        <a href="{% url 'citas_lista' %}?vista=semana&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'semana' %}btn-primary{% else %}btn-outline{% endif %}">Semana</a>
-        <a href="{% url 'citas_lista' %}?vista=mes&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'mes' %}btn-primary{% else %}btn-outline{% endif %}">Mes</a>
-        <a href="{% url 'citas_lista' %}?vista=dos_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dos_meses' %}btn-primary{% else %}btn-outline{% endif %}">2 meses</a>
-        <a href="{% url 'citas_lista' %}?vista=tres_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'tres_meses' %}btn-primary{% else %}btn-outline{% endif %}">3 meses</a>
-        <a href="{% url 'citas_agendar' %}" class="btn btn-sm btn-primary">Agendar cita</a>
-        <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-sm btn-outline">Agendar flexible</a>
+    <div class="xm-page-header__actions">
+        <a href="{% url 'citas_agendar' %}" class="btn btn-primary btn-sm">Agendar cita</a>
+        <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-outline btn-sm">Agendar flexible</a>
     </div>
+</div>
+
+<div class="flex flex-wrap gap-2 mb-4">
+    <a href="{% url 'citas_lista' %}?vista=lista&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'lista' %}btn-primary{% else %}btn-outline{% endif %}">Lista</a>
+    <a href="{% url 'citas_lista' %}?vista=dia&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dia' %}btn-primary{% else %}btn-outline{% endif %}">Día</a>
+    <a href="{% url 'citas_lista' %}?vista=semana&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'semana' %}btn-primary{% else %}btn-outline{% endif %}">Semana</a>
+    <a href="{% url 'citas_lista' %}?vista=mes&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'mes' %}btn-primary{% else %}btn-outline{% endif %}">Mes</a>
+    <a href="{% url 'citas_lista' %}?vista=dos_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dos_meses' %}btn-primary{% else %}btn-outline{% endif %}">2 meses</a>
+    <a href="{% url 'citas_lista' %}?vista=tres_meses&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'tres_meses' %}btn-primary{% else %}btn-outline{% endif %}">3 meses</a>
 </div>
 
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
     <div class="join">
-        <a class="btn join-item" href="{% url 'citas_lista' %}?vista={{ vista }}&fecha={{ prev_date|date:'Y-m-d' }}{{ institution_query }}">Anterior</a>
-        <a class="btn join-item" href="{% url 'citas_lista' %}?vista={{ vista }}&fecha={{ today|date:'Y-m-d' }}{{ institution_query }}">Hoy</a>
-        <a class="btn join-item" href="{% url 'citas_lista' %}?vista={{ vista }}&fecha={{ next_date|date:'Y-m-d' }}{{ institution_query }}">Siguiente</a>
+        <a class="btn join-item btn-sm" href="{% url 'citas_lista' %}?vista={{ vista }}&fecha={{ prev_date|date:'Y-m-d' }}{{ institution_query }}">← Anterior</a>
+        <a class="btn join-item btn-sm btn-primary" href="{% url 'citas_lista' %}?vista={{ vista }}&fecha={{ today|date:'Y-m-d' }}{{ institution_query }}">Hoy</a>
+        <a class="btn join-item btn-sm" href="{% url 'citas_lista' %}?vista={{ vista }}&fecha={{ next_date|date:'Y-m-d' }}{{ institution_query }}">Siguiente →</a>
     </div>
     <form class="flex gap-2">
         <input type="hidden" name="vista" value="{{ vista }}">
         <input type="date" name="fecha" value="{{ selected_date|date:'Y-m-d' }}" class="input input-bordered input-sm">
-        <button class="btn btn-sm">Ir</button>
+        <button type="submit" class="btn btn-sm">Ir</button>
     </form>
 </div>
 
 {% include 'partials/institution_filter.html' %}
 
 {% if vista == 'dia' %}
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Linea de tiempo del dia</h2>
+    <div class="xm-card">
+        <div class="p-6">
+            <h2 class="font-bold text-lg mb-4">Línea de tiempo del día</h2>
             <div class="space-y-3">
                 {% for cita in citas_dia %}
-                    <div class="grid grid-cols-[5rem_1fr_auto] gap-3 items-center border-l-4 border-primary pl-3 py-2 bg-base-200 rounded-box">
-                        <div class="font-bold">{{ cita.hora|time:"H:i" }}</div>
+                    <div class="grid grid-cols-[5rem_1fr_auto] gap-3 items-center border-l-4 border-primary pl-4 py-3 bg-base-200/60 rounded-lg">
+                        <div class="font-bold text-primary">{{ cita.hora|time:"H:i" }}</div>
                         <div>
-                            <div>{{ cita.paciente }}</div>
+                            <div class="font-medium">{{ cita.paciente }}</div>
                             <div class="text-sm opacity-70">{{ cita.profesional.nombre }}</div>
                             {% if is_superadmin_view %}<div class="text-xs opacity-60">{{ cita.institucion.nombre }}</div>{% endif %}
                         </div>
-                        <span class="badge">{{ cita.get_estado_display }}</span>
+                        <span class="badge badge-outline">{{ cita.get_estado_display }}</span>
                     </div>
                 {% empty %}
-                    <div class="alert">No hay citas para este dia.</div>
+                    <p class="text-sm opacity-70 text-center py-8">No hay citas para este día.</p>
                 {% endfor %}
             </div>
         </div>
@@ -56,18 +61,17 @@
 {% elif vista == 'semana' %}
     <div class="grid grid-cols-1 md:grid-cols-7 gap-3">
         {% for day in semana %}
-            <div class="card bg-base-100 shadow min-h-44">
-                <div class="card-body p-3">
-                    <h2 class="font-bold">{{ day.date|date:"D d/m" }}</h2>
+            <div class="xm-card min-h-44">
+                <div class="p-3">
+                    <h2 class="font-bold text-sm mb-2">{{ day.date|date:"D d/m" }}</h2>
                     <div class="space-y-2">
                         {% for cita in day.citas %}
-                            <div class="rounded-box bg-base-200 p-2 text-sm">
+                            <div class="rounded-lg bg-base-200/80 p-2 text-sm">
                                 <div class="font-semibold">{{ cita.hora|time:"H:i" }} {{ cita.paciente }}</div>
-                                <div class="opacity-70">{{ cita.get_estado_display }}</div>
-                                {% if is_superadmin_view %}<div class="opacity-60">{{ cita.institucion.nombre }}</div>{% endif %}
+                                <div class="opacity-70 text-xs">{{ cita.get_estado_display }}</div>
                             </div>
                         {% empty %}
-                            <p class="text-sm opacity-60">Sin citas</p>
+                            <p class="text-xs opacity-50">Sin citas</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -89,32 +93,30 @@
         {% endfor %}
     </div>
 {% else %}
-    <div class="card bg-base-100 shadow">
-        <div class="card-body overflow-x-auto">
-            <table class="table table-zebra">
-                <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Fecha</th><th>Hora</th><th>Paciente</th><th>Medico</th><th>Estado</th><th></th></tr></thead>
-                <tbody>
-                {% for cita in citas %}
-                    <tr>
-                        {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
-                        <td>{{ cita.fecha }}</td>
-                        <td>{{ cita.hora|time:"H:i" }}</td>
-                        <td>{{ cita.paciente }}</td>
-                        <td>{{ cita.profesional.nombre }}</td>
-                        <td>
-                            <span class="badge">{{ cita.get_estado_display }}</span>
-                            {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
-                            <span class="badge badge-warning ml-1" title="Riesgo de ausentismo {{ cita.prediccion_ausentismo.probabilidad }}%">Ausentismo {{ cita.prediccion_ausentismo.probabilidad }}%</span>
-                            {% endif %}
-                        </td>
-                        <td><a href="{% url 'citas_cancelar' cita.id %}" class="btn btn-sm btn-outline">Cancelar</a></td>
-                    </tr>
-                {% empty %}
-                    <tr><td colspan="{% if is_superadmin_view %}7{% else %}6{% endif %}">No hay citas.</td></tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="xm-table-wrap">
+        <table class="table">
+            <thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Fecha</th><th>Hora</th><th>Paciente</th><th>Médico</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+            {% for cita in citas %}
+                <tr>
+                    {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora|time:"H:i" }}</td>
+                    <td>{{ cita.paciente }}</td>
+                    <td>{{ cita.profesional.nombre }}</td>
+                    <td>
+                        <span class="badge badge-outline">{{ cita.get_estado_display }}</span>
+                        {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
+                        <span class="badge badge-warning ml-1" title="Riesgo de ausentismo">{{ cita.prediccion_ausentismo.probabilidad }}%</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'citas_cancelar' cita.id %}" class="btn btn-xs btn-outline">Cancelar</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="{% if is_superadmin_view %}7{% else %}6{% endif %}" class="text-center py-8 opacity-70">No hay citas.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endif %}
 {% endblock %}

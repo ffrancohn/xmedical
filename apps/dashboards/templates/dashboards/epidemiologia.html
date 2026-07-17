@@ -1,33 +1,27 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard epidemiológico{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-1">Dashboard epidemiologico</h1>
-<p class="opacity-70 mb-4">Alertas de brotes y tendencias de enfermedades — {{ fecha|date:"d/m/Y" }}</p>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Reportes</p>
+        <h1 class="xm-page-header__title">Dashboard epidemiológico</h1>
+        <p class="xm-page-header__desc">Alertas de brotes y tendencias — {{ fecha|date:"d/m/Y" }}</p>
+    </div>
+</div>
 {% include 'partials/institution_filter.html' %}
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="stat bg-error/10 rounded-box">
-        <div class="stat-title">Alertas de brote</div>
-        <div class="stat-value">{{ total_brotes }}</div>
-        <div class="stat-desc">{{ config.ventana_dias }} dias, umbral {{ config.umbral_brote }}+ casos</div>
-    </div>
-    <div class="stat bg-primary/10 rounded-box">
-        <div class="stat-title">Diagnosticos (30 dias)</div>
-        <div class="stat-value">{{ total_diagnosticos_mes }}</div>
-        <div class="stat-desc">Registros CIE-10 en el periodo</div>
-    </div>
-    <div class="stat bg-info/10 rounded-box">
-        <div class="stat-title">Tendencia</div>
-        <div class="stat-value">{{ config.meses_tendencia }}</div>
-        <div class="stat-desc">Meses analizados</div>
-    </div>
+    <div class="xm-stat-card xm-card"><div><p class="xm-stat-card__label">Alertas de brote</p><p class="xm-stat-card__value">{{ total_brotes }}</p><p class="xm-stat-card__hint">{{ config.ventana_dias }} días, umbral {{ config.umbral_brote }}+</p></div></div>
+    <div class="xm-stat-card xm-card xm-stat-card--primary"><div><p class="xm-stat-card__label">Diagnósticos (30 días)</p><p class="xm-stat-card__value">{{ total_diagnosticos_mes }}</p><p class="xm-stat-card__hint">Registros CIE-10</p></div></div>
+    <div class="xm-stat-card xm-card"><div><p class="xm-stat-card__label">Tendencia</p><p class="xm-stat-card__value">{{ config.meses_tendencia }}</p><p class="xm-stat-card__hint">Meses analizados</p></div></div>
 </div>
 
-<div class="card bg-base-100 shadow mb-6">
+<div class="xm-card mb-6">
     <div class="card-body">
         <h2 class="card-title">Alertas de brotes</h2>
         <p class="text-sm opacity-70 mb-3">Enfermedades con {{ config.umbral_brote }} o mas casos en los ultimos {{ config.ventana_dias }} dias.</p>
         <div class="overflow-x-auto">
-            <table class="table table-zebra">
+            <table class="table">
                 <thead>
                     <tr>
                         {% if is_superadmin_view %}<th>Clinica</th>{% endif %}
@@ -64,7 +58,7 @@
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-    <div class="card bg-base-100 shadow">
+    <div class="xm-card">
         <div class="card-body">
             <h2 class="card-title">Top diagnosticos (30 dias)</h2>
             <div class="space-y-3 mt-2">
@@ -85,7 +79,7 @@
         </div>
     </div>
 
-    <div class="card bg-base-100 shadow">
+    <div class="xm-card">
         <div class="card-body">
             <h2 class="card-title">Tendencia mensual por enfermedad</h2>
             {% if tendencias.series %}

@@ -1,50 +1,58 @@
 {% extends 'base.html' %}
+{% load xmedical_tags %}
+{% block title %}Paciente{% endblock %}
 {% block content %}
-<div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
-    <div class="card-body">
-        <h1 class="card-title">Paciente</h1>
-        <div class="alert alert-info">
-            <span>Puede escanear un documento para autocompletar datos.</span>
-            <a href="{% url 'pacientes_ocr_subir' %}" class="btn btn-sm btn-outline">Escanear cedula/pasaporte</a>
+<div class="max-w-3xl mx-auto">
+    <div class="xm-page-header">
+        <div>
+            <p class="xm-page-header__subtitle">Pacientes</p>
+            <h1 class="xm-page-header__title">Paciente</h1>
         </div>
-        <form method="post" class="space-y-3">
-            {% csrf_token %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>{{ form.documento.label_tag }}{{ form.documento }}</div>
-                <div>{{ form.fecha_nacimiento.label_tag }}{{ form.fecha_nacimiento }}</div>
-                <div>{{ form.nombre.label_tag }}{{ form.nombre }}</div>
-                <div>{{ form.apellido.label_tag }}{{ form.apellido }}</div>
-                <div>{{ form.sexo.label_tag }}{{ form.sexo }}</div>
-                <div>{{ form.activo.label_tag }}{{ form.activo }}</div>
-            </div>
+    </div>
 
-            <div class="divider">Contacto</div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>{{ form.telefono.label_tag }}{{ form.telefono }}</div>
-                <div>{{ form.telefono_fijo.label_tag }}{{ form.telefono_fijo }}</div>
-                <div>{{ form.email.label_tag }}{{ form.email }}</div>
+    <div class="xm-card">
+        <div class="p-6 lg:p-8">
+            <div class="alert alert-info text-sm mb-6">
+                <span>Puede escanear un documento para autocompletar datos.</span>
+                <a href="{% url 'pacientes_ocr_subir' %}" class="btn btn-sm btn-outline">Escanear cédula/pasaporte</a>
             </div>
-
-            <div class="divider">Direccion</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>{{ form.ciudad.label_tag }}{{ form.ciudad }}</div>
-                <div>{{ form.departamento.label_tag }}{{ form.departamento }}</div>
-            </div>
-            <div>{{ form.direccion.label_tag }}{{ form.direccion }}</div>
-
-            <div class="divider">Emergencia y notas</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>{{ form.contacto_emergencia_nombre.label_tag }}{{ form.contacto_emergencia_nombre }}</div>
-                <div>{{ form.contacto_emergencia_telefono.label_tag }}{{ form.contacto_emergencia_telefono }}</div>
-            </div>
-            <div>{{ form.observaciones.label_tag }}{{ form.observaciones }}</div>
-
-            {% if form.errors %}
-                <div class="alert alert-error">{{ form.errors }}</div>
-            {% endif %}
-            <button class="btn btn-primary">Guardar</button>
-            <a href="{% url 'pacientes_lista' %}" class="btn btn-ghost">Cancelar</a>
-        </form>
+            <form method="post" class="xm-form">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% form_field form.documento %}
+                    {% form_field form.fecha_nacimiento %}
+                    {% form_field form.nombre %}
+                    {% form_field form.apellido %}
+                    {% form_field form.sexo %}
+                    {% form_field form.activo %}
+                </div>
+                <div class="divider">Contacto</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {% form_field form.telefono %}
+                    {% form_field form.telefono_fijo %}
+                    {% form_field form.email %}
+                </div>
+                <div class="divider">Dirección</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% form_field form.ciudad %}
+                    {% form_field form.departamento %}
+                </div>
+                {% form_field form.direccion %}
+                <div class="divider">Emergencia y notas</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% form_field form.contacto_emergencia_nombre %}
+                    {% form_field form.contacto_emergencia_telefono %}
+                </div>
+                {% form_field form.observaciones %}
+                {% if form.errors %}
+                <div class="alert alert-error text-sm">{{ form.errors }}</div>
+                {% endif %}
+                <div class="flex gap-2 pt-4">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% url 'pacientes_lista' %}" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

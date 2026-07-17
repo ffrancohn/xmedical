@@ -1,23 +1,28 @@
-{% extends 'base.html' %}
+{% extends 'layouts/public.html' %}
+{% block title %}Registro de paciente{% endblock %}
 {% block content %}
-<div class="max-w-2xl mx-auto card bg-base-100 shadow-xl">
-    <div class="card-body">
-        <h1 class="card-title">Registro de paciente</h1>
-        <p class="text-sm opacity-70">Institucion: {{ institucion.nombre }}</p>
-        <form method="post" class="space-y-3">
-            {% csrf_token %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {% for field in form %}
-                <div>
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {% if field.errors %}<p class="text-error text-sm">{{ field.errors|join:', ' }}</p>{% endif %}
+<div class="xm-container py-8 max-w-2xl">
+    <div class="xm-auth-card xm-card shadow-xl">
+        <div class="card-body">
+            <h1 class="text-2xl font-bold">Registro de paciente</h1>
+            <p class="text-sm opacity-70 mt-2 mb-6">Institución: {{ institucion.nombre }}</p>
+            <form method="post" class="xm-form space-y-4">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for field in form %}
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-medium">{{ field.label }}</span></label>
+                        {{ field }}
+                        {% if field.errors %}<p class="text-error text-sm">{{ field.errors|join:', ' }}</p>{% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-primary">Registrarme</button>
-            <a href="{% url 'home' %}" class="btn btn-ghost">Volver</a>
-        </form>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="btn btn-primary">Registrarme</button>
+                    <a href="{% url 'home' %}" class="btn btn-ghost">Volver</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

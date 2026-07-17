@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="max-w-3xl mx-auto space-y-4">
-    <div class="card bg-base-100 shadow-xl">
+    <div class="xm-card">
         <div class="card-body">
             <h1 class="card-title">Referencia #{{ referencia.id }}</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
@@ -33,7 +33,7 @@
     </div>
 
     {% if referencia.estado == 'pendiente' %}
-    <div class="card bg-base-100 shadow">
+    <div class="xm-card">
         <div class="card-body">
             <h2 class="font-bold">Responder referencia</h2>
             <form method="post" action="{% url 'referencias_aceptar' referencia.id %}" class="space-y-3 mb-4">
@@ -61,7 +61,7 @@
     {% endif %}
 
     {% if contrarreferencia %}
-    <div class="card bg-base-100 shadow">
+    <div class="xm-card">
         <div class="card-body">
             <h2 class="font-bold">Contrarreferencia</h2>
             <p><strong>Resumen:</strong> {{ contrarreferencia.resumen_atencion|linebreaksbr }}</p>
