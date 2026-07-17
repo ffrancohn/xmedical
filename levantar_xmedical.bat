@@ -9,38 +9,22 @@ echo XMedical - Inicio del sistema
 echo ========================================
 echo.
 
+call "%ROOT_DIR%scripts\win\_require_uv.bat"
+if errorlevel 1 exit /b 1
+
 python --version >nul 2>&1
 if errorlevel 1 (
     echo Python no esta instalado o no esta en el PATH.
     exit /b 1
 )
 
-REM Crear entorno virtual si no existe
-if not exist "%ROOT_DIR%venv\Scripts\python.exe" (
-    echo Creando entorno virtual...
-    python -m venv "%ROOT_DIR%venv"
-    if errorlevel 1 (
-        echo Error al crear el entorno virtual.
-        exit /b 1
-    )
-)
+echo [uv] Sincronizando entorno venv...
+uv venv "%ROOT_DIR%venv" --allow-existing
+if errorlevel 1 exit /b 1
+uv pip install -r "%ROOT_DIR%requirements.txt" --python "%ROOT_DIR%venv\Scripts\python.exe"
+if errorlevel 1 exit /b 1
 
 set "PY=%ROOT_DIR%venv\Scripts\python.exe"
-set "PIP=%ROOT_DIR%venv\Scripts\pip.exe"
-
-echo Actualizando pip...
-"%PY%" -m pip install --upgrade pip -q
-if errorlevel 1 (
-    echo Error al actualizar pip.
-    exit /b 1
-)
-
-echo Instalando dependencias desde requirements.txt...
-"%PIP%" install -r "%ROOT_DIR%requirements.txt"
-if errorlevel 1 (
-    echo Error al instalar dependencias.
-    exit /b 1
-)
 
 echo.
 echo Iniciando servicios Docker de XMedical...
