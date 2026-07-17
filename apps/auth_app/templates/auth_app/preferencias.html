@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Preferencias visuales{% endblock %}
 {% block content %}
-<div class="max-w-3xl">
+<div class="max-w-4xl">
     <div class="xm-page-header">
         <div>
             <p class="xm-page-header__subtitle">Personalización</p>
             <h1 class="xm-page-header__title">Configuración visual</h1>
-            <p class="xm-page-header__desc">Elige el tema de colores que se aplicará a tu sesión.</p>
+            <p class="xm-page-header__desc">Elige la combinación de colores. El tema <strong>Vital</strong> usa tonos turquesa, índigo y coral más vivos.</p>
         </div>
     </div>
 
@@ -14,18 +14,28 @@
         <div class="p-6">
             <form method="post" class="xm-form space-y-6">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div data-theme="corporate" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Corporativo</span></div>
-                    <div data-theme="garden" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Garden</span></div>
-                    <div data-theme="emerald" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Esmeralda</span></div>
-                    <div data-theme="light" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Claro</span></div>
-                    <div data-theme="dark" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Oscuro</span></div>
-                    <div data-theme="winter" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Invierno</span></div>
-                    <div data-theme="night" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Noche</span></div>
-                    <div data-theme="cupcake" class="rounded-xl p-4 bg-base-200 border border-base-300"><span class="badge badge-primary">Suave</span></div>
-                </div>
-                <div class="flex gap-2">
+                <fieldset>
+                    <legend class="font-semibold mb-4">Tema de colores</legend>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {% for value, label in form.theme.field.choices %}
+                        <label class="cursor-pointer group">
+                            <input type="radio" name="theme" value="{{ value }}" class="peer sr-only" {% if form.theme.value == value or not form.theme.value and value == 'vital' %}checked{% endif %}>
+                            <div data-theme="{{ value }}" class="rounded-xl p-4 border-2 border-base-300 bg-base-200 transition-all peer-checked:border-primary peer-checked:ring-2 peer-checked:ring-primary/30 group-hover:border-primary/50">
+                                <div class="flex gap-1.5 mb-3">
+                                    <span class="w-7 h-7 rounded-full bg-primary shadow-sm"></span>
+                                    <span class="w-7 h-7 rounded-full bg-secondary shadow-sm"></span>
+                                    <span class="w-7 h-7 rounded-full bg-accent shadow-sm"></span>
+                                </div>
+                                <span class="badge badge-primary badge-sm">{{ label }}</span>
+                                {% if value == 'vital' %}
+                                <p class="text-xs opacity-60 mt-2">Recomendado · colores vivos</p>
+                                {% endif %}
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                <div class="flex gap-2 pt-2">
                     <button type="submit" class="btn btn-primary">Guardar preferencias</button>
                     <a href="{% url 'dashboard' %}" class="btn btn-ghost">Volver</a>
                 </div>

@@ -31,7 +31,7 @@ def institucion(request):
 
 
 def visual_preferences(request):
-    theme = "corporate"
+    theme = "vital"
     if request.user.is_authenticated:
         preference = getattr(request.user, "preference", None)
         if preference:
