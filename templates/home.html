@@ -1,14 +1,41 @@
-{% extends 'base.html' %}
+{% extends 'layouts/public.html' %}
+{% block title %}Inicio{% endblock %}
 {% block content %}
-<section class="min-h-[70vh] flex items-center">
-    <div class="max-w-2xl">
-        <p class="font-semibold text-primary">Gestion clinica multi-tenant</p>
-        <h1 class="text-4xl md:text-5xl font-bold mt-2">XMedical MVP</h1>
-        <p class="text-lg mt-4 opacity-80">Primer nivel de atencion con pacientes, citas, preclinica, consulta guiada, diagnosticos CIE-10 e historia clinica.</p>
-        <div class="flex flex-wrap gap-3 mt-6">
-            <a href="{% url 'login' %}" class="btn btn-primary">Entrar</a>
-            <a href="{% url 'portal_registro' %}" class="btn btn-secondary">Portal del paciente</a>
-            <a href="{% url 'pacientes_registro_publico' %}" class="btn btn-outline">Registro de pacientes</a>
+<section class="xm-hero">
+    <div class="max-w-3xl">
+        <span class="xm-hero__badge">Gestión clínica multi-institución</span>
+        <h1 class="xm-hero__title">Atención médica organizada, segura y eficiente</h1>
+        <p class="xm-hero__subtitle">
+            XMedical integra pacientes, citas, preclínica, consulta guiada, diagnósticos CIE-10 e historia clínica en una plataforma unificada para equipos de salud.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-8">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Acceso personal clínico</a>
+            <a href="{% url 'portal_registro' %}" class="btn btn-outline btn-lg">Portal del paciente</a>
+            <a href="{% url 'pacientes_registro_publico' %}" class="btn btn-ghost btn-lg">Registro de pacientes</a>
+        </div>
+    </div>
+
+    <div class="xm-feature-grid">
+        <div class="xm-feature-card xm-card">
+            <div class="p-6">
+                <div class="text-2xl mb-3">📅</div>
+                <h2 class="font-bold text-lg">Agenda inteligente</h2>
+                <p class="text-sm opacity-70 mt-2">Vistas por día, semana y mes con agendamiento flexible y control de estados.</p>
+            </div>
+        </div>
+        <div class="xm-feature-card xm-card">
+            <div class="p-6">
+                <div class="text-2xl mb-3">🩺</div>
+                <h2 class="font-bold text-lg">Consulta guiada</h2>
+                <p class="text-sm opacity-70 mt-2">Wizard clínico con preclínica, diagnóstico, variables y resumen integrado.</p>
+            </div>
+        </div>
+        <div class="xm-feature-card xm-card">
+            <div class="p-6">
+                <div class="text-2xl mb-3">🔒</div>
+                <h2 class="font-bold text-lg">Multi-tenant seguro</h2>
+                <p class="text-sm opacity-70 mt-2">Aislamiento por institución, roles RBAC y auditoría de accesos.</p>
+            </div>
         </div>
     </div>
 </section>

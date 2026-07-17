@@ -1,36 +1,63 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard médico{% endblock %}
 {% block content %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="stat bg-primary/10 rounded-box">
-        <div class="stat-title">Pacientes hoy</div>
-        <div class="stat-value">{{ citas_hoy|length }}</div>
+    <div class="xm-stat-card xm-card xm-stat-card--primary">
+        <div>
+            <p class="xm-stat-card__label">Pacientes hoy</p>
+            <p class="xm-stat-card__value">{{ citas_hoy|length }}</p>
+            <p class="xm-stat-card__hint">Citas programadas</p>
+        </div>
     </div>
-    <div class="stat bg-warning/10 rounded-box">
-        <div class="stat-title">En espera</div>
-        <div class="stat-value">{{ pacientes_espera|length }}</div>
+    <div class="xm-stat-card xm-card xm-stat-card--warning">
+        <div>
+            <p class="xm-stat-card__label">En espera</p>
+            <p class="xm-stat-card__value">{{ pacientes_espera|length }}</p>
+            <p class="xm-stat-card__hint">Pendientes de atención</p>
+        </div>
     </div>
-    <div class="stat bg-success/10 rounded-box">
-        <div class="stat-title">Atendidos</div>
-        <div class="stat-value">{{ atendidos }}</div>
+    <div class="xm-stat-card xm-card xm-stat-card--success">
+        <div>
+            <p class="xm-stat-card__label">Atendidos</p>
+            <p class="xm-stat-card__value">{{ atendidos }}</p>
+            <p class="xm-stat-card__hint">Completados hoy</p>
+        </div>
     </div>
 </div>
 
-<div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-        <h2 class="card-title">Agenda del dia</h2>
-        <div class="overflow-x-auto">
-            <table class="table table-zebra">
-                <thead><tr><th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr></thead>
+<div class="xm-card">
+    <div class="p-6">
+        <div class="xm-page-header mb-4" style="margin-bottom:1rem;">
+            <div>
+                <p class="xm-page-header__subtitle">Hoy</p>
+                <h2 class="xm-page-header__title" style="font-size:1.25rem;">Agenda del día</h2>
+            </div>
+            <div class="xm-page-header__actions">
+                <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-outline">Ver agenda completa</a>
+            </div>
+        </div>
+        <div class="xm-table-wrap">
+            <table class="table">
+                <thead>
+                    <tr><th>Hora</th><th>Paciente</th><th>Estado</th><th class="text-right">Acción</th></tr>
+                </thead>
                 <tbody>
                 {% for cita in citas_hoy %}
                     <tr>
-                        <td>{{ cita.hora|time:"H:i" }}</td>
+                        <td class="font-semibold">{{ cita.hora|time:"H:i" }}</td>
                         <td>{{ cita.paciente.nombre }} {{ cita.paciente.apellido }}</td>
-                        <td><span class="badge">{{ cita.get_estado_display }}</span></td>
-                        <td><a href="{% url 'consulta_wizard' cita.id 1 %}" class="btn btn-sm btn-primary">Atender</a></td>
+                        <td><span class="badge badge-outline">{{ cita.get_estado_display }}</span></td>
+                        <td class="text-right">
+                            <a href="{% url 'consulta_wizard' cita.id 1 %}" class="btn btn-sm btn-primary">Atender</a>
+                        </td>
                     </tr>
                 {% empty %}
-                    <tr><td colspan="4">No hay citas para hoy.</td></tr>
+                    <tr>
+                        <td colspan="4" class="text-center py-8 opacity-70">
+                            No hay citas para hoy.
+                            <a href="{% url 'citas_lista' %}" class="link link-primary ml-1">Ver calendario</a>
+                        </td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>

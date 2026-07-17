@@ -1,0 +1,15 @@
+{% if items %}
+<nav class="xm-breadcrumbs text-sm" aria-label="Breadcrumb">
+    <ul>
+        {% for item in items %}
+        <li>
+            {% if item.url and not forloop.last %}
+            <a href="{{ item.url }}" class="link link-hover">{{ item.label }}</a>
+            {% else %}
+            <span {% if forloop.last %}class="font-medium" aria-current="page"{% endif %}>{{ item.label }}</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}

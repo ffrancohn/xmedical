@@ -1,23 +1,20 @@
-{% extends 'base.html' %}
+{% extends 'layouts/public.html' %}
+{% block title %}Registro portal paciente{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-2">Registro en el portal</h1>
-<p class="mb-4 opacity-80">Crea tu cuenta para gestionar citas y consultar tu historia clinica en {{ institucion.nombre }}.</p>
-
-<form method="post" class="card bg-base-100 shadow max-w-lg">
-    <div class="card-body space-y-3">
-        {% csrf_token %}
-        {% for field in form %}
-        <div class="form-control">
-            <label class="label"><span class="label-text">{{ field.label }}</span></label>
-            {{ field }}
-            {% if field.errors %}<p class="text-error text-sm mt-1">{{ field.errors|join:", " }}</p>{% endif %}
+<div class="xm-container py-8 max-w-2xl">
+    <div class="xm-auth-card xm-card shadow-xl">
+        <div class="card-body">
+            <h1 class="text-2xl font-bold">Registro en el portal</h1>
+            <p class="opacity-80 mt-2 mb-6">Crea tu cuenta para gestionar citas y consultar tu historia clínica{% if institucion %} en {{ institucion.nombre }}{% endif %}.</p>
+            <form method="post" class="xm-form space-y-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-full">Registrarme</button>
+            </form>
+            <p class="text-sm text-center opacity-70 mt-4">
+                ¿Ya tienes cuenta? <a href="{% url 'login' %}" class="link link-primary">Iniciar sesión</a>
+            </p>
         </div>
-        {% endfor %}
-        {% if form.non_field_errors %}
-        <div class="alert alert-error">{{ form.non_field_errors }}</div>
-        {% endif %}
-        <button type="submit" class="btn btn-primary">Crear cuenta</button>
-        <p class="text-sm">¿Ya tienes cuenta? <a href="{% url 'login' %}" class="link">Iniciar sesion</a></p>
     </div>
-</form>
+</div>
 {% endblock %}

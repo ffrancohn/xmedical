@@ -1,68 +1,43 @@
+{% load xmedical_tags %}
 <!DOCTYPE html>
-<html lang="es" data-theme="{{ visual_theme|default:'garden' }}">
+<html lang="es" data-theme="{{ visual_theme|default:'corporate' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XMedical{% if institucion %} - {{ institucion.nombre }}{% endif %}</title>
+    <meta name="description" content="XMedical — Sistema de gestión clínica multi-institución">
+    <title>{% block title %}XMedical{% endblock %}{% if institucion %} · {{ institucion.nombre }}{% endif %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.css" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-base-200 min-h-screen">
-    <div class="navbar bg-base-100 shadow-sm">
-        <div class="flex-1">
-            <a href="{% url 'dashboard' %}" class="btn btn-ghost text-xl">XMedical</a>
-            {% if institucion %}<span class="text-sm opacity-70 ml-2">{{ institucion.nombre }}</span>{% endif %}
-        </div>
-        {% if user.is_authenticated %}
-        <div class="flex-none gap-2">
-            {% if perfil_paciente %}
-            <a href="{% url 'portal_dashboard' %}" class="btn btn-sm btn-ghost">Portal paciente</a>
-            {% endif %}
-            {% if user.is_superuser %}
-            <a href="{% url 'superadmin_dashboard' %}" class="btn btn-sm btn-ghost">Superadmin</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'admin' %}
-            <a href="{% url 'auditoria_lista' %}" class="btn btn-sm btn-ghost">Auditoria</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'recepcionista' or profesional and profesional.tipo == 'admin' or profesional and profesional.tipo == 'medico' %}
-            <a href="{% url 'pacientes_lista' %}" class="btn btn-sm btn-ghost">Pacientes</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'recepcionista' or profesional and profesional.tipo == 'admin' or profesional and profesional.tipo == 'medico' %}
-            <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-ghost">Citas</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'enfermera' or profesional and profesional.tipo == 'admin' %}
-            <a href="{% url 'dashboards_enfermeria' %}" class="btn btn-sm btn-ghost">Dashboard enfermeria</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'admin' %}
-            <a href="{% url 'dashboards_administracion' %}" class="btn btn-sm btn-ghost">Dashboard admin</a>
-            <a href="{% url 'dashboards_epidemiologia' %}" class="btn btn-sm btn-ghost">Epidemiologia</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'medico' and profesional.especialidad and profesional.especialidad.nivel == 'segundo' %}
-            <a href="{% url 'dashboards_especialista' %}" class="btn btn-sm btn-ghost">Dashboard especialista</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'enfermera' or profesional and profesional.tipo == 'admin' %}
-            <a href="{% url 'preclinica_lista' %}" class="btn btn-sm btn-ghost">Preclinica</a>
-            {% endif %}
-            {% if profesional and user.is_superuser or profesional and profesional.tipo == 'medico' or profesional and profesional.tipo == 'admin' %}
-            <a href="{% url 'referencias_lista' %}" class="btn btn-sm btn-ghost">Referencias</a>
-            {% endif %}
-            <a href="{% url 'preferencias_visuales' %}" class="btn btn-sm btn-ghost">Configuracion</a>
-            <span class="hidden md:inline text-sm">{{ user.get_full_name|default:user.username }}</span>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button class="btn btn-sm btn-outline">Salir</button>
-            </form>
-        </div>
-        {% endif %}
+<body class="xm-body">
+<div class="drawer lg:drawer-open" x-data="{ sidebarOpen: false }">
+    <input id="xm-sidebar-toggle" type="checkbox" class="drawer-toggle" x-model="sidebarOpen">
+
+    <div class="drawer-content flex flex-col min-h-screen">
+        {% include 'components/topbar.html' %}
+
+        <main class="xm-main flex-1">
+            {% include 'components/messages.html' %}
+
+            {% block breadcrumbs %}{% endblock %}
+
+            <div class="xm-page">
+                {% block page_header %}{% endblock %}
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+
+        {% include 'components/footer.html' %}
     </div>
-    <main class="container mx-auto p-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} mb-4">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% block content %}{% endblock %}
-    </main>
+
+    <div class="drawer-side z-40">
+        <label for="xm-sidebar-toggle" class="drawer-overlay" aria-label="Cerrar menú"></label>
+        {% include 'components/sidebar.html' %}
+    </div>
+</div>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

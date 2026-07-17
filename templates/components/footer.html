@@ -1,0 +1,6 @@
+<footer class="xm-footer border-t border-base-300 bg-base-100">
+    <div class="xm-container py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm opacity-60">
+        <span>© {% now "Y" %} XMedical — Gestión clínica</span>
+        {% if institucion %}<span>{{ institucion.nombre }}</span>{% endif %}
+    </div>
+</footer>

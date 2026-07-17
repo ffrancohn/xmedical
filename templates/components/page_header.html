@@ -1,0 +1,10 @@
+<div class="xm-page-header">
+    <div>
+        {% if subtitle %}<p class="xm-page-header__subtitle">{{ subtitle }}</p>{% endif %}
+        <h1 class="xm-page-header__title">{{ title }}</h1>
+        {% if description %}<p class="xm-page-header__desc">{{ description }}</p>{% endif %}
+    </div>
+    {% if actions %}
+    <div class="xm-page-header__actions">{{ actions }}</div>
+    {% endif %}
+</div>
