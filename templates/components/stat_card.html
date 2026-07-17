@@ -1,0 +1,8 @@
+<div class="xm-stat-card {{ variant|default:'' }}">
+    <div class="xm-stat-card__icon">{{ icon|safe }}</div>
+    <div>
+        <p class="xm-stat-card__label">{{ label }}</p>
+        <p class="xm-stat-card__value">{{ value }}</p>
+        {% if hint %}<p class="xm-stat-card__hint">{{ hint }}</p>{% endif %}
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<footer class="border-t border-base-300 bg-base-100">
+    <div class="xm-container py-8 text-sm opacity-70">
+        <div class="flex flex-col md:flex-row justify-between gap-4">
+            <div>
+                <p class="font-semibold text-base-content">XMedical</p>
+                <p class="mt-1 max-w-md">Plataforma de gestión clínica multi-institución para primer nivel de atención.</p>
+            </div>
+            <div class="flex gap-8">
+                <div>
+                    <p class="font-semibold mb-2">Acceso</p>
+                    <ul class="space-y-1">
+                        <li><a href="{% url 'login' %}" class="link link-hover">Personal clínico</a></li>
+                        <li><a href="{% url 'portal_registro' %}" class="link link-hover">Portal paciente</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold mb-2">Registro</p>
+                    <ul class="space-y-1">
+                        <li><a href="{% url 'pacientes_registro_publico' %}" class="link link-hover">Nuevo paciente</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <p class="mt-6 pt-4 border-t border-base-300">© {% now "Y" %} XMedical. Todos los derechos reservados.</p>
+    </div>
+</footer>

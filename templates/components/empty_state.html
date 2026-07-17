@@ -1,0 +1,8 @@
+<div class="xm-empty">
+    <div class="xm-empty__icon">{{ icon|default:"📋" }}</div>
+    <h3 class="xm-empty__title">{{ title }}</h3>
+    {% if message %}<p class="xm-empty__message">{{ message }}</p>{% endif %}
+    {% if action_url and action_label %}
+    <a href="{{ action_url }}" class="btn btn-primary btn-sm mt-4">{{ action_label }}</a>
+    {% endif %}
+</div>

@@ -1,32 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'layouts/public.html' %}
+{% block title %}Iniciar sesión{% endblock %}
 {% block content %}
-<div class="max-w-md mx-auto card bg-base-100 shadow-xl mt-10">
-    <div class="card-body">
-        <h1 class="card-title">Iniciar sesion</h1>
-        <form method="post" class="space-y-4">
-            {% csrf_token %}
-            {% if show_institucion %}
-            <div class="form-control">
-                <label class="label" for="id_institucion"><span class="label-text">Institucion</span></label>
-                {{ form.institucion }}
+<div class="xm-container py-8">
+    <div class="xm-auth-card xm-card shadow-xl">
+        <div class="card-body">
+            <div class="text-center mb-6">
+                <div class="xm-brand justify-center mb-4">
+                    <span class="xm-brand-mark">XM</span>
+                </div>
+                <h1 class="text-2xl font-bold">Iniciar sesión</h1>
+                <p class="text-sm opacity-70 mt-2">Accede al panel clínico de tu institución</p>
             </div>
-            {% endif %}
-            <div class="form-control">
-                <label class="label" for="id_username"><span class="label-text">Usuario</span></label>
-                {{ form.username }}
-            </div>
-            <div class="form-control">
-                <label class="label" for="id_password"><span class="label-text">Contrasena</span></label>
-                {{ form.password }}
-            </div>
-            {% if form.non_field_errors %}
-                <div class="alert alert-error">{{ form.non_field_errors }}</div>
-            {% endif %}
-            <button class="btn btn-primary w-full">Entrar</button>
-        </form>
-        <p class="text-sm mt-4 opacity-70">
-            <a href="{% url 'pacientes_registro_publico' %}" class="link">Registro de pacientes</a>
-        </p>
+            <form method="post" class="xm-form space-y-4">
+                {% csrf_token %}
+                {% if show_institucion %}
+                <div class="form-control">
+                    <label class="label" for="id_institucion"><span class="label-text font-medium">Institución</span></label>
+                    {{ form.institucion }}
+                </div>
+                {% endif %}
+                <div class="form-control">
+                    <label class="label" for="id_username"><span class="label-text font-medium">Usuario</span></label>
+                    {{ form.username }}
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_password"><span class="label-text font-medium">Contraseña</span></label>
+                    {{ form.password }}
+                </div>
+                {% if form.non_field_errors %}
+                <div class="alert alert-error text-sm">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary w-full mt-2">Entrar</button>
+            </form>
+            <div class="divider text-xs opacity-50 my-4">o</div>
+            <p class="text-sm text-center opacity-70">
+                ¿Eres paciente?
+                <a href="{% url 'portal_registro' %}" class="link link-primary">Regístrate en el portal</a>
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}

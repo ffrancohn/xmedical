@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body_class %}xm-public{% endblock %}
+{% block layout %}
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-base-200 via-base-100 to-base-200">
+    <header class="xm-public-header">
+        <div class="xm-container flex items-center justify-between py-4">
+            <a href="{% url 'home' %}" class="xm-brand">
+                <span class="xm-brand-mark">XM</span>
+                <span class="xm-brand-text">XMedical</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-2">
+                <a href="{% url 'login' %}" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+                <a href="{% url 'portal_registro' %}" class="btn btn-primary btn-sm">Portal paciente</a>
+            </nav>
+            <div class="md:hidden">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Entrar</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1">
+        {% include 'components/messages.html' %}
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'components/footer_public.html' %}
+</div>
+{% endblock %}

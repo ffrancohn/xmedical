@@ -1,0 +1,10 @@
+{% if messages %}
+<div class="xm-toasts" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)">
+    {% for message in messages %}
+    <div class="alert xm-alert shadow-lg {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %}" role="alert">
+        <span>{{ message }}</span>
+        <button type="button" class="btn btn-ghost btn-xs" @click="show = false" aria-label="Cerrar">✕</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

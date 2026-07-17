@@ -1,0 +1,28 @@
+{% load xmedical_tags %}
+<header class="xm-topbar sticky top-0 z-30 bg-base-100/90 backdrop-blur border-b border-base-300">
+    <div class="flex items-center justify-between gap-3 px-4 py-3 lg:px-6">
+        <div class="flex items-center gap-3 min-w-0">
+            <label for="xm-sidebar-toggle" class="btn btn-ghost btn-sm btn-square lg:hidden" aria-label="Abrir menú">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </label>
+            <div class="min-w-0 lg:hidden">
+                <p class="font-semibold truncate">XMedical</p>
+                {% if institucion %}<p class="text-xs opacity-60 truncate">{{ institucion.nombre }}</p>{% endif %}
+            </div>
+            {% block topbar_title %}{% endblock %}
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="flex items-center gap-2">
+            <div class="hidden md:flex items-center gap-2 text-sm opacity-70">
+                <span class="xm-avatar xm-avatar--sm">{{ user.get_full_name|default:user.username|initials }}</span>
+                <span>{{ user.get_full_name|default:user.username }}</span>
+            </div>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost btn-sm">Salir</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</header>

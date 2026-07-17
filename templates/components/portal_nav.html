@@ -1,0 +1,19 @@
+{% if bottom %}
+<div class="grid grid-cols-4 h-16">
+    {% for item in items|slice:":4" %}
+    <a href="{{ item.url }}" class="xm-bottom-nav-item {% if item.active %}xm-bottom-nav-item--active{% endif %}">
+        <span class="text-xs">{{ item.label }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% elif mobile %}
+{% for item in items %}
+<a href="{{ item.url }}" class="btn btn-ghost btn-sm justify-start {% if item.active %}btn-active{% endif %}">{{ item.label }}</a>
+{% endfor %}
+{% else %}
+<div class="flex flex-wrap gap-1">
+    {% for item in items %}
+    <a href="{{ item.url }}" class="btn btn-ghost btn-sm {% if item.active %}btn-active{% endif %}">{{ item.label }}</a>
+    {% endfor %}
+</div>
+{% endif %}

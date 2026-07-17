@@ -1,44 +1,67 @@
 {% extends 'base.html' %}
+{% block title %}Pacientes{% endblock %}
 {% block content %}
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-    <h1 class="text-2xl font-bold">Pacientes</h1>
-    <a href="{% url 'pacientes_nuevo' %}" class="btn btn-primary">Nuevo paciente</a>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Gestión clínica</p>
+        <h1 class="xm-page-header__title">Pacientes</h1>
+        <p class="xm-page-header__desc">Busca, registra y administra la información de pacientes de tu institución.</p>
+    </div>
+    <div class="xm-page-header__actions">
+        <a href="{% url 'pacientes_nuevo' %}" class="btn btn-primary">Nuevo paciente</a>
+    </div>
 </div>
+
 <form class="mb-4">
     {% for id in selected_instituciones %}<input type="hidden" name="instituciones" value="{{ id }}">{% endfor %}
-    <input name="q" value="{{ request.GET.q }}" class="input input-bordered w-full md:max-w-sm" placeholder="Buscar por documento o nombre">
+    <input name="q" value="{{ request.GET.q }}" class="input input-bordered w-full md:max-w-md" placeholder="Buscar por documento o nombre...">
 </form>
+
 {% include 'partials/institution_filter.html' %}
-<div class="card bg-base-100 shadow">
-    <div class="card-body overflow-x-auto">
-        <table class="table table-zebra">
-            <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Documento</th><th>Nombre</th><th>Contacto</th><th>Direccion</th><th></th></tr></thead>
-            <tbody>
-            {% for paciente in pacientes %}
-                <tr>
-                    {% if is_superadmin_view %}<td>{{ paciente.institucion.nombre }}</td>{% endif %}
-                    <td>{{ paciente.documento }}</td>
-                    <td>{{ paciente.nombre }} {{ paciente.apellido }}</td>
-                    <td>
-                        <div>{{ paciente.telefono|default:"Sin movil" }}</div>
-                        {% if paciente.telefono_fijo %}<div class="text-xs opacity-70">Fijo: {{ paciente.telefono_fijo }}</div>{% endif %}
-                        {% if paciente.email %}<div class="text-xs opacity-70">{{ paciente.email }}</div>{% endif %}
-                    </td>
-                    <td>
-                        {{ paciente.ciudad }}{% if paciente.departamento %}, {{ paciente.departamento }}{% endif %}
-                        {% if paciente.direccion %}<div class="text-xs opacity-70">{{ paciente.direccion|truncatechars:55 }}</div>{% endif %}
-                    </td>
-                    <td class="text-right">
-                        <a href="{% url 'pacientes_detalle' paciente.id %}" class="btn btn-sm btn-primary">Ver</a>
-                        <a href="{% url 'pacientes_historia' paciente.id %}" class="btn btn-sm">Historia</a>
-                        <a href="{% url 'pacientes_editar' paciente.id %}" class="btn btn-sm btn-outline">Editar</a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td colspan="{% if is_superadmin_view %}6{% else %}5{% endif %}">No hay pacientes registrados.</td></tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+
+<div class="xm-table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                {% if is_superadmin_view %}<th>Clínica</th>{% endif %}
+                <th>Documento</th>
+                <th>Nombre</th>
+                <th>Contacto</th>
+                <th>Dirección</th>
+                <th class="text-right">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paciente in pacientes %}
+            <tr>
+                {% if is_superadmin_view %}<td>{{ paciente.institucion.nombre }}</td>{% endif %}
+                <td class="font-medium">{{ paciente.documento }}</td>
+                <td>{{ paciente.nombre }} {{ paciente.apellido }}</td>
+                <td>
+                    <div>{{ paciente.telefono|default:"Sin móvil" }}</div>
+                    {% if paciente.telefono_fijo %}<div class="text-xs opacity-70">Fijo: {{ paciente.telefono_fijo }}</div>{% endif %}
+                    {% if paciente.email %}<div class="text-xs opacity-70">{{ paciente.email }}</div>{% endif %}
+                </td>
+                <td>
+                    {{ paciente.ciudad }}{% if paciente.departamento %}, {{ paciente.departamento }}{% endif %}
+                    {% if paciente.direccion %}<div class="text-xs opacity-70">{{ paciente.direccion|truncatechars:55 }}</div>{% endif %}
+                </td>
+                <td class="text-right">
+                    <div class="flex flex-wrap justify-end gap-1">
+                        <a href="{% url 'pacientes_detalle' paciente.id %}" class="btn btn-xs btn-primary">Ver</a>
+                        <a href="{% url 'pacientes_historia' paciente.id %}" class="btn btn-xs btn-ghost">Historia</a>
+                        <a href="{% url 'pacientes_editar' paciente.id %}" class="btn btn-xs btn-outline">Editar</a>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="{% if is_superadmin_view %}6{% else %}5{% endif %}" class="text-center py-10 opacity-70">
+                    No hay pacientes registrados.
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

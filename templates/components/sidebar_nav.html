@@ -1,0 +1,17 @@
+{% for section in sections %}
+<div class="mb-5">
+    <p class="xm-nav-section">{{ section.title }}</p>
+    <ul class="menu menu-sm p-0 gap-0.5">
+        {% for item in section.items %}
+        <li>
+            <a href="{{ item.url }}" class="xm-nav-item {% if item.active %}xm-nav-item--active{% endif %}">
+                {{ item.icon_html }}
+                <span>{{ item.label }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% empty %}
+<p class="text-sm opacity-60 px-3">Sin módulos disponibles para tu rol.</p>
+{% endfor %}

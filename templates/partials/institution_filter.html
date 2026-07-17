@@ -1,22 +1,22 @@
 {% if is_superadmin_view %}
-<div class="card bg-base-100 shadow mb-4">
-    <div class="card-body">
+<div class="xm-card mb-4">
+    <div class="p-5">
         <form method="get" class="space-y-3">
             {% for key, value in request.GET.items %}
                 {% if key != 'instituciones' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}
             {% endfor %}
             <div class="flex flex-col lg:flex-row lg:items-end gap-3">
                 <div class="flex-1">
-                    <label class="label">Clinicas visibles para superadmin</label>
+                    <label class="label font-medium">Clínicas visibles (superadmin)</label>
                     <select name="instituciones" multiple class="select select-bordered min-h-32 w-full">
                         {% for item in all_instituciones %}
                             <option value="{{ item.id }}" {% if item.id|stringformat:"s" in selected_instituciones %}selected{% endif %}>{{ item.nombre }} ({{ item.subdominio }})</option>
                         {% endfor %}
                     </select>
-                    <p class="text-xs opacity-70 mt-1">Sin seleccion se muestran todas las clinicas activas. Usa Ctrl o Shift para elegir varias.</p>
+                    <p class="text-xs opacity-70 mt-2">Sin selección se muestran todas. Usa Ctrl o Shift para elegir varias.</p>
                 </div>
                 <div class="flex gap-2">
-                    <button class="btn btn-primary">Aplicar filtro</button>
+                    <button type="submit" class="btn btn-primary">Aplicar filtro</button>
                     <a href="{{ request.path }}" class="btn btn-ghost">Ver todas</a>
                 </div>
             </div>
