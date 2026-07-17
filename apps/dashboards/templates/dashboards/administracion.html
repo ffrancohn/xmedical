@@ -1,134 +1,29 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard administrativo{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-1">Dashboard administrativo</h1>
-<p class="opacity-70 mb-4">Metricas de la clinica — {{ fecha|date:"d/m/Y" }} · <a href="{% url 'dashboards_epidemiologia' %}" class="link">Ver epidemiologia</a></p>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Reportes</p>
+        <h1 class="xm-page-header__title">Dashboard administrativo</h1>
+        <p class="xm-page-header__desc">{{ fecha|date:"d/m/Y" }} · <a href="{% url 'dashboards_epidemiologia' %}" class="link link-primary">Ver epidemiología</a></p>
+    </div>
+</div>
 {% include 'partials/institution_filter.html' %}
 
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-    <div class="stat bg-primary/10 rounded-box">
-        <div class="stat-title">Ocupacion agenda hoy</div>
-        <div class="stat-value">{{ ocupacion_agenda }}%</div>
-        <div class="stat-desc">Citas activas sobre el total programado</div>
-    </div>
-    <div class="stat bg-warning/10 rounded-box">
-        <div class="stat-title">Ausentismo (7 dias)</div>
-        <div class="stat-value">{{ ausentismo_semana }}%</div>
-        <div class="stat-desc">Citas canceladas en la semana</div>
-    </div>
-    <div class="stat bg-error/10 rounded-box">
-        <div class="stat-title">Canceladas hoy</div>
-        <div class="stat-value">{{ citas_canceladas_hoy }}</div>
-        <div class="stat-desc">{{ citas_canceladas_semana }} en la semana</div>
-    </div>
-    <div class="stat bg-success/10 rounded-box">
-        <div class="stat-title">Consultas atendidas</div>
-        <div class="stat-value">{{ consultas_atendidas_hoy }}</div>
-        <div class="stat-desc">Hoy</div>
-    </div>
+    <div class="xm-stat-card xm-card xm-stat-card--primary"><div><p class="xm-stat-card__label">Ocupación agenda hoy</p><p class="xm-stat-card__value">{{ ocupacion_agenda }}%</p><p class="xm-stat-card__hint">Citas activas / programadas</p></div></div>
+    <div class="xm-stat-card xm-card xm-stat-card--warning"><div><p class="xm-stat-card__label">Ausentismo (7 días)</p><p class="xm-stat-card__value">{{ ausentismo_semana }}%</p><p class="xm-stat-card__hint">Cancelaciones semanales</p></div></div>
+    <div class="xm-stat-card xm-card"><div><p class="xm-stat-card__label">Canceladas hoy</p><p class="xm-stat-card__value">{{ citas_canceladas_hoy }}</p><p class="xm-stat-card__hint">{{ citas_canceladas_semana }} en la semana</p></div></div>
+    <div class="xm-stat-card xm-card xm-stat-card--success"><div><p class="xm-stat-card__label">Consultas atendidas</p><p class="xm-stat-card__value">{{ consultas_atendidas_hoy }}</p><p class="xm-stat-card__hint">Hoy</p></div></div>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Agenda de hoy</h2>
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Profesional</th><th>Estado</th></tr></thead>
-                    <tbody>
-                    {% for cita in citas_hoy %}
-                        <tr>
-                            {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
-                            <td>{{ cita.hora|time:"H:i" }}</td>
-                            <td>{{ cita.paciente }}</td>
-                            <td>{{ cita.profesional.nombre }}</td>
-                            <td>
-                                <span class="badge {% if cita.estado == 'cancelada' %}badge-error{% else %}badge-ghost{% endif %}">{{ cita.get_estado_display }}</span>
-                                {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
-                                <span class="badge badge-warning ml-1">{{ cita.prediccion_ausentismo.probabilidad }}% ausentismo</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin citas programadas hoy.</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Cancelaciones recientes</h2>
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Fecha</th><th>Paciente</th><th>Profesional</th></tr></thead>
-                    <tbody>
-                    {% for cita in citas_canceladas_recientes %}
-                        <tr>
-                            {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
-                            <td>{{ cita.fecha|date:"d/m/Y" }} {{ cita.hora|time:"H:i" }}</td>
-                            <td>{{ cita.paciente }}</td>
-                            <td>{{ cita.profesional.nombre }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}">Sin cancelaciones en los ultimos 7 dias.</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <div class="xm-card"><div class="p-6"><h2 class="font-bold text-lg mb-4">Agenda de hoy</h2><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Profesional</th><th>Estado</th></tr></thead><tbody>{% for cita in citas_hoy %}<tr>{% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}<td>{{ cita.hora|time:"H:i" }}</td><td>{{ cita.paciente }}</td><td>{{ cita.profesional.nombre }}</td><td><span class="badge {% if cita.estado == 'cancelada' %}badge-error{% else %}badge-outline{% endif %}">{{ cita.get_estado_display }}</span>{% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}<span class="badge badge-warning ml-1">{{ cita.prediccion_ausentismo.probabilidad }}%</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}" class="text-center py-6 opacity-70">Sin citas hoy.</td></tr>{% endfor %}</tbody></table></div></div></div>
+    <div class="xm-card"><div class="p-6"><h2 class="font-bold text-lg mb-4">Cancelaciones recientes</h2><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Fecha</th><th>Paciente</th><th>Profesional</th></tr></thead><tbody>{% for cita in citas_canceladas_recientes %}<tr>{% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}<td>{{ cita.fecha|date:"d/m/Y" }} {{ cita.hora|time:"H:i" }}</td><td>{{ cita.paciente }}</td><td>{{ cita.profesional.nombre }}</td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}" class="text-center py-6 opacity-70">Sin cancelaciones (7 días).</td></tr>{% endfor %}</tbody></table></div></div></div>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Alertas de ausentismo predictivo</h2>
-            <p class="text-sm opacity-70 mb-2">Citas con probabilidad alta de inasistencia. Considere recordatorio adicional u overbooking.</p>
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Fecha</th><th>Paciente</th><th>Prob.</th><th>Sugerencia</th></tr></thead>
-                    <tbody>
-                    {% for pred in alertas_ausentismo %}
-                        <tr>
-                            {% if is_superadmin_view %}<td>{{ pred.cita.institucion.nombre }}</td>{% endif %}
-                            <td>{{ pred.cita.fecha|date:"d/m/Y" }} {{ pred.cita.hora|time:"H:i" }}</td>
-                            <td>{{ pred.cita.paciente }}</td>
-                            <td><span class="badge badge-warning">{{ pred.probabilidad }}%</span></td>
-                            <td class="text-sm">Recordatorio adicional</td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin alertas de ausentismo.</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Demanda esperada (top)</h2>
-            <p class="text-sm opacity-70 mb-2">Citas semanales estimadas por especialidad, dia y franja horaria.</p>
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead><tr><th>Especialidad</th><th>Dia</th><th>Franja</th><th>Demanda/sem</th></tr></thead>
-                    <tbody>
-                    {% for item in demanda_top %}
-                        <tr>
-                            <td>{{ item.especialidad.nombre }}</td>
-                            <td>{{ item.get_dia_semana_display|default:item.dia_semana }}</td>
-                            <td>{{ item.franja_horaria }}</td>
-                            <td>{{ item.demanda_esperada }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="4">Sin datos de demanda calculados.</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <div class="xm-card"><div class="p-6"><h2 class="font-bold text-lg mb-2">Alertas de ausentismo</h2><p class="text-sm opacity-70 mb-4">Citas con alta probabilidad de inasistencia.</p><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Fecha</th><th>Paciente</th><th>Prob.</th></tr></thead><tbody>{% for pred in alertas_ausentismo %}<tr>{% if is_superadmin_view %}<td>{{ pred.cita.institucion.nombre }}</td>{% endif %}<td>{{ pred.cita.fecha|date:"d/m/Y" }}</td><td>{{ pred.cita.paciente }}</td><td><span class="badge badge-warning">{{ pred.probabilidad }}%</span></td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}" class="text-center py-6 opacity-70">Sin alertas.</td></tr>{% endfor %}</tbody></table></div></div></div>
+    <div class="xm-card"><div class="p-6"><h2 class="font-bold text-lg mb-2">Demanda esperada</h2><p class="text-sm opacity-70 mb-4">Top especialidades por franja horaria.</p><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr><th>Especialidad</th><th>Día</th><th>Franja</th><th>Demanda/sem</th></tr></thead><tbody>{% for item in demanda_top %}<tr><td>{{ item.especialidad.nombre }}</td><td>{{ item.get_dia_semana_display|default:item.dia_semana }}</td><td>{{ item.franja_horaria }}</td><td>{{ item.demanda_esperada }}</td></tr>{% empty %}<tr><td colspan="4" class="text-center py-6 opacity-70">Sin datos.</td></tr>{% endfor %}</tbody></table></div></div></div>
 </div>
 {% endblock %}

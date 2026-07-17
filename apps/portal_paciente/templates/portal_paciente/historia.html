@@ -1,33 +1,49 @@
 {% extends 'portal_paciente/base.html' %}
 {% block portal_content %}
-<h1 class="text-2xl font-bold mb-1">Mi historia clinica</h1>
-<p class="mb-4 opacity-80">{{ perfil.paciente.nombre }} {{ perfil.paciente.apellido }} - {{ perfil.paciente.documento }}</p>
-
-<div class="flex flex-wrap gap-2 mb-6">
-    <a href="{% url 'portal_exportar_hce' 'pdf' %}" class="btn btn-primary btn-sm">Exportar PDF</a>
-    <a href="{% url 'portal_exportar_hce' 'json' %}" class="btn btn-outline btn-sm">Exportar JSON</a>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Historia clínica</p>
+        <h1 class="xm-page-header__title">Mi historia clínica</h1>
+        <p class="xm-page-header__desc">{{ perfil.paciente.nombre }} {{ perfil.paciente.apellido }} — {{ perfil.paciente.documento }}</p>
+    </div>
+    <div class="xm-page-header__actions">
+        <a href="{% url 'portal_exportar_hce' 'pdf' %}" class="btn btn-primary btn-sm">Exportar PDF</a>
+        <a href="{% url 'portal_exportar_hce' 'json' %}" class="btn btn-outline btn-sm">Exportar JSON</a>
+    </div>
 </div>
 
 <div class="space-y-4">
 {% for consulta in consultas %}
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">{{ consulta.creado_en|date:"d/m/Y H:i" }}</h2>
-            <p class="text-sm opacity-70">{{ consulta.cita.profesional.nombre }}</p>
-            <p><strong>Motivo:</strong> {{ consulta.motivo_consulta|default:"-" }}</p>
-            <p><strong>Plan:</strong> {{ consulta.plan_terapeutico|default:"-" }}</p>
-            {% if consulta.valores_variables.all %}
-            <div class="text-sm opacity-80">
-                {% for valor in consulta.valores_variables.all %}
-                    <p><strong>{{ valor.variable.nombre }}:</strong> {{ valor.valor_mostrar }}</p>
-                {% endfor %}
+    <div class="xm-card">
+        <div class="p-6">
+            <div class="flex justify-between items-start gap-4 mb-3">
+                <div>
+                    <h2 class="font-bold">{{ consulta.creado_en|date:"d/m/Y H:i" }}</h2>
+                    <p class="text-sm opacity-70">{{ consulta.cita.profesional.nombre }}</p>
+                </div>
             </div>
-            {% endif %}
-            <div>{% for dx in consulta.diagnosticos.all %}<span class="badge badge-primary mr-1">{{ dx.codigo_cie10 }} {{ dx.nombre }}</span>{% endfor %}</div>
+            <div class="text-sm space-y-2">
+                <p><span class="font-semibold">Motivo:</span> {{ consulta.motivo_consulta|default:"-" }}</p>
+                <p><span class="font-semibold">Plan:</span> {{ consulta.plan_terapeutico|default:"-" }}</p>
+                {% if consulta.valores_variables.all %}
+                <div class="opacity-80">
+                    {% for valor in consulta.valores_variables.all %}
+                    <p><span class="font-semibold">{{ valor.variable.nombre }}:</span> {{ valor.valor_mostrar }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="flex flex-wrap gap-1 pt-2">
+                    {% for dx in consulta.diagnosticos.all %}
+                    <span class="badge badge-primary badge-sm">{{ dx.codigo_cie10 }} {{ dx.nombre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 {% empty %}
-    <div class="alert">Aun no tienes consultas registradas.</div>
+    <div class="xm-empty">
+        <p class="xm-empty__message">Aún no tienes consultas registradas.</p>
+    </div>
 {% endfor %}
 </div>
 {% endblock %}

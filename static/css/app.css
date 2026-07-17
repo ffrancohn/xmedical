@@ -469,6 +469,72 @@ textarea { min-height: 9rem; }
     background: hsl(var(--b1));
 }
 
+/* Wizard */
+.xm-wizard-steps {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.xm-wizard-step {
+    flex: 1;
+    min-width: 4rem;
+    text-align: center;
+    padding: 0.5rem 0.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.5;
+    background: hsl(var(--b3) / 0.3);
+    border: 1px solid transparent;
+}
+
+.xm-wizard-step--active {
+    opacity: 1;
+    background: hsl(var(--p) / 0.1);
+    border-color: hsl(var(--p) / 0.3);
+    color: hsl(var(--p));
+    font-weight: 600;
+}
+
+.xm-wizard-step--done {
+    opacity: 0.85;
+    background: hsl(var(--su) / 0.08);
+    color: hsl(var(--su));
+}
+
+/* Legacy compatibility — unifica plantillas aún no migradas */
+.card.bg-base-100.shadow,
+.card.bg-base-100.shadow-xl,
+.xm-card {
+    border-radius: var(--xm-radius);
+    border: 1px solid hsl(var(--b3) / 0.6);
+    box-shadow: var(--xm-shadow);
+    background: hsl(var(--b1));
+}
+
+.stat.rounded-box {
+    border-radius: var(--xm-radius);
+    border: 1px solid hsl(var(--b3) / 0.4);
+    box-shadow: var(--xm-shadow);
+    background: hsl(var(--b1));
+    padding: 1rem;
+}
+
+.card .table thead,
+.xm-table-wrap .table thead {
+    background: hsl(var(--b2) / 0.8);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.card .overflow-x-auto {
+    border-radius: calc(var(--xm-radius) - 2px);
+}
+
 @media (max-width: 1023px) {
     .xm-sidebar { width: min(85vw, var(--xm-sidebar-width)); }
 }

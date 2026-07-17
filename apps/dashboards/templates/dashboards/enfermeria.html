@@ -1,117 +1,27 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard enfermería{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-1">Dashboard de enfermeria</h1>
-<p class="opacity-70 mb-4">Resumen del dia {{ fecha|date:"d/m/Y" }}</p>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Reportes</p>
+        <h1 class="xm-page-header__title">Dashboard de enfermería</h1>
+        <p class="xm-page-header__desc">Resumen del día {{ fecha|date:"d/m/Y" }}</p>
+    </div>
+</div>
 {% include 'partials/institution_filter.html' %}
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="stat bg-warning/10 rounded-box">
-        <div class="stat-title">Pendientes preclinica</div>
-        <div class="stat-value">{{ total_pendientes }}</div>
-    </div>
-    <div class="stat bg-success/10 rounded-box">
-        <div class="stat-title">Ya evaluados</div>
-        <div class="stat-value">{{ total_evaluados }}</div>
-    </div>
-    <div class="stat bg-error/10 rounded-box">
-        <div class="stat-title">Alertas vitales</div>
-        <div class="stat-value">{{ total_alertas }}</div>
-    </div>
+    <div class="xm-stat-card xm-card xm-stat-card--warning"><div><p class="xm-stat-card__label">Pendientes preclínica</p><p class="xm-stat-card__value">{{ total_pendientes }}</p></div></div>
+    <div class="xm-stat-card xm-card xm-stat-card--success"><div><p class="xm-stat-card__label">Ya evaluados</p><p class="xm-stat-card__value">{{ total_evaluados }}</p></div></div>
+    <div class="xm-stat-card xm-card"><div><p class="xm-stat-card__label">Alertas vitales</p><p class="xm-stat-card__value">{{ total_alertas }}</p></div></div>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Pendientes de preclinica</h2>
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Medico</th><th></th></tr></thead>
-                    <tbody>
-                    {% for cita in pendientes_preclinica %}
-                        <tr>
-                            {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
-                            <td>{{ cita.hora|time:"H:i" }}</td>
-                            <td>{{ cita.paciente }}</td>
-                            <td>{{ cita.profesional.nombre }}</td>
-                            <td><a href="{% url 'preclinica_registrar' cita.id %}" class="btn btn-sm btn-primary">Registrar</a></td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">No hay pacientes pendientes.</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="card bg-base-100 shadow">
-        <div class="card-body">
-            <h2 class="card-title">Pacientes evaluados</h2>
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Estado</th></tr></thead>
-                    <tbody>
-                    {% for cita in evaluados_preclinica %}
-                        <tr>
-                            {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
-                            <td>{{ cita.hora|time:"H:i" }}</td>
-                            <td>{{ cita.paciente }}</td>
-                            <td><span class="badge badge-success">{{ cita.get_estado_display }}</span></td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}">Aun no hay evaluaciones hoy.</td></tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <div class="xm-card"><div class="p-6"><h2 class="font-bold text-lg mb-4">Pendientes de preclínica</h2><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Médico</th><th></th></tr></thead><tbody>{% for cita in pendientes_preclinica %}<tr>{% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}<td>{{ cita.hora|time:"H:i" }}</td><td>{{ cita.paciente }}</td><td>{{ cita.profesional.nombre }}</td><td><a href="{% url 'preclinica_registrar' cita.id %}" class="btn btn-xs btn-primary">Registrar</a></td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}" class="text-center py-6 opacity-70">Sin pendientes.</td></tr>{% endfor %}</tbody></table></div></div></div>
+    <div class="xm-card"><div class="p-6"><h2 class="font-bold text-lg mb-4">Pacientes evaluados</h2><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Hora</th><th>Paciente</th><th>Estado</th></tr></thead><tbody>{% for cita in evaluados_preclinica %}<tr>{% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}<td>{{ cita.hora|time:"H:i" }}</td><td>{{ cita.paciente }}</td><td><span class="badge badge-success">{{ cita.get_estado_display }}</span></td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}" class="text-center py-6 opacity-70">Sin evaluaciones hoy.</td></tr>{% endfor %}</tbody></table></div></div></div>
 </div>
 
-<div class="card bg-base-100 shadow mt-4">
-    <div class="card-body">
-        <h2 class="card-title">Alertas de riesgo cronico</h2>
-        <div class="overflow-x-auto">
-            <table class="table table-zebra">
-                <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Paciente</th><th>Tipo</th><th>Nivel</th><th>Mensaje</th></tr></thead>
-                <tbody>
-                {% for item in alertas_riesgo %}
-                    <tr>
-                        {% if is_superadmin_view %}<td>{{ item.preclinica.institucion.nombre }}</td>{% endif %}
-                        <td>{{ item.preclinica.cita.paciente }}</td>
-                        <td>{{ item.alerta.get_tipo_display }}</td>
-                        <td><span class="badge {% if item.alerta.nivel == 'alto' %}badge-error{% else %}badge-warning{% endif %}">{{ item.alerta.get_nivel_display }}</span></td>
-                        <td>{{ item.alerta.mensaje }}</td>
-                    </tr>
-                {% empty %}
-                    <tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}">Sin alertas de riesgo cronico hoy.</td></tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<div class="xm-card mt-4"><div class="p-6"><h2 class="font-bold text-lg mb-4">Alertas de riesgo crónico</h2><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Paciente</th><th>Tipo</th><th>Nivel</th><th>Mensaje</th></tr></thead><tbody>{% for item in alertas_riesgo %}<tr>{% if is_superadmin_view %}<td>{{ item.preclinica.institucion.nombre }}</td>{% endif %}<td>{{ item.preclinica.cita.paciente }}</td><td>{{ item.alerta.get_tipo_display }}</td><td><span class="badge {% if item.alerta.nivel == 'alto' %}badge-error{% else %}badge-warning{% endif %}">{{ item.alerta.get_nivel_display }}</span></td><td>{{ item.alerta.mensaje }}</td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}" class="text-center py-6 opacity-70">Sin alertas.</td></tr>{% endfor %}</tbody></table></div></div></div>
 
-<div class="card bg-base-100 shadow mt-4">
-    <div class="card-body">
-        <h2 class="card-title">Alertas vitales</h2>
-        <div class="overflow-x-auto">
-            <table class="table table-zebra">
-                <thead><tr>{% if is_superadmin_view %}<th>Clinica</th>{% endif %}<th>Paciente</th><th>Alerta</th><th>Signos</th></tr></thead>
-                <tbody>
-                {% for item in alertas_vitales %}
-                    <tr>
-                        {% if is_superadmin_view %}<td>{{ item.preclinica.institucion.nombre }}</td>{% endif %}
-                        <td>{{ item.preclinica.cita.paciente }}</td>
-                        <td><span class="badge badge-error">{{ item.mensaje }}</span></td>
-                        <td class="text-sm">PA {{ item.preclinica.presion_arterial_sis }}/{{ item.preclinica.presion_arterial_dia }}, T {{ item.preclinica.temperatura }}, SpO2 {{ item.preclinica.saturacion_o2 }}</td>
-                    </tr>
-                {% empty %}
-                    <tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}">Sin alertas vitales hoy.</td></tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<div class="xm-card mt-4"><div class="p-6"><h2 class="font-bold text-lg mb-4">Alertas vitales</h2><div class="xm-table-wrap border-0 shadow-none"><table class="table"><thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Paciente</th><th>Alerta</th><th>Signos</th></tr></thead><tbody>{% for item in alertas_vitales %}<tr>{% if is_superadmin_view %}<td>{{ item.preclinica.institucion.nombre }}</td>{% endif %}<td>{{ item.preclinica.cita.paciente }}</td><td><span class="badge badge-error">{{ item.mensaje }}</span></td><td class="text-sm">PA {{ item.preclinica.presion_arterial_sis }}/{{ item.preclinica.presion_arterial_dia }}, T {{ item.preclinica.temperatura }}, SpO2 {{ item.preclinica.saturacion_o2 }}</td></tr>{% empty %}<tr><td colspan="{% if is_superadmin_view %}4{% else %}3{% endif %}" class="text-center py-6 opacity-70">Sin alertas vitales.</td></tr>{% endfor %}</tbody></table></div></div></div>
 {% endblock %}

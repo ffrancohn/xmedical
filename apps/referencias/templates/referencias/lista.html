@@ -1,48 +1,53 @@
 {% extends 'base.html' %}
+{% block title %}Referencias{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Bandeja de referencias</h1>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Interconsulta</p>
+        <h1 class="xm-page-header__title">Bandeja de referencias</h1>
+    </div>
+</div>
+
 {% include 'partials/institution_filter.html' %}
 
 <div class="flex flex-wrap gap-2 mb-4">
-    <a href="{% url 'referencias_lista' %}" class="btn btn-sm {% if not estado_filtro %}btn-primary{% else %}btn-ghost{% endif %}">Todas</a>
-    <a href="?estado=pendiente" class="btn btn-sm {% if estado_filtro == 'pendiente' %}btn-primary{% else %}btn-ghost{% endif %}">Pendientes ({{ pendientes }})</a>
-    <a href="?estado=aceptada" class="btn btn-sm {% if estado_filtro == 'aceptada' %}btn-primary{% else %}btn-ghost{% endif %}">Aceptadas</a>
-    <a href="?estado=completada" class="btn btn-sm {% if estado_filtro == 'completada' %}btn-primary{% else %}btn-ghost{% endif %}">Completadas</a>
-    <a href="?estado=rechazada" class="btn btn-sm {% if estado_filtro == 'rechazada' %}btn-primary{% else %}btn-ghost{% endif %}">Rechazadas</a>
+    <a href="{% url 'referencias_lista' %}" class="btn btn-sm {% if not estado_filtro %}btn-primary{% else %}btn-outline{% endif %}">Todas</a>
+    <a href="?estado=pendiente" class="btn btn-sm {% if estado_filtro == 'pendiente' %}btn-primary{% else %}btn-outline{% endif %}">Pendientes ({{ pendientes }})</a>
+    <a href="?estado=aceptada" class="btn btn-sm {% if estado_filtro == 'aceptada' %}btn-primary{% else %}btn-outline{% endif %}">Aceptadas</a>
+    <a href="?estado=completada" class="btn btn-sm {% if estado_filtro == 'completada' %}btn-primary{% else %}btn-outline{% endif %}">Completadas</a>
+    <a href="?estado=rechazada" class="btn btn-sm {% if estado_filtro == 'rechazada' %}btn-primary{% else %}btn-outline{% endif %}">Rechazadas</a>
 </div>
 
-<div class="card bg-base-100 shadow">
-    <div class="card-body overflow-x-auto">
-        <table class="table table-zebra">
-            <thead>
-                <tr>
-                    {% if is_superadmin_view %}<th>Clinica</th>{% endif %}
-                    <th>Fecha</th>
-                    <th>Paciente</th>
-                    <th>Destino</th>
-                    <th>Referente</th>
-                    <th>Prioridad</th>
-                    <th>Estado</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for referencia in referencias %}
-                <tr>
-                    {% if is_superadmin_view %}<td>{{ referencia.institucion.nombre }}</td>{% endif %}
-                    <td>{{ referencia.creado_en|date:"Y-m-d H:i" }}</td>
-                    <td>{{ referencia.paciente }}</td>
-                    <td>{{ referencia.especialidad_destino.nombre }}</td>
-                    <td>{{ referencia.medico_referente.nombre }}</td>
-                    <td>{{ referencia.get_prioridad_display }}</td>
-                    <td><span class="badge">{{ referencia.get_estado_display }}</span></td>
-                    <td><a href="{% url 'referencias_detalle' referencia.id %}" class="btn btn-sm btn-outline">Ver</a></td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="{% if is_superadmin_view %}8{% else %}7{% endif %}">No hay referencias.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="xm-table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                {% if is_superadmin_view %}<th>Clínica</th>{% endif %}
+                <th>Fecha</th>
+                <th>Paciente</th>
+                <th>Destino</th>
+                <th>Referente</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for referencia in referencias %}
+            <tr>
+                {% if is_superadmin_view %}<td>{{ referencia.institucion.nombre }}</td>{% endif %}
+                <td>{{ referencia.creado_en|date:"Y-m-d H:i" }}</td>
+                <td>{{ referencia.paciente }}</td>
+                <td>{{ referencia.especialidad_destino.nombre }}</td>
+                <td>{{ referencia.medico_referente.nombre }}</td>
+                <td>{{ referencia.get_prioridad_display }}</td>
+                <td><span class="badge badge-outline">{{ referencia.get_estado_display }}</span></td>
+                <td><a href="{% url 'referencias_detalle' referencia.id %}" class="btn btn-xs btn-outline">Ver</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="{% if is_superadmin_view %}8{% else %}7{% endif %}" class="text-center py-8 opacity-70">No hay referencias.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

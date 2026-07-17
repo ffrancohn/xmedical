@@ -1,75 +1,96 @@
 {% extends 'portal_paciente/base.html' %}
 {% block portal_content %}
-<h1 class="text-2xl font-bold mb-4">Mis citas</h1>
-
-<h2 class="text-lg font-semibold mb-2">Proximas citas</h2>
-{% if proximas %}
-<div class="overflow-x-auto mb-8">
-    <table class="table bg-base-100 shadow">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Medico</th>
-                <th>Especialidad</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for cita in proximas %}
-            <tr>
-                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                <td>{{ cita.hora|time:"H:i" }}</td>
-                <td>{{ cita.profesional.nombre }}</td>
-                <td>{{ cita.profesional.especialidad.nombre|default:"-" }}</td>
-                <td><span class="badge badge-primary">{{ cita.get_estado_display }}</span></td>
-                <td class="flex flex-wrap gap-1">
-                    {% if cita.fecha == hoy and cita.estado != 'en_espera' %}
-                    <a href="{% url 'portal_llegada_cita' cita.id %}" class="btn btn-xs btn-success">Llegue a la clinica</a>
-                    {% endif %}
-                    <a href="{% url 'portal_cancelar_cita' cita.id %}" class="btn btn-xs btn-outline">Cancelar</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Portal</p>
+        <h1 class="xm-page-header__title">Mis citas</h1>
+    </div>
+    <div class="xm-page-header__actions">
+        <a href="{% url 'portal_solicitar_cita' %}" class="btn btn-primary btn-sm">Solicitar cita</a>
+    </div>
 </div>
-{% else %}
-<div class="alert mb-8">No tienes citas proximas.</div>
-{% endif %}
 
-<h2 class="text-lg font-semibold mb-2">Historial</h2>
-{% if historial %}
-<div class="overflow-x-auto">
-    <table class="table bg-base-100 shadow">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Medico</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for cita in historial %}
-            <tr>
-                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                <td>{{ cita.hora|time:"H:i" }}</td>
-                <td>{{ cita.profesional.nombre }}</td>
-                <td>
-                    {% if cita.estado == 'cancelada' %}
-                    <span class="badge badge-error">Cancelada</span>
-                    {% else %}
-                    <span class="badge">{{ cita.get_estado_display }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="xm-card mb-6">
+    <div class="p-6">
+        <h2 class="font-bold text-lg mb-4">Próximas citas</h2>
+        {% if proximas %}
+        <div class="xm-table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Médico</th>
+                        <th>Especialidad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in proximas %}
+                    <tr>
+                        <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ cita.hora|time:"H:i" }}</td>
+                        <td>{{ cita.profesional.nombre }}</td>
+                        <td>{{ cita.profesional.especialidad.nombre|default:"-" }}</td>
+                        <td><span class="badge badge-outline">{{ cita.get_estado_display }}</span></td>
+                        <td>
+                            <div class="flex flex-wrap gap-1">
+                                {% if cita.fecha == hoy and cita.estado != 'en_espera' %}
+                                <a href="{% url 'portal_llegada_cita' cita.id %}" class="btn btn-xs btn-success">Llegué</a>
+                                {% endif %}
+                                <a href="{% url 'portal_cancelar_cita' cita.id %}" class="btn btn-xs btn-outline">Cancelar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="xm-empty py-6">
+            <p class="xm-empty__message">No tienes citas próximas.</p>
+            <a href="{% url 'portal_solicitar_cita' %}" class="btn btn-primary btn-sm mt-3">Solicitar cita</a>
+        </div>
+        {% endif %}
+    </div>
 </div>
-{% else %}
-<div class="alert">Aun no tienes historial de citas.</div>
-{% endif %}
+
+<div class="xm-card">
+    <div class="p-6">
+        <h2 class="font-bold text-lg mb-4">Historial</h2>
+        {% if historial %}
+        <div class="xm-table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Médico</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in historial %}
+                    <tr>
+                        <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ cita.hora|time:"H:i" }}</td>
+                        <td>{{ cita.profesional.nombre }}</td>
+                        <td>
+                            {% if cita.estado == 'cancelada' %}
+                            <span class="badge badge-error">Cancelada</span>
+                            {% else %}
+                            <span class="badge badge-outline">{{ cita.get_estado_display }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm opacity-70 text-center py-6">Aún no tienes historial de citas.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

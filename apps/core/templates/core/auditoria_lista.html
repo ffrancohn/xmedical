@@ -1,27 +1,34 @@
 {% extends 'base.html' %}
+{% block title %}Auditoría{% endblock %}
 {% block content %}
-<div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-        <h1 class="card-title">Auditoria de cambios</h1>
+<div class="xm-page-header">
+    <div>
+        <p class="xm-page-header__subtitle">Sistema</p>
+        <h1 class="xm-page-header__title">Auditoría de cambios</h1>
+    </div>
+</div>
+
+<div class="xm-card">
+    <div class="p-6">
         {% if is_superadmin_view %}
-        <form method="get" class="flex gap-2 mb-4">
-            <select name="institucion" class="select select-bordered">
+        <form method="get" class="flex flex-wrap gap-2 mb-6">
+            <select name="institucion" class="select select-bordered select-sm">
                 <option value="">Todas las instituciones</option>
                 {% for inst in all_instituciones %}
                 <option value="{{ inst.id }}" {% if request.GET.institucion == inst.id|stringformat:'s' %}selected{% endif %}>{{ inst.nombre }}</option>
                 {% endfor %}
             </select>
-            <button class="btn btn-primary">Filtrar</button>
+            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
         {% endif %}
-        <div class="overflow-x-auto">
+        <div class="xm-table-wrap">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Institucion</th>
+                        <th>Institución</th>
                         <th>Usuario</th>
-                        <th>Accion</th>
+                        <th>Acción</th>
                         <th>Tabla</th>
                         <th>Registro</th>
                     </tr>
@@ -32,12 +39,12 @@
                         <td>{{ registro.creado_en|date:"Y-m-d H:i" }}</td>
                         <td>{{ registro.institucion.nombre }}</td>
                         <td>{{ registro.usuario.username|default:"-" }}</td>
-                        <td>{{ registro.accion }}</td>
+                        <td><span class="badge badge-outline badge-sm">{{ registro.accion }}</span></td>
                         <td>{{ registro.tabla_afectada }}</td>
                         <td>#{{ registro.registro_id }}</td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="6">Sin registros de auditoria.</td></tr>
+                    <tr><td colspan="6" class="text-center py-8 opacity-70">Sin registros de auditoría.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
