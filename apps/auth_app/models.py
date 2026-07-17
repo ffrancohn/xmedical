@@ -4,22 +4,23 @@ from django.db import models
 
 class UserPreference(models.Model):
     THEME_CHOICES = [
+        ("vital", "Vital"),
         ("garden", "Garden"),
+        ("emerald", "Esmeralda"),
+        ("aqua", "Aqua"),
+        ("corporate", "Corporativo"),
         ("light", "Claro"),
         ("dark", "Oscuro"),
-        ("corporate", "Corporativo"),
-        ("emerald", "Esmeralda"),
         ("cupcake", "Suave"),
         ("bumblebee", "Amarillo"),
         ("winter", "Invierno"),
         ("night", "Noche"),
         ("forest", "Bosque"),
-        ("aqua", "Aqua"),
         ("lofi", "Minimalista"),
     ]
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="preference")
-    theme = models.CharField(max_length=30, choices=THEME_CHOICES, default="garden")
+    theme = models.CharField(max_length=30, choices=THEME_CHOICES, default="vital")
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
