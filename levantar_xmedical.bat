@@ -9,21 +9,22 @@ echo XMedical - Inicio del sistema
 echo ========================================
 echo.
 
-where uv >nul 2>&1
+call "%ROOT_DIR%scripts\win\_require_uv.bat"
+if errorlevel 1 exit /b 1
+
+python --version >nul 2>&1
 if errorlevel 1 (
-    echo uv no esta instalado o no esta en el PATH.
-    echo Instala uv: https://docs.astral.sh/uv/
+    echo Python no esta instalado o no esta en el PATH.
     exit /b 1
 )
 
-echo Sincronizando dependencias con uv...
-uv sync
-if errorlevel 1 (
-    echo Error al sincronizar dependencias.
-    exit /b 1
-)
+echo [uv] Sincronizando entorno venv...
+uv venv "%ROOT_DIR%venv" --allow-existing
+if errorlevel 1 exit /b 1
+uv pip install -r "%ROOT_DIR%requirements.txt" --python "%ROOT_DIR%venv\Scripts\python.exe"
+if errorlevel 1 exit /b 1
 
-set "PY=%ROOT_DIR%.venv\Scripts\python.exe"
+set "PY=%ROOT_DIR%venv\Scripts\python.exe"
 
 echo.
 echo Iniciando servicios Docker de XMedical...
@@ -77,7 +78,7 @@ if not "!DJANGO_PORT!"=="%START_PORT%" (
 echo.
 
 echo Iniciando Django...
-set "DJANGO_CMD=cd /d "%ROOT_DIR%" && call .venv\Scripts\activate.bat && python manage.py runserver 127.0.0.1:!DJANGO_PORT!"
+set "DJANGO_CMD=cd /d "%ROOT_DIR%" && call venv\Scripts\activate.bat && python manage.py runserver 127.0.0.1:!DJANGO_PORT!"
 start "XMedical Django" cmd /k "!DJANGO_CMD!"
 
 echo.
@@ -90,7 +91,8 @@ echo Django:     http://127.0.0.1:!DJANGO_PORT!/
 echo Login:      http://127.0.0.1:!DJANGO_PORT!/auth/login/
 echo.
 echo Si es la primera vez, carga datos demo con:
-echo   uv run python manage.py loaddata fixtures/initial_data.json
+echo   venv\Scripts\activate
+echo   python manage.py loaddata fixtures/initial_data.json
 echo.
 echo Cierra la ventana "XMedical Django" para detener el servidor web.
 echo.
