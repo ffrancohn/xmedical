@@ -21,26 +21,30 @@ record() {
 
 echo "=== SEC-S: Analisis estatico ==="
 
-if command -v bandit >/dev/null 2>&1; then
-  if bandit -r apps/ -ll -q 2>/dev/null; then
-    record "SEC-S01" "Bandit apps/" "PASS"
-  else
-    record "SEC-S01" "Bandit apps/" "FAIL"
-  fi
-else
-  record "SEC-S01" "Bandit apps/" "WARN"
-  echo "bandit no instalado; pip install -r requirements/dev.txt"
+if [[ ! -d .venv ]]; then
+  uv sync --group dev
 fi
 
-if command -v pip-audit >/dev/null 2>&1; then
-  if pip-audit -r requirements.txt -q 2>/dev/null; then
-    record "SEC-S02" "pip-audit requirements.txt" "PASS"
-  else
-    record "SEC-S02" "pip-audit requirements.txt" "FAIL"
-  fi
+if uv run bandit -r apps/ -ll -q 2>/dev/null; then
+  record "SEC-S01" "Bandit apps/" "PASS"
 else
-  record "SEC-S02" "pip-audit requirements.txt" "WARN"
-  echo "pip-audit no instalado; pip install -r requirements/dev.txt"
+  if uv run python -c "import bandit" 2>/dev/null; then
+    record "SEC-S01" "Bandit apps/" "FAIL"
+  else
+    record "SEC-S01" "Bandit apps/" "WARN"
+    echo "bandit no instalado; ejecutar: uv sync --group dev"
+  fi
+fi
+
+if uv run pip-audit -r requirements.txt -q 2>/dev/null; then
+  record "SEC-S02" "pip-audit requirements.txt" "PASS"
+else
+  if uv run python -c "import pip_audit" 2>/dev/null; then
+    record "SEC-S02" "pip-audit requirements.txt" "FAIL"
+  else
+    record "SEC-S02" "pip-audit requirements.txt" "WARN"
+    echo "pip-audit no instalado; ejecutar: uv sync --group dev"
+  fi
 fi
 
 if git ls-files --error-unmatch .env >/dev/null 2>&1; then

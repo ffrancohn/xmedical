@@ -1,1 +1,4 @@
--r base.txt
+# Dependencias de produccion: ver ../requirements.txt (exportado desde pyproject.toml)
+# Fuente de verdad: pyproject.toml + uv.lock
+# Instalar: uv sync
+-r ../requirements.txt

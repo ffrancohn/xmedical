@@ -4,24 +4,24 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
-echo "=== Configurando entorno virtual Linux ==="
+echo "=== Configurando entorno con uv ==="
 
-if [[ -d venv/Scripts ]]; then
-  echo "Eliminando venv de Windows..."
+if ! command -v uv >/dev/null 2>&1; then
+  echo "Error: uv no esta instalado. Ver https://docs.astral.sh/uv/"
+  exit 1
+fi
+
+if [[ -d venv ]]; then
+  echo "Eliminando venv legado (pip)..."
   rm -rf venv
 fi
 
-if [[ ! -d venv ]]; then
-  python3 -m venv venv
-fi
-
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
+uv sync --group dev
 
 echo ""
-echo "Entorno listo. Para activarlo:"
-echo "  source venv/bin/activate"
+echo "Entorno listo (.venv). Comandos utiles:"
+echo "  uv run python manage.py runserver"
+echo "  source .venv/bin/activate"
 echo ""
-python --version
-pip list | head -5
+uv run python --version
+uv pip list | head -5

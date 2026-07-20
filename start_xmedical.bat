@@ -11,11 +11,11 @@ echo.
 
 cd /d "%~dp0"
 
-REM Verificar Python
-python --version >nul 2>&1
+REM Verificar uv
+where uv >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] Python no esta instalado
-    echo Instala Python 3.11+ desde https://python.org/
+    echo [ERROR] uv no esta instalado
+    echo Instala uv: https://docs.astral.sh/uv/
     pause
     exit /b 1
 )
@@ -38,20 +38,18 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/4] Activando entorno virtual...
-if exist "venv\Scripts\activate.bat" (
-    call venv\Scripts\activate.bat
-) else (
-    echo Creando entorno virtual...
-    python -m venv venv
-    call venv\Scripts\activate.bat
-    pip install -r requirements.txt
+echo [2/4] Sincronizando entorno con uv...
+uv sync
+if errorlevel 1 (
+    echo [ERROR] No se pudieron instalar las dependencias
+    pause
+    exit /b 1
 )
 
 echo.
 echo [3/4] Aplicando migraciones y cargando datos de prueba...
-python manage.py migrate
-python manage.py loaddata fixtures/initial_data.json
+uv run python manage.py migrate
+uv run python manage.py loaddata fixtures/initial_data.json
 
 echo.
 echo [4/4] Iniciando servidor Django...
@@ -61,7 +59,7 @@ echo   Login:    http://localhost:8000/auth/login/
 echo   Usuarios: ver USUARIOS_PRUEBA.md
 echo.
 
-start "XMedical Django" cmd /k "cd /d %~dp0 && venv\Scripts\activate.bat && python manage.py runserver"
+start "XMedical Django" cmd /k "cd /d %~dp0 && .venv\Scripts\activate.bat && python manage.py runserver"
 
 echo.
 echo ================================================================

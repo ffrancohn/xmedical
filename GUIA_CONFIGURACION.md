@@ -5,6 +5,7 @@ Guía paso a paso para configurar y ejecutar XMedical con Django.
 ## Checklist de preparación
 
 - [ ] **Python 3.11+** instalado
+- [ ] **uv** instalado ([docs.astral.sh/uv](https://docs.astral.sh/uv/))
 - [ ] **Docker y Docker Compose** instalados (recomendado)
 - [ ] Git instalado
 
@@ -12,6 +13,7 @@ Verificación rápida:
 
 ```bash
 python --version    # o python3 --version en Linux
+uv --version
 docker --version
 docker compose version
 ```
@@ -63,34 +65,34 @@ GRANT ALL PRIVILEGES ON DATABASE xmedical TO xmedical_user;
 
 ```bash
 ./setup_venv.sh
-source venv/bin/activate
+# o: uv sync --group dev
 ```
 
 **Windows:**
 
 ```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
+uv sync
 ```
+
+El entorno queda en `.venv/`. Puedes usar `uv run ...` sin activarlo, o activarlo con `.venv\Scripts\activate` (Windows) / `source .venv/bin/activate` (Linux).
 
 ## Paso 4: Inicializar base de datos
 
 ```bash
-python manage.py migrate
-python manage.py loaddata fixtures/initial_data.json
+uv run python manage.py migrate
+uv run python manage.py loaddata fixtures/initial_data.json
 ```
 
 Opcional — crear superusuario adicional:
 
 ```bash
-python manage.py createsuperuser
+uv run python manage.py createsuperuser
 ```
 
 ## Paso 5: Iniciar Django
 
 ```bash
-python manage.py runserver
+uv run python manage.py runserver
 ```
 
 **Sistema listo en:** http://localhost:8000
@@ -131,10 +133,11 @@ Esto inicia: `db`, `redis`, `web` (Django) y `celery`.
 
 ### Error: "No module named django"
 
-Activar el entorno virtual e instalar dependencias:
+Sincronizar el entorno e instalar dependencias:
 
 ```bash
-pip install -r requirements.txt
+uv sync
+uv run python manage.py runserver
 ```
 
 ### Error de conexión a PostgreSQL

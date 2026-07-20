@@ -36,28 +36,30 @@ run_step "03" "humo-http" bash scripts/verify_smoke.sh
 run_step "08" "seguridad-estatica" bash scripts/verify_security_static.sh
 run_step "09" "seguridad-headers" bash scripts/verify_security_headers.sh
 
-source venv/bin/activate
+if [[ ! -d .venv ]]; then
+  uv sync --group dev
+fi
 
-run_step "04" "django-check" python manage.py check
-run_step "05" "django-deploy-check" bash -c "python manage.py check --deploy || true"
+run_step "04" "django-check" uv run python manage.py check
+run_step "05" "django-deploy-check" bash -c "uv run python manage.py check --deploy || true"
 
 APPS="apps.core apps.auth_app apps.pacientes apps.citas apps.preclinica apps.consulta apps.api.tests"
-run_step "06" "django-tests" python manage.py test $APPS --verbosity=2
-run_step "11" "django-security-tests" python manage.py test apps.core.tests_security --verbosity=2
+run_step "06" "django-tests" uv run python manage.py test $APPS --verbosity=2
+run_step "11" "django-security-tests" uv run python manage.py test apps.core.tests_security --verbosity=2
 
-if python -c "import coverage" 2>/dev/null; then
+if uv run python -c "import coverage" 2>/dev/null; then
   log "--- 07: cobertura ---"
-  coverage erase
+  uv run coverage erase
   set +e
-  coverage run --source=apps manage.py test $APPS --verbosity=0 \
+  uv run coverage run --source=apps manage.py test $APPS --verbosity=0 \
     > "$EVIDENCE_DIR/07-cobertura-tests.txt" 2>&1
-  coverage report --fail-under=60 > "$EVIDENCE_DIR/07-cobertura-report.txt" 2>&1
-  coverage html -d "$EVIDENCE_DIR/07-cobertura-html" \
+  uv run coverage report --fail-under=60 > "$EVIDENCE_DIR/07-cobertura-report.txt" 2>&1
+  uv run coverage html -d "$EVIDENCE_DIR/07-cobertura-html" \
     >> "$EVIDENCE_DIR/07-cobertura-report.txt" 2>&1
   set -e
   log "Cobertura HTML: $EVIDENCE_DIR/07-cobertura-html/index.html"
 else
-  echo "coverage no instalado" > "$EVIDENCE_DIR/07-cobertura-report.txt"
+  echo "coverage no instalado; ejecutar: uv sync --group dev" > "$EVIDENCE_DIR/07-cobertura-report.txt"
 fi
 
 export XMEDICAL_EVIDENCE_DIR="$EVIDENCE_DIR"

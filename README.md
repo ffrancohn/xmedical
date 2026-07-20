@@ -29,6 +29,7 @@ Documentación de producto y arquitectura en [`docs/`](docs/).
 ## Requisitos
 
 - Python 3.11+
+- [uv](https://docs.astral.sh/uv/) (gestión de dependencias y entornos)
 - Docker y Docker Compose (recomendado)
 - PostgreSQL 14+ y Redis 7 (si se ejecuta sin Docker)
 
@@ -53,11 +54,10 @@ Servicios disponibles:
 
 ```bash
 levantar_xmedical.bat
-venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py loaddata fixtures/initial_data.json
-python manage.py runserver
+uv sync
+uv run python manage.py migrate
+uv run python manage.py loaddata fixtures/initial_data.json
+uv run python manage.py runserver
 ```
 
 ### Opción 3: Desarrollo local (Linux)
@@ -65,11 +65,10 @@ python manage.py runserver
 ```bash
 ./setup_venv.sh
 ./levantar_xmedical.sh
-source venv/bin/activate
 cp .env.example .env
-python manage.py migrate
-python manage.py loaddata fixtures/initial_data.json
-python manage.py runserver
+uv run python manage.py migrate
+uv run python manage.py loaddata fixtures/initial_data.json
+uv run python manage.py runserver
 ```
 
 O todo en uno:
@@ -78,6 +77,7 @@ O todo en uno:
 ./start_xmedical.sh
 ```
 
+Las dependencias se definen en `pyproject.toml` y se bloquean en `uv.lock`. Los archivos `requirements*.txt` se generan con `uv export` para compatibilidad (Docker legacy, pip-audit, etc.).
 ## Acceso al sistema
 
 - **Producción**: https://xmedical.cloud/auth/login/
@@ -116,20 +116,22 @@ Copiar `.env.example` a `.env` y ajustar valores. Ver `.env.example` para la lis
 ## Scripts útiles
 
 ```bash
-python manage.py migrate
-python manage.py loaddata fixtures/initial_data.json
-python manage.py createsuperuser
-python manage.py runserver
-python manage.py collectstatic --noinput
-./run_tests.sh                    # pruebas automatizadas
-python manage.py test apps.core   # solo tests
+uv sync                              # instalar / actualizar deps (.venv)
+uv sync --group dev                  # incluye herramientas de desarrollo
+uv run python manage.py migrate
+uv run python manage.py loaddata fixtures/initial_data.json
+uv run python manage.py createsuperuser
+uv run python manage.py runserver
+uv run python manage.py collectstatic --noinput
+./run_tests.sh                       # pruebas automatizadas
+uv run python manage.py test apps.core
 ```
 
 ### Scripts Linux
 
 | Script | Acción |
 |---|---|
-| `setup_venv.sh` | Crea o recrea el entorno virtual Linux |
+| `setup_venv.sh` | Crea o recrea el entorno con `uv sync` |
 | `levantar_xmedical.sh` | Inicia PostgreSQL y Redis con Docker |
 | `bajar_xmedical.sh` | Detiene servicios Docker |
 | `start_xmedical.sh` | Levanta Docker + Django en desarrollo |
