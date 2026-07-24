@@ -1,6 +1,6 @@
 {% load xmedical_tags %}
 <!DOCTYPE html>
-<html lang="es" data-theme="{{ visual_theme|default:'vital' }}">
+<html lang="es" data-theme="{{ visual_theme|default:'garden' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +8,12 @@
     <title>{% block title %}XMedical{% endblock %}{% if institucion %} · {{ institucion.nombre }}{% endif %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.css" rel="stylesheet">
-    <link href="/static/css/themes.css" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="xm-body">
+<body class="xm-body {% block body_class %}{% endblock %}">
+{% block layout %}
 <div class="drawer lg:drawer-open" x-data="{ sidebarOpen: false }">
     <input id="xm-sidebar-toggle" type="checkbox" class="drawer-toggle" x-model="sidebarOpen">
 
@@ -39,6 +39,7 @@
         {% include 'components/sidebar.html' %}
     </div>
 </div>
+{% endblock %}
 {% block extra_js %}{% endblock %}
 </body>
 </html>

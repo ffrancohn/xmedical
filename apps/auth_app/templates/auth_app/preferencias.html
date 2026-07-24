@@ -6,7 +6,7 @@
         <div>
             <p class="xm-page-header__subtitle">Personalización</p>
             <h1 class="xm-page-header__title">Configuración visual</h1>
-            <p class="xm-page-header__desc">Elige la combinación de colores. El tema <strong>Vital</strong> usa tonos turquesa, índigo y coral más vivos.</p>
+            <p class="xm-page-header__desc">Elige la combinación de colores para la interfaz.</p>
         </div>
     </div>
 
@@ -19,7 +19,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         {% for value, label in form.theme.field.choices %}
                         <label class="cursor-pointer group">
-                            <input type="radio" name="theme" value="{{ value }}" class="peer sr-only" {% if form.theme.value == value or not form.theme.value and value == 'vital' %}checked{% endif %}>
+                            <input type="radio" name="theme" value="{{ value }}" class="peer sr-only" {% if form.theme.value == value or not form.theme.value and value == 'garden' %}checked{% endif %}>
                             <div data-theme="{{ value }}" class="rounded-xl p-4 border-2 border-base-300 bg-base-200 transition-all peer-checked:border-primary peer-checked:ring-2 peer-checked:ring-primary/30 group-hover:border-primary/50">
                                 <div class="flex gap-1.5 mb-3">
                                     <span class="w-7 h-7 rounded-full bg-primary shadow-sm"></span>
@@ -27,8 +27,8 @@
                                     <span class="w-7 h-7 rounded-full bg-accent shadow-sm"></span>
                                 </div>
                                 <span class="badge badge-primary badge-sm">{{ label }}</span>
-                                {% if value == 'vital' %}
-                                <p class="text-xs opacity-60 mt-2">Recomendado · colores vivos</p>
+                                {% if value == 'garden' %}
+                                <p class="text-xs opacity-60 mt-2">Recomendado</p>
                                 {% endif %}
                             </div>
                         </label>

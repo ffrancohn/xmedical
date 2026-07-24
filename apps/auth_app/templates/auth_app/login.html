@@ -9,14 +9,22 @@
                     <span class="xm-brand-mark">XM</span>
                 </div>
                 <h1 class="text-2xl font-bold">Iniciar sesión</h1>
-                <p class="text-sm opacity-70 mt-2">Accede al panel clínico de tu institución</p>
+                <p class="text-sm opacity-70 mt-2">Personal clínico o pacientes del portal</p>
             </div>
+            {% if show_institucion %}
+            <div class="alert alert-info text-sm mb-2">
+                <span>Si eres <strong>paciente</strong>, usa tu correo como usuario. La clínica se detecta automáticamente si tienes una sola cuenta.</span>
+            </div>
+            {% endif %}
             <form method="post" class="xm-form space-y-4">
                 {% csrf_token %}
                 {% if show_institucion %}
                 <div class="form-control">
                     <label class="label" for="id_institucion"><span class="label-text font-medium">Institución</span></label>
                     {{ form.institucion }}
+                    {% if form.institucion.errors %}
+                    <p class="text-error text-sm mt-1">{{ form.institucion.errors|join:", " }}</p>
+                    {% endif %}
                 </div>
                 {% endif %}
                 <div class="form-control">
@@ -35,7 +43,9 @@
             <div class="divider text-xs opacity-50 my-4">o</div>
             <p class="text-sm text-center opacity-70">
                 ¿Eres paciente?
-                <a href="{% url 'portal_registro' %}" class="link link-primary">Regístrate en el portal</a>
+                <a href="{% url 'portal_login' %}" class="link link-primary font-medium">Entrar al portal del paciente</a>
+                ·
+                <a href="{% url 'portal_registro' %}" class="link link-primary">Registrarse</a>
             </p>
         </div>
     </div>

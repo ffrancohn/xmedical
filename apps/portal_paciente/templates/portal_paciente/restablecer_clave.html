@@ -1,0 +1,31 @@
+{% extends 'layouts/public.html' %}
+{% block title %}Restablecer contraseña{% endblock %}
+{% block content %}
+<div class="xm-container py-8">
+    <div class="xm-auth-card xm-card shadow-xl">
+        <div class="card-body">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold">Restablecer contraseña</h1>
+                <p class="text-sm opacity-70 mt-2">Usa el mismo correo y documento con los que te registraste</p>
+            </div>
+            <form method="post" class="xm-form space-y-4">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-control">
+                    <label class="label" for="{{ field.id_for_label }}"><span class="label-text font-medium">{{ field.label }}</span></label>
+                    {{ field }}
+                    {% if field.errors %}<p class="text-error text-sm mt-1">{{ field.errors|join:", " }}</p>{% endif %}
+                </div>
+                {% endfor %}
+                {% if form.non_field_errors %}
+                <div class="alert alert-error text-sm">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary w-full mt-2">Guardar nueva contraseña</button>
+            </form>
+            <p class="text-sm text-center mt-4 opacity-70">
+                <a href="{% url 'portal_login' %}" class="link link-primary">Volver al login del paciente</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

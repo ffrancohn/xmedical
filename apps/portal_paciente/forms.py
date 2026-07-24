@@ -8,6 +8,57 @@ from apps.pacientes.models import Paciente
 from .models import PerfilPaciente
 
 
+class PortalPasswordResetForm(forms.Form):
+    email = forms.EmailField(label="Correo electrónico")
+    documento = forms.CharField(max_length=20, label="Documento de identidad")
+    password1 = forms.CharField(widget=forms.PasswordInput, label="Nueva contraseña")
+    password2 = forms.CharField(widget=forms.PasswordInput, label="Confirmar contraseña")
+
+    def clean(self):
+        cleaned = super().clean()
+        email = (cleaned.get("email") or "").strip().lower()
+        documento = (cleaned.get("documento") or "").strip()
+        password1 = cleaned.get("password1")
+        password2 = cleaned.get("password2")
+
+        if email:
+            cleaned["email"] = email
+        if documento:
+            cleaned["documento"] = documento
+
+        if password1 and password2 and password1 != password2:
+            self.add_error("password2", "Las contraseñas no coinciden.")
+
+        if password1:
+            validate_password(password1)
+
+        if email and documento:
+            perfil = (
+                PerfilPaciente.objects.select_related("usuario", "paciente", "institucion")
+                .filter(
+                    usuario__username__iexact=email,
+                    paciente__documento=documento,
+                    activo=True,
+                )
+                .first()
+            )
+            if not perfil:
+                raise forms.ValidationError(
+                    "No encontramos una cuenta de paciente con ese correo y documento."
+                )
+            cleaned["perfil"] = perfil
+        return cleaned
+
+    def save(self):
+        perfil = self.cleaned_data["perfil"]
+        user = perfil.usuario
+        user.set_password(self.cleaned_data["password1"])
+        user.username = user.username.lower()
+        user.email = user.email.lower()
+        user.save(update_fields=["password", "username", "email"])
+        return perfil
+
+
 class PortalRegistroForm(forms.Form):
     documento = forms.CharField(max_length=20, label="Documento de identidad")
     nombre = forms.CharField(max_length=100)
@@ -79,8 +130,8 @@ class PortalRegistroForm(forms.Form):
             paciente.save()
 
         user = User.objects.create_user(
-            username=self.cleaned_data["email"],
-            email=self.cleaned_data["email"],
+            username=self.cleaned_data["email"].strip().lower(),
+            email=self.cleaned_data["email"].strip().lower(),
             password=self.cleaned_data["password1"],
             first_name=self.cleaned_data["nombre"],
             last_name=self.cleaned_data["apellido"],

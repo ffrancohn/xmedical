@@ -9,7 +9,7 @@ class TenantMiddleware:
     def __call__(self, request):
         host = request.get_host().split(":")[0]
         parts = host.split(".")
-        subdominio = parts[0] if len(parts) > 1 else None
+        subdominio = parts[0] if len(parts) > 2 else None
         request.institucion = None
 
         if subdominio and subdominio not in ["www", "admin", "api", "localhost", "127"]:

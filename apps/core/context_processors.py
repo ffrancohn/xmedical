@@ -18,6 +18,8 @@ def user_perfil_paciente(request):
         if request.user.is_authenticated
         else None
     )
+    if request.user.is_authenticated and not perfil:
+        perfil = get_perfil_paciente(request.user, None)
     return {"perfil_paciente": perfil}
 
 
@@ -31,7 +33,7 @@ def institucion(request):
 
 
 def visual_preferences(request):
-    theme = "vital"
+    theme = "garden"
     if request.user.is_authenticated:
         preference = getattr(request.user, "preference", None)
         if preference:

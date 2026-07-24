@@ -10,15 +10,28 @@ class XMedicalAuthenticationForm(AuthenticationForm):
     institucion = forms.ModelChoiceField(
         queryset=Institucion.objects.filter(activo=True).order_by("nombre"),
         required=False,
-        label="Institucion",
-        empty_label="Selecciona tu clinica",
+        label="Institución",
+        empty_label="Selecciona tu clínica",
     )
 
-    def __init__(self, *args, show_institucion=False, **kwargs):
+    def __init__(self, *args, show_institucion=False, patient_mode=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.show_institucion = show_institucion
+        self.patient_mode = patient_mode
         if not show_institucion:
             self.fields.pop("institucion", None)
+        self.fields["username"].label = "Correo electrónico" if patient_mode else "Usuario"
+        if patient_mode:
+            self.fields["username"].widget.attrs.setdefault(
+                "placeholder",
+                "tu.correo@ejemplo.com",
+            )
+
+    def clean(self):
+        username = (self.cleaned_data.get("username") or self.data.get("username") or "").strip()
+        if "@" in username:
+            self.cleaned_data["username"] = username.lower()
+        return super().clean()
 
 
 class ProfesionalRegistroForm(UserCreationForm):

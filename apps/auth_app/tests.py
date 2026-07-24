@@ -5,6 +5,8 @@ from django.test import Client, TestCase
 from apps.auth_app.models import UserPreference
 from apps.core.models import Institucion, Profesional
 from apps.core.test_utils import HOST, PASSWORD
+from apps.pacientes.models import Paciente
+from apps.portal_paciente.models import PerfilPaciente
 
 
 class AuthFunctionalTests(TestCase):
@@ -75,3 +77,31 @@ class AuthFunctionalTests(TestCase):
         self.assertEqual(response.status_code, 302)
         pref = UserPreference.objects.get(user__username="medico.demo")
         self.assertEqual(pref.theme, "dark")
+
+    def test_paciente_login_sin_institucion(self):
+        institucion = Institucion.objects.get(pk=1)
+        paciente = Paciente.objects.create(
+            institucion=institucion,
+            documento="888888888888",
+            nombre="Portal",
+            apellido="Paciente",
+            email="portal.paciente@test.com",
+        )
+        user = User.objects.create_user(
+            username="portal.paciente@test.com",
+            email="portal.paciente@test.com",
+            password=PASSWORD,
+        )
+        PerfilPaciente.objects.create(
+            institucion=institucion,
+            usuario=user,
+            paciente=paciente,
+        )
+        client = Client(**HOST)
+        response = client.post(
+            "/auth/login/",
+            {"username": "portal.paciente@test.com", "password": PASSWORD},
+            **HOST,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/portal/", response.url)
