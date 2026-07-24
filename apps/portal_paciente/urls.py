@@ -1,9 +1,12 @@
 from django.urls import path
 
+from apps.auth_app.views import PortalLoginView
+
 from .views import (
     PortalCitasView,
     PortalDashboardView,
     PortalHistoriaView,
+    PortalPasswordResetView,
     PortalRegistroView,
     PortalSolicitarCitaView,
     portal_cancelar_cita,
@@ -13,6 +16,8 @@ from .views import (
 
 urlpatterns = [
     path("", PortalDashboardView.as_view(), name="portal_dashboard"),
+    path("entrar/", PortalLoginView.as_view(), name="portal_login"),
+    path("restablecer-clave/", PortalPasswordResetView.as_view(), name="portal_restablecer_clave"),
     path("registro/", PortalRegistroView.as_view(), name="portal_registro"),
     path("citas/", PortalCitasView.as_view(), name="portal_citas"),
     path("citas/solicitar/", PortalSolicitarCitaView.as_view(), name="portal_solicitar_cita"),

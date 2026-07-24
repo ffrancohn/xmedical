@@ -4,7 +4,6 @@ from django.db import models
 
 class UserPreference(models.Model):
     THEME_CHOICES = [
-        ("vital", "Vital"),
         ("garden", "Garden"),
         ("emerald", "Esmeralda"),
         ("aqua", "Aqua"),
@@ -20,7 +19,7 @@ class UserPreference(models.Model):
     ]
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="preference")
-    theme = models.CharField(max_length=30, choices=THEME_CHOICES, default="vital")
+    theme = models.CharField(max_length=30, choices=THEME_CHOICES, default="garden")
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

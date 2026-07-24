@@ -1,10 +1,15 @@
 from functools import wraps
 
+from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.contrib import messages
-from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
 from .models import PerfilPaciente
+
+
+class PortalLoginRequiredMixin(LoginRequiredMixin):
+    login_url = reverse_lazy("portal_login")
 
 
 def get_perfil_paciente(user, institucion=None):
@@ -32,8 +37,12 @@ class PacienteRequiredMixin(AccessMixin):
         institucion = _resolve_institucion(request)
         perfil = get_perfil_paciente(request.user, institucion)
         if not perfil:
+            perfil = get_perfil_paciente(request.user, None)
+        if not perfil:
             messages.error(request, "No tienes acceso al portal del paciente.")
             return redirect("dashboard")
+        if not institucion or perfil.institucion_id != institucion.id:
+            request.session["institucion_id"] = perfil.institucion_id
         request.perfil_paciente = perfil
         return super().dispatch(request, *args, **kwargs)
 
@@ -44,8 +53,12 @@ def paciente_required(view_func):
         institucion = _resolve_institucion(request)
         perfil = get_perfil_paciente(request.user, institucion)
         if not perfil:
+            perfil = get_perfil_paciente(request.user, None)
+        if not perfil:
             messages.error(request, "No tienes acceso al portal del paciente.")
             return redirect("dashboard")
+        if not institucion or perfil.institucion_id != institucion.id:
+            request.session["institucion_id"] = perfil.institucion_id
         request.perfil_paciente = perfil
         return view_func(request, *args, **kwargs)
 

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'portal_paciente/base.html' %}
 {% block title %}Preferencias visuales{% endblock %}
 {% block content %}
 <div class="max-w-4xl">
@@ -37,7 +37,7 @@
                 </fieldset>
                 <div class="flex gap-2 pt-2">
                     <button type="submit" class="btn btn-primary">Guardar preferencias</button>
-                    <a href="{% url 'dashboard' %}" class="btn btn-ghost">Volver</a>
+                    <a href="{% url 'portal_dashboard' %}" class="btn btn-ghost">Volver</a>
                 </div>
             </form>
         </div>

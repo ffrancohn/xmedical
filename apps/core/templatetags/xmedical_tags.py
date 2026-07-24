@@ -42,51 +42,65 @@ def sidebar_nav(context):
 
     sections = []
 
-    principal = []
-    for item in [
-        ("Inicio", "dashboard", "home", None),
-        ("Pacientes", "pacientes_lista", "users", {"recepcionista", "admin", "medico"}),
-        ("Citas", "citas_lista", "calendar", {"recepcionista", "admin", "medico"}),
-        ("Preclínica", "preclinica_lista", "heart", {"enfermera", "admin"}),
-        ("Referencias", "referencias_lista", "share", {"medico", "admin"}),
-    ]:
-        nav = _nav_item(item[0], item[1], item[2], request, profesional, user, item[3])
-        if nav:
-            principal.append(nav)
-    if principal:
-        sections.append({"title": "Clínica", "items": principal})
-
-    reportes = []
-    for item in [
-        ("Enfermería", "dashboards_enfermeria", "activity", {"enfermera", "admin"}),
-        ("Administración", "dashboards_administracion", "bar-chart", {"admin"}),
-        ("Epidemiología", "dashboards_epidemiologia", "trending-up", {"admin"}),
-        (
-            "Especialista",
-            "dashboards_especialista",
-            "stethoscope",
-            None,
-        ),
-    ]:
-        if item[0] == "Especialista":
-            if user.is_superuser or (
-                profesional
-                and profesional.tipo == "medico"
-                and profesional.especialidad
-                and profesional.especialidad.nivel == "segundo"
-            ):
-                nav = _nav_item(item[0], item[1], item[2], request, profesional, user)
-                if nav:
-                    reportes.append(nav)
-        else:
+    if perfil_paciente and not profesional and not user.is_superuser:
+        portal = []
+        for item in [
+            ("Inicio", "portal_dashboard", "home"),
+            ("Mis citas", "portal_citas", "calendar"),
+            ("Solicitar cita", "portal_solicitar_cita", "plus-circle"),
+            ("Historia clínica", "portal_historia", "file-text"),
+        ]:
+            nav = _nav_item(item[0], item[1], item[2], request, profesional, user)
+            if nav:
+                portal.append(nav)
+        if portal:
+            sections.append({"title": "Portal del paciente", "items": portal})
+    else:
+        principal = []
+        for item in [
+            ("Inicio", "dashboard", "home", None),
+            ("Pacientes", "pacientes_lista", "users", {"recepcionista", "admin", "medico"}),
+            ("Citas", "citas_lista", "calendar", {"recepcionista", "admin", "medico"}),
+            ("Preclínica", "preclinica_lista", "heart", {"enfermera", "admin"}),
+            ("Referencias", "referencias_lista", "share", {"medico", "admin"}),
+        ]:
             nav = _nav_item(item[0], item[1], item[2], request, profesional, user, item[3])
             if nav:
-                reportes.append(nav)
-    if reportes:
-        sections.append({"title": "Reportes", "items": reportes})
+                principal.append(nav)
+        if principal:
+            sections.append({"title": "Clínica", "items": principal})
+
+        reportes = []
+        for item in [
+            ("Enfermería", "dashboards_enfermeria", "activity", {"enfermera", "admin"}),
+            ("Administración", "dashboards_administracion", "bar-chart", {"admin"}),
+            ("Epidemiología", "dashboards_epidemiologia", "trending-up", {"admin"}),
+            (
+                "Especialista",
+                "dashboards_especialista",
+                "stethoscope",
+                None,
+            ),
+        ]:
+            if item[0] == "Especialista":
+                if user.is_superuser or (
+                    profesional
+                    and profesional.tipo == "medico"
+                    and profesional.especialidad
+                    and profesional.especialidad.nivel == "segundo"
+                ):
+                    nav = _nav_item(item[0], item[1], item[2], request, profesional, user)
+                    if nav:
+                        reportes.append(nav)
+            else:
+                nav = _nav_item(item[0], item[1], item[2], request, profesional, user, item[3])
+                if nav:
+                    reportes.append(nav)
+        if reportes:
+            sections.append({"title": "Reportes", "items": reportes})
 
     sistema = []
-    if perfil_paciente:
+    if perfil_paciente and profesional:
         nav = _nav_item("Portal paciente", "portal_dashboard", "user-circle", request, profesional, user)
         if nav:
             sistema.append(nav)

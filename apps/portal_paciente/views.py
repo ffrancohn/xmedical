@@ -12,8 +12,8 @@ from apps.citas.models import Cita
 from apps.citas.services import FlexibleAgendamientoService, SinTurnosDisponiblesError
 from apps.core.views import current_institucion
 
-from .decorators import PacienteRequiredMixin, get_perfil_paciente, paciente_required
-from .forms import PortalCitaFlexibleForm, PortalRegistroForm
+from .decorators import PacienteRequiredMixin, PortalLoginRequiredMixin, get_perfil_paciente, paciente_required
+from .forms import PortalCitaFlexibleForm, PortalPasswordResetForm, PortalRegistroForm
 from .services import consultas_para_paciente, exportar_hce_json, exportar_hce_pdf
 
 
@@ -43,11 +43,36 @@ class PortalRegistroView(View):
             perfil = form.save()
             request.session["institucion_id"] = institucion.id
             messages.success(request, "Cuenta creada. Ya puedes iniciar sesion en el portal.")
-            return redirect("login")
+            return redirect("login_paciente")
         return render(request, self.template_name, {"form": form, "institucion": institucion})
 
 
-class PortalDashboardView(LoginRequiredMixin, PacienteRequiredMixin, View):
+class PortalPasswordResetView(View):
+    template_name = "portal_paciente/restablecer_clave.html"
+
+    def get(self, request):
+        from apps.core.db import set_institucion_rls
+
+        set_institucion_rls(None)
+        return render(request, self.template_name, {"form": PortalPasswordResetForm()})
+
+    def post(self, request):
+        from apps.core.db import set_institucion_rls
+
+        set_institucion_rls(None)
+        form = PortalPasswordResetForm(request.POST)
+        if form.is_valid():
+            perfil = form.save()
+            request.session["institucion_id"] = perfil.institucion_id
+            messages.success(
+                request,
+                "Contraseña actualizada. Ya puedes iniciar sesión con tu correo y la nueva clave.",
+            )
+            return redirect("login_paciente")
+        return render(request, self.template_name, {"form": form})
+
+
+class PortalDashboardView(PortalLoginRequiredMixin, PacienteRequiredMixin, View):
     template_name = "portal_paciente/dashboard.html"
 
     def get(self, request):
@@ -70,7 +95,7 @@ class PortalDashboardView(LoginRequiredMixin, PacienteRequiredMixin, View):
         )
 
 
-class PortalCitasView(LoginRequiredMixin, PacienteRequiredMixin, View):
+class PortalCitasView(PortalLoginRequiredMixin, PacienteRequiredMixin, View):
     template_name = "portal_paciente/citas.html"
 
     def get(self, request):
@@ -144,7 +169,7 @@ def portal_llegada_cita(request, pk):
     return redirect("portal_citas")
 
 
-class PortalHistoriaView(LoginRequiredMixin, PacienteRequiredMixin, View):
+class PortalHistoriaView(PortalLoginRequiredMixin, PacienteRequiredMixin, View):
     template_name = "portal_paciente/historia.html"
 
     def get(self, request):
@@ -178,7 +203,7 @@ def portal_exportar_hce(request, formato):
     return JsonResponse({"error": "Formato no soportado"}, status=400)
 
 
-class PortalSolicitarCitaView(LoginRequiredMixin, PacienteRequiredMixin, View):
+class PortalSolicitarCitaView(PortalLoginRequiredMixin, PacienteRequiredMixin, View):
     template_name = "portal_paciente/solicitar_cita.html"
     resultado_template = "portal_paciente/cita_confirmada.html"
 

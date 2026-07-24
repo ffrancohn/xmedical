@@ -121,3 +121,31 @@ class PortalPacienteTests(TestCase):
         session.save()
         response = client.get("/portal/", **HOST)
         self.assertEqual(response.status_code, 302)
+
+    def test_portal_login_paciente(self):
+        client = Client(**HOST)
+        response = client.post(
+            "/portal/entrar/",
+            {"username": "jose.ramirez@demo.test", "password": PASSWORD},
+            **HOST,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/portal/", response.url)
+
+    def test_portal_restablecer_clave(self):
+        client = Client(**HOST)
+        response = client.post(
+            "/portal/restablecer-clave/",
+            {
+                "email": "jose.ramirez@demo.test",
+                "documento": self.paciente.documento,
+                "password1": "NuevaClave123!",
+                "password2": "NuevaClave123!",
+            },
+            **HOST,
+        )
+        self.assertEqual(response.status_code, 302)
+        client = Client(**HOST)
+        self.assertTrue(
+            client.login(username="jose.ramirez@demo.test", password="NuevaClave123!")
+        )
