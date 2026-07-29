@@ -172,12 +172,16 @@ class VisionService:
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Proveedores soportados** | OpenAI, Anthropic, Local LLM (Ollama) |
+| **Proveedores soportados** | OpenAI, OpenRouter, **Ollama (local)** |
 | **Propósito** | Sugerir diagnósticos basados en síntomas |
-| **Protocolo** | API REST (RESTful o streaming) |
-| **Autenticación** | API Key |
+| **Protocolo** | API REST (OpenAI-compatible) / Ollama `/api/chat` |
+| **Autenticación** | API Key (cloud) / ninguna (Ollama en red interna) |
+| **Configuración UI** | Pantalla `/configuracion-ia/` (planificado — [Doc 16](16%20Modelo%20Local%20IA%20(Ollama).md)) |
 | **Prompt configurable** | Por institución (tenant) |
 | **Volumen estimado** | 100-1,000 consultas/día |
+
+> **Implementado hoy:** `AIClient` con OpenAI y OpenRouter (`apps/core/ai_services.py`).  
+> **Planificado:** `OllamaProvider` + interfaz web estilo Salud360 — ver [Documento 16](16%20Modelo%20Local%20IA%20(Ollama).md).
 
 **Configuración por tenant:**
 
@@ -186,13 +190,19 @@ class VisionService:
 class Institucion(models.Model):
     # ...
     configuracion_ia = models.JSONField(default=dict)
-    # Ejemplo:
+    # Ejemplo (cloud):
     # {
-    #     "llm_provider": "openai",
-    #     "llm_model": "gpt-4",
-    #     "prompt_template": "Eres un médico asistente...",
-    #     "temperatura": 0.7,
-    #     "max_tokens": 500
+    #     "provider": "openai",
+    #     "model": "gpt-4o-mini",
+    #     "temperature": 0.2
+    # }
+    # Ejemplo (local — Ollama):
+    # {
+    #     "provider": "ollama",
+    #     "model": "llama3.2:3b",
+    #     "vision_model": "llava:7b",
+    #     "enabled": true,
+    #     "features": { "diagnostico_sugerido": true }
     # }
 ```
 
@@ -489,10 +499,11 @@ Cada institución puede configurar sus propias integraciones:
 | Fase | Integración | Estado |
 |------|-------------|--------|
 | **Fase 1 (MVP)** | Email (SMTP) | 🔮 Planificado |
-| **Fase 2** | IA - Visión (Google/AWS) | 🔮 Planificado |
+| **Fase 2** | IA - Visión (Google/AWS/Ollama LLaVA) | 🔮 Planificado |
 | **Fase 2** | Almacenamiento S3/NFS | 🔮 Planificado |
-| **Fase 2** | API REST (salida) + app móvil | 🔮 Planificado — [Doc 13](13%20App%20movil%20y%20API%20REST.md) |
-| **Fase 3** | IA - LLM (OpenAI/Local) | 🔮 Planificado |
+| **Fase 2** | API REST (salida) + app móvil | ✅ Implementado — [Doc 13](13%20App%20movil%20y%20API%20REST.md) |
+| **Fase 2** | IA - LLM local (Ollama + UI) | 🔮 Planificado — [Doc 16](16%20Modelo%20Local%20IA%20(Ollama).md) |
+| **Fase 3** | IA - LLM cloud (OpenAI/OpenRouter) | ⚠️ Parcial (`ai_services.py`) |
 | **Fase 3** | Webhooks | 🔮 Planificado |
 | **Fase 3** | Monitoreo (Prometheus) | 🔮 Planificado |
 | **Futuro** | Laboratorio clínico (HL7) | 🔮 Planificado |

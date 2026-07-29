@@ -110,6 +110,26 @@ Credenciales de prueba: ver [`USUARIOS_PRUEBA.md`](USUARIOS_PRUEBA.md).
 
 Contraseña común de todos los usuarios demo: `Xmedical123!`
 
+## Configuración IA local (Ollama) — planificado
+
+Para usar un **modelo local** sin enviar datos clínicos a la nube (patrón Salud360), ver [`docs/16 Modelo Local IA (Ollama).md`](docs/16%20Modelo%20Local%20IA%20(Ollama).md).
+
+```bash
+# Instalar Ollama y modelo recomendado
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2:3b
+```
+
+Variables previstas en `.env`:
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+```
+
+La interfaz `/configuracion-ia/` (planificada) permitirá elegir modelo y probar conexión desde el navegador.
+
 ## Inicio con Docker completo
 
 Para levantar Django y Celery dentro de contenedores:

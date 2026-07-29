@@ -160,9 +160,10 @@ uv run python manage.py test apps.core
 | Fase | Entregable | Estado |
 |------|------------|--------|
 | MVP web | Django + flujos clínicos | ✅ En producción |
-| API REST + JWT | `/api/v1/` para integraciones y móvil | 🔮 Planificado |
+| API REST + JWT | `/api/v1/` para integraciones y móvil | ✅ Implementado |
+| IA local (Ollama) | LLM on-premise + UI configuración | 🔮 Planificado — [doc 16](docs/16%20Modelo%20Local%20IA%20(Ollama).md) |
 | App móvil | iOS/Android (repo separado) | 🔮 Planificado |
-| IA (OCR, biometría) | Microservicio FastAPI (Fase 4 producto) | 🔮 Futuro |
+| IA cloud (OpenAI/OpenRouter) | Sugerencia diagnóstica | ⚠️ Parcial (`ai_services.py`) |
 
 ## Licencia
 
