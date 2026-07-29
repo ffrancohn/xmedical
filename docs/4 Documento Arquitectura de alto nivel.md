@@ -171,7 +171,7 @@ XMedical utiliza una **arquitectura monolítica modular** con separación de res
 |------------|------------|-----------|
 | **Email** | SMTP / SendGrid | Recordatorios, notificaciones |
 | **IA - Visión** | Google Cloud Vision / AWS Rekognition / Tesseract | Validación de documentos |
-| **IA - LLM** | OpenAI API / Local LLM (Ollama) | Sugerencia diagnóstica |
+| **IA - LLM** | OpenAI / OpenRouter / **Ollama (local)** | Sugerencia diagnóstica — [Doc 16](16%20Modelo%20Local%20IA%20(Ollama).md) |
 | **Storage** | S3 / NFS | Logos, documentos, QR |
 | **Monitoreo** | Prometheus + Grafana | Métricas, alertas |
 

@@ -10,6 +10,7 @@ No pegar claves reales en el prompt, codigo o repositorio. Usar variables de ent
 |---|---|---|---|---|---|
 | OpenAI | Diagnostico sugerido, resumen clinico, ayuda de redaccion | PENDIENTE_DEFINIR | `OPENAI_API_KEY` | `https://api.openai.com/v1` | Usar solo con datos minimos necesarios y consentimiento/configuracion institucional. |
 | OpenRouter | Diagnostico sugerido, OCR asistido, clasificacion de texto | PENDIENTE_DEFINIR | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` | El modelo se selecciona por institucion o por configuracion global. |
+| **Ollama (local)** | Diagnostico sugerido, resumen clinico, OCR con LLaVA | N/A (sin API key) | `OLLAMA_BASE_URL`, `OLLAMA_MODEL` | `http://localhost:11434` | **Recomendado para produccion clinica** — datos no salen del servidor. UI en `/configuracion-ia/`. Ver [doc 16](docs/16%20Modelo%20Local%20IA%20(Ollama).md). |
 | Google Cloud Vision | OCR/vision de documentos | `google-cloud-vision` | `GOOGLE_APPLICATION_CREDENTIALS` | N/A | Opcional; fallback manual obligatorio. |
 | AWS Rekognition/Textract | OCR/vision de documentos | `boto3` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Region por `AWS_REGION` | Opcional; fallback manual obligatorio. |
 | Email/SendGrid | Recordatorios | N/A | `SENDGRID_API_KEY` | N/A | Alternativamente SMTP Django. |
@@ -23,6 +24,12 @@ OPENROUTER_API_KEY=
 OPENROUTER_MODEL=
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 AI_PROVIDER=openai
+
+# Ollama (modelo local — estilo Salud360)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+OLLAMA_VISION_MODEL=llava:7b
+OLLAMA_TIMEOUT=120
 
 GOOGLE_APPLICATION_CREDENTIALS=
 AWS_ACCESS_KEY_ID=
@@ -43,6 +50,8 @@ Cuando me des el listado de modelos, reemplazar esta tabla:
 | 1 | OpenAI | PENDIENTE | Produccion clinica controlada | PENDIENTE | `OPENAI_MODEL` |
 | 2 | OpenRouter | PENDIENTE | Alternativa economica o especializada | PENDIENTE | `OPENROUTER_MODEL` |
 | 3 | OpenRouter | PENDIENTE | Tareas ligeras: resumen, clasificacion | PENDIENTE | `OPENROUTER_MODEL_FAST` |
+| 4 | **Ollama** | `llama3.2:3b` | **Produccion local, privacidad total** | Baja (hardware) | `OLLAMA_MODEL` |
+| 5 | **Ollama** | `llava:7b` | OCR / vision documentos | Media | `OLLAMA_VISION_MODEL` |
 
 ---
 
@@ -78,6 +87,35 @@ Restricciones:
 - No ejecutar llamadas reales a OpenAI/OpenRouter.
 - No modificar el flujo clinico todavia.
 - Mantener compatibilidad con Django 4.2.
+```
+
+---
+
+## Prompt 1b - Modelo local Ollama + interfaz (estilo Salud360)
+
+> Plan detallado: [`docs/16 Modelo Local IA (Ollama).md`](docs/16%20Modelo%20Local%20IA%20(Ollama).md)
+
+```markdown
+Implementa soporte Ollama en XMedical siguiendo el plan del Documento 16.
+
+Objetivo:
+- Agregar `OllamaProvider` en `apps/core/ai_services.py` (API `/api/chat`, `/api/tags`).
+- Variables: `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_VISION_MODEL`, `OLLAMA_TIMEOUT`.
+- Extender `AI_PROVIDER=ollama` y `build_provider()`.
+- Pantalla `/configuracion-ia/` para admin: elegir proveedor, listar modelos, probar conexión.
+- Persistir en `Institucion.configuracion["ai"]` (sin guardar API keys).
+- Integrar en wizard consulta paso 5 (sugerencia diagnóstica) cuando `provider=ollama`.
+
+Cambios esperados:
+- `OllamaProvider.list_models()` y `health_check()`
+- Vista + template configuracion IA (reutilizar diseño xm-card)
+- Tests IA-L01..L04 con mocks HTTP
+- Actualizar `.env.example` (ya documentado)
+
+Restricciones:
+- Ollama no debe exponerse a Internet; solo localhost/Docker network.
+- Disclaimer médico obligatorio en UI.
+- No romper OpenAI/OpenRouter existentes.
 ```
 
 ---
