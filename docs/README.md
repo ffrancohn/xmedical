@@ -13,7 +13,7 @@
 | Multi-tenant (subdominio) | ✅ Implementado | `TenantMiddleware` |
 | API REST / JWT | ✅ Implementado | Ver [doc 13](13%20App%20movil%20y%20API%20REST.md) |
 | IA cloud (OpenAI/OpenRouter) | ⚠️ Parcial | `apps/core/ai_services.py` |
-| IA local (Ollama + UI) | 🔮 Planificado | Ver [doc 16](16%20Modelo%20Local%20IA%20(Ollama).md) |
+| IA local (Ollama + UI) | ⚠️ Parcial | Fase 1: `OllamaProvider` — [doc 16](16%20Modelo%20Local%20IA%20(Ollama).md) |
 | App móvil | 🔮 Planificado | Repo separado, consume API |
 | Celery workers | ⚠️ Configurado | Docker compose, no en systemd prod. |
 | Microservicio IA (FastAPI) | 🔮 Fase 4 | Visión producto, no el prototipo eliminado |

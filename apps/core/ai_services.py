@@ -1,8 +1,9 @@
 import json
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 from django.conf import settings
 
@@ -31,6 +32,8 @@ def get_ai_config(institucion=None) -> AIConfig:
 
     if provider == "openrouter":
         model = getattr(settings, "OPENROUTER_MODEL", "")
+    elif provider == "ollama":
+        model = getattr(settings, "OLLAMA_MODEL", "")
     else:
         model = getattr(settings, "OPENAI_MODEL", "")
 
@@ -43,6 +46,8 @@ def get_ai_config(institucion=None) -> AIConfig:
     if not model:
         if provider == "openrouter":
             model = getattr(settings, "OPENROUTER_MODEL", "")
+        elif provider == "ollama":
+            model = getattr(settings, "OLLAMA_MODEL", "")
         else:
             model = getattr(settings, "OPENAI_MODEL", "")
 
@@ -56,7 +61,29 @@ def _extract_message_content(payload: dict) -> str:
         raise AIRequestError("Respuesta IA invalida o vacia.") from exc
 
 
-def _post_chat_completion(url: str, headers: dict, body: dict, timeout: int = 30) -> dict:
+def _extract_ollama_content(payload: dict) -> str:
+    try:
+        content = payload["message"]["content"]
+    except (KeyError, TypeError) as exc:
+        raise AIRequestError("Respuesta Ollama invalida o vacia.") from exc
+    if not str(content).strip():
+        raise AIRequestError("Respuesta Ollama invalida o vacia.")
+    return str(content)
+
+
+def _get_json(url: str, timeout: int = 30) -> dict:
+    request = urllib.request.Request(url, method="GET")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:  # nosec B310
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise AIRequestError(f"Error HTTP {exc.code} del proveedor IA: {detail}") from exc
+    except urllib.error.URLError as exc:
+        raise AIRequestError(f"No se pudo conectar con el proveedor IA: {exc}") from exc
+
+
+def _post_json(url: str, headers: dict, body: dict, timeout: int = 30) -> dict:
     request = urllib.request.Request(
         url,
         data=json.dumps(body).encode("utf-8"),
@@ -71,6 +98,10 @@ def _post_chat_completion(url: str, headers: dict, body: dict, timeout: int = 30
         raise AIRequestError(f"Error HTTP {exc.code} del proveedor IA: {detail}") from exc
     except urllib.error.URLError as exc:
         raise AIRequestError(f"No se pudo conectar con el proveedor IA: {exc}") from exc
+
+
+def _post_chat_completion(url: str, headers: dict, body: dict, timeout: int = 30) -> dict:
+    return _post_json(url, headers, body, timeout=timeout)
 
 
 class BaseAIProvider:
@@ -133,6 +164,87 @@ class OpenAIProvider(BaseAIProvider):
         return _extract_message_content(response)
 
 
+class OllamaProvider(BaseAIProvider):
+    provider_name = "ollama"
+
+    def __init__(self, api_key: str = "", default_model: str = "", base_url: str = ""):
+        super().__init__(
+            api_key="",
+            default_model=default_model or getattr(settings, "OLLAMA_MODEL", ""),
+            base_url=base_url or getattr(settings, "OLLAMA_BASE_URL", "http://localhost:11434"),
+        )
+        self.timeout = getattr(settings, "OLLAMA_TIMEOUT", 120)
+
+    def is_configured(self) -> bool:
+        return bool(self.default_model and self.base_url)
+
+    def complete(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: Optional[str] = None,
+        temperature: float = 0.2,
+    ) -> str:
+        if not self.is_configured():
+            raise AIConfigurationError(
+                "Ollama no esta configurado. Define OLLAMA_BASE_URL y OLLAMA_MODEL."
+            )
+
+        payload = {
+            "model": model or self.default_model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "stream": False,
+            "options": {"temperature": temperature},
+        }
+        headers = {"Content-Type": "application/json"}
+        response = _post_json(
+            f"{self.base_url}/api/chat",
+            headers,
+            payload,
+            timeout=self.timeout,
+        )
+        return _extract_ollama_content(response)
+
+    def list_models(self) -> list[str]:
+        if not self.base_url:
+            raise AIConfigurationError("Ollama no esta configurado. Define OLLAMA_BASE_URL.")
+        payload = _get_json(f"{self.base_url}/api/tags", timeout=min(self.timeout, 30))
+        models = payload.get("models") or []
+        return [item["name"] for item in models if isinstance(item, dict) and item.get("name")]
+
+    def health_check(self, probe_chat: bool = True) -> dict[str, Any]:
+        if not self.base_url:
+            return {"ok": False, "error": "OLLAMA_BASE_URL no configurada"}
+
+        started = time.monotonic()
+        try:
+            models = self.list_models()
+        except AIRequestError as exc:
+            return {"ok": False, "error": str(exc)}
+
+        result: dict[str, Any] = {
+            "ok": True,
+            "latency_ms": int((time.monotonic() - started) * 1000),
+            "models": models,
+            "model_configured": self.default_model in models if self.default_model else False,
+            "base_url": self.base_url,
+        }
+
+        if probe_chat and self.is_configured() and self.default_model in models:
+            chat_started = time.monotonic()
+            try:
+                self.complete("Responde solo: OK", "ping", temperature=0)
+                result["chat_latency_ms"] = int((time.monotonic() - chat_started) * 1000)
+            except AIRequestError as exc:
+                result["ok"] = False
+                result["error"] = str(exc)
+
+        return result
+
+
 class OpenRouterProvider(BaseAIProvider):
     provider_name = "openrouter"
 
@@ -177,6 +289,8 @@ class OpenRouterProvider(BaseAIProvider):
 
 
 def build_provider(config: AIConfig) -> BaseAIProvider:
+    if config.provider == "ollama":
+        return OllamaProvider(default_model=config.model)
     if config.provider == "openrouter":
         return OpenRouterProvider(default_model=config.model)
     return OpenAIProvider(default_model=config.model)

@@ -149,6 +149,11 @@ OPENROUTER_BASE_URL = env("OPENROUTER_BASE_URL", default="https://openrouter.ai/
 OPENROUTER_HTTP_REFERER = env("OPENROUTER_HTTP_REFERER", default="http://localhost:8000")
 OPENROUTER_APP_NAME = env("OPENROUTER_APP_NAME", default="XMedical")
 
+OLLAMA_BASE_URL = env("OLLAMA_BASE_URL", default="http://localhost:11434")
+OLLAMA_MODEL = env("OLLAMA_MODEL", default="")
+OLLAMA_VISION_MODEL = env("OLLAMA_VISION_MODEL", default="")
+OLLAMA_TIMEOUT = env.int("OLLAMA_TIMEOUT", default=120)
+
 # QR (Fase 2)
 QR_BASE_URL = env("QR_BASE_URL", default="http://localhost:8000/qr")
 QR_EXPIRATION_DAYS = env.int("QR_EXPIRATION_DAYS", default=30)
