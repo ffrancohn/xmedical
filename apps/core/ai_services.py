@@ -24,24 +24,19 @@ class AIRequestError(AIProviderError):
 class AIConfig:
     provider: str
     model: str
+    ollama_base_url: str = ""
+    vision_model: str = ""
+    temperature: float = 0.2
+    enabled: bool = True
+    fallback_cloud: bool = False
 
 
 def get_ai_config(institucion=None) -> AIConfig:
-    provider = getattr(settings, "AI_PROVIDER", "openai")
-    model = ""
+    from apps.core.ai_institution_config import get_institution_ai_settings
 
-    if provider == "openrouter":
-        model = getattr(settings, "OPENROUTER_MODEL", "")
-    elif provider == "ollama":
-        model = getattr(settings, "OLLAMA_MODEL", "")
-    else:
-        model = getattr(settings, "OPENAI_MODEL", "")
-
-    if institucion and isinstance(institucion.configuracion, dict):
-        ai_cfg = institucion.configuracion.get("ai", {})
-        if isinstance(ai_cfg, dict):
-            provider = ai_cfg.get("provider") or provider
-            model = ai_cfg.get("model") or model
+    cfg = get_institution_ai_settings(institucion)
+    provider = cfg["provider"]
+    model = cfg["model"] or ""
 
     if not model:
         if provider == "openrouter":
@@ -51,7 +46,15 @@ def get_ai_config(institucion=None) -> AIConfig:
         else:
             model = getattr(settings, "OPENAI_MODEL", "")
 
-    return AIConfig(provider=provider, model=model)
+    return AIConfig(
+        provider=provider,
+        model=model,
+        ollama_base_url=(cfg.get("ollama_base_url") or "").strip(),
+        vision_model=(cfg.get("vision_model") or "").strip(),
+        temperature=float(cfg.get("temperature", 0.2)),
+        enabled=bool(cfg.get("enabled", True)),
+        fallback_cloud=bool(cfg.get("fallback_cloud", False)),
+    )
 
 
 def _extract_message_content(payload: dict) -> str:
@@ -290,7 +293,10 @@ class OpenRouterProvider(BaseAIProvider):
 
 def build_provider(config: AIConfig) -> BaseAIProvider:
     if config.provider == "ollama":
-        return OllamaProvider(default_model=config.model)
+        kwargs = {"default_model": config.model}
+        if config.ollama_base_url:
+            kwargs["base_url"] = config.ollama_base_url
+        return OllamaProvider(**kwargs)
     if config.provider == "openrouter":
         return OpenRouterProvider(default_model=config.model)
     return OpenAIProvider(default_model=config.model)

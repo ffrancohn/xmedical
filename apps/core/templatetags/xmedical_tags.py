@@ -112,6 +112,9 @@ def sidebar_nav(context):
         nav = _nav_item("Auditoría", "auditoria_lista", "file-text", request, profesional, user)
         if nav:
             sistema.append(nav)
+        nav = _nav_item("Configuración IA", "configuracion_ia", "cpu", request, profesional, user)
+        if nav:
+            sistema.append(nav)
     nav = _nav_item("Preferencias", "preferencias_visuales", "settings", request, profesional, user)
     if nav:
         sistema.append(nav)

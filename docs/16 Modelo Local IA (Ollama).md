@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.1 | 2026-07 | Equipo XMedical | **Fase 1 implementada** (`OllamaProvider`) |
+| 1.2 | 2026-07 | Equipo XMedical | **Fase 1 + Fase 2 implementadas** |
 
 ---
 
@@ -27,10 +27,10 @@ Permitir que XMedical use un **modelo de lenguaje ejecutado localmente** (sin en
 |------------|----------------|----------|
 | `apps/core/ai_services.py` | OpenAI + OpenRouter | + `OllamaProvider` |
 | `AI_PROVIDER` | `openai` \| `openrouter` | + `ollama` |
-| Config por institución | JSON `configuracion.ai` (parcial) | UI completa en superadmin/admin |
-| Interfaz de selección | Solo variables `.env` | Pantalla **Configuración IA** |
-| Prueba de conexión | No existe | Botón «Probar modelo» en UI |
-| Listado de modelos | Manual en `.env` | GET `/api/tags` de Ollama |
+| Config por institución | JSON `configuracion.ai` (parcial) | UI completa en superadmin/admin | ✅ Panel `/configuracion-ia/` |
+| Interfaz de selección | Solo variables `.env` | Pantalla **Configuración IA** | ✅ |
+| Prueba de conexión | No existe | Botón «Probar modelo» en UI | ✅ |
+| Listado de modelos | Manual en `.env` | GET `/api/tags` de Ollama | ✅ |
 | Wizard consulta (paso 5) | Cloud si hay API key | Local u cloud según config |
 | OCR pacientes | Cloud vision (planificado) | LLaVA local vía Ollama (opcional) |
 | Privacidad / HIPAA | Depende del proveedor cloud | Datos clínicos no salen del servidor |
@@ -289,12 +289,11 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 | Fase | Entregable | Dependencias |
 |------|------------|--------------|
 | **1** | `OllamaProvider` + tests con mock | Ninguna | ✅ Implementado |
-| **2** | Variables `.env` + `get_ai_config()` para ollama | Fase 1 |
-| **3** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 2 |
-| **4** | Integración wizard consulta (paso 5 diagnóstico) | Fase 3 |
-| **5** | OCR local con `llava` en pacientes | Fase 3 |
-| **6** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 |
-| **7** | API REST endpoint `POST /api/v1/ia/sugerir/` (opcional) | Fase 4 |
+| **2** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 1 | ✅ Implementado |
+| **3** | Integración wizard consulta (paso 5 diagnóstico) | Fase 2 |
+| **4** | OCR local con `llava` en pacientes | Fase 2 |
+| **5** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 |
+| **6** | API REST endpoint `POST /api/v1/ia/sugerir/` (opcional) | Fase 3 |
 
 ### Historias de usuario (backlog)
 
