@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.0 | 2026-07 | Equipo XMedical | **Planificado** |
+| 1.1 | 2026-07 | Equipo XMedical | **Fase 1 implementada** (`OllamaProvider`) |
 
 ---
 
@@ -288,7 +288,7 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 
 | Fase | Entregable | Dependencias |
 |------|------------|--------------|
-| **1** | `OllamaProvider` + tests con mock | Ninguna |
+| **1** | `OllamaProvider` + tests con mock | Ninguna | ✅ Implementado |
 | **2** | Variables `.env` + `get_ai_config()` para ollama | Fase 1 |
 | **3** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 2 |
 | **4** | Integración wizard consulta (paso 5 diagnóstico) | Fase 3 |
