@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.2 | 2026-07 | Equipo XMedical | **Fases 1–3 implementadas** |
+| 1.3 | 2026-07 | Equipo XMedical | Catálogo ampliado de modelos (Granite, dev sin coste cloud) |
 
 ---
 
@@ -209,15 +209,98 @@ Estructura en `Institucion.configuracion`:
 
 ## 5. MODELOS RECOMENDADOS (OLLAMA)
 
-| Modelo | RAM mínima | Uso en XMedical | Comando |
-|--------|------------|-----------------|---------|
-| `llama3.2:3b` | 4 GB | Sugerencia diagnóstica, resúmenes | `ollama pull llama3.2:3b` |
-| `mistral:7b` | 8 GB | Mejor calidad clínica en español | `ollama pull mistral:7b` |
-| `gemma2:2b` | 4 GB | Tareas ligeras, baja latencia | `ollama pull gemma2:2b` |
-| `llava:7b` | 8 GB | OCR / análisis de imágenes médicas | `ollama pull llava:7b` |
-| `medllama2` | 8 GB | Especializado salud (si disponible) | `ollama pull medllama2` |
+XMedical **no exige un modelo concreto**: cualquier modelo instalado en Ollama aparece en `/configuracion-ia/` → «Actualizar modelos». Lo importante es elegir según **RAM**, **idioma (español clínico)** y **tipo de tarea** (texto vs visión).
 
-**Recomendación inicial para clínicas pequeñas:** `llama3.2:3b` (texto) + `llava:7b` (visión opcional).
+### 5.1 Desarrollo vs producción (coste cero en dev)
+
+| Entorno | Proveedor recomendado | Por qué |
+|---------|----------------------|---------|
+| **Desarrollo local** | `ollama` | Sin API keys ni coste por token; datos no salen del equipo |
+| **Staging / demo interna** | `ollama` | Misma stack que producción clínica on-premise |
+| **Producción clínica** | `ollama` por defecto | Privacidad HIPAA / datos en servidor |
+| **Producción (calidad máxima)** | `openai` o `openrouter` | Mejor razonamiento; **de pago** por uso |
+| **Fallback opcional** | Cloud solo si `fallback_cloud=true` | Si Ollama cae, sube a OpenAI/OpenRouter (también de pago) |
+
+> **Para no gastar en desarrollo:** deja `AI_PROVIDER=ollama` y **no configures** `OPENAI_API_KEY` (o déjala vacía). El wizard, tests con mock y la UI funcionan sin cloud. OpenAI/OpenRouter resérvalos para entornos donde ya tengas presupuesto o cuota de prueba.
+
+**`.env` típico de desarrollo (gratis):**
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+OLLAMA_VISION_MODEL=llava:7b
+OLLAMA_TIMEOUT=120
+
+# Cloud vacío = cero coste accidental
+OPENAI_API_KEY=
+OPENROUTER_API_KEY=
+```
+
+**`.env` producción con cloud (opcional, de pago):**
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_MODEL=ibm/granite4:3b
+
+# Solo si necesitas fallback o modo cloud explícito
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
+```
+
+---
+
+### 5.2 Modelos locales compactos (texto — sugerencia diagnóstica, resúmenes)
+
+| Modelo | RAM ~ | Coste | Fortaleza | Comando Ollama |
+|--------|-------|-------|-----------|----------------|
+| `llama3.2:3b` | 4 GB | Gratis | Buen equilibrio general; JSON estructurado | `ollama pull llama3.2:3b` |
+| `ibm/granite4:3b` | 4 GB | Gratis (Apache 2.0) | Enterprise IBM; RAG, JSON, tool calling | `ollama pull ibm/granite4:3b` |
+| `ibm/granite4.1:3b` | 4 GB | Gratis | Versión 4.1; mejor instrucción y código | `ollama pull ibm/granite4.1:3b` |
+| `ibm/granite4:1b` | 3 GB | Gratis | Muy ligero; laptops con poca RAM | `ollama pull ibm/granite4:1b` |
+| `ibm/granite4:350m` | 1 GB | Gratis | Pruebas rápidas; calidad limitada | `ollama pull ibm/granite4:350m` |
+| `gemma2:2b` | 4 GB | Gratis | Baja latencia, tareas simples | `ollama pull gemma2:2b` |
+| `phi3:mini` | 4 GB | Gratis | Microsoft; compacto y rápido | `ollama pull phi3:mini` |
+| `qwen2.5:3b` | 4 GB | Gratis | Multilingüe; buen español relativo | `ollama pull qwen2.5:3b` |
+| `mistral:7b` | 8 GB | Gratis | Mejor calidad en español si tienes RAM | `ollama pull mistral:7b` |
+| `medllama2` | 8 GB | Gratis | Orientado salud (disponibilidad variable) | `ollama pull medllama2` |
+
+**IBM Granite** es probablemente el modelo compacto de IBM que buscabas. En Ollama el tag suele ser `ibm/granite4:3b` (alias `micro`) o `ibm/granite4.1:3b`. Configúralo en la UI escribiendo el nombre exacto que devuelve «Actualizar modelos».
+
+---
+
+### 5.3 Modelos de visión (OCR / documentos — Fase 4 planificada)
+
+| Modelo | RAM ~ | Uso en XMedical | Comando |
+|--------|-------|-----------------|---------|
+| `llava:7b` | 8 GB | OCR asistido, lectura de imágenes | `ollama pull llava:7b` |
+| `llava:13b` | 12 GB | Mejor lectura de documentos complejos | `ollama pull llava:13b` |
+| `moondream` | 2 GB | Visión muy ligera; calidad menor | `ollama pull moondream` |
+| `granite3.2-vision:2b` | 4 GB | Visión IBM compacta | `ollama pull granite3.2-vision:2b` |
+
+---
+
+### 5.4 Proveedores cloud (de pago — no recomendados para dev diario)
+
+| Proveedor | Modelos ejemplo | Coste | Cuándo usarlo |
+|-----------|-----------------|-------|---------------|
+| **OpenAI** | `gpt-4o-mini`, `gpt-4o` | Por token | Producción cuando la calidad local no basta |
+| **OpenRouter** | Claude, Llama cloud, etc. | Por token | Un solo API key; comparar modelos sin instalar |
+
+En XMedical se configuran solo con variables `.env` (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`). **No se guardan keys en la base de datos.** Para desarrollo, mantén el proveedor en `ollama` y evita llamadas cloud.
+
+---
+
+### 5.5 Combinaciones sugeridas
+
+| Perfil | Texto | Visión | Notas |
+|--------|-------|--------|-------|
+| **Dev en laptop (8 GB RAM)** | `ibm/granite4:1b` o `gemma2:2b` | — (omitir OCR local) | Rápido; probar wizard paso 6 |
+| **Dev estándar (16 GB RAM)** | `llama3.2:3b` o `ibm/granite4:3b` | `llava:7b` | Recomendado para el equipo |
+| **Clínica pequeña producción** | `ibm/granite4.1:3b` o `mistral:7b` | `llava:7b` | Privacidad total on-premise |
+| **Máxima calidad (cloud)** | `gpt-4o-mini` vía OpenAI | API vision OpenAI | Presupuesto y datos según política |
+
+**Recomendación inicial:** `llama3.2:3b` o `ibm/granite4:3b` (texto) + `llava:7b` (visión opcional). Prueba ambos en español clínico con casos reales de tu institución antes de decidir.
 
 ---
 
@@ -332,7 +415,11 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 | Configuración | API key | Instalar Ollama + pull model |
 | Ideal para | Demos, baja carga GPU | Clínicas con política de datos estricta |
 
-**Estrategia híbrida (recomendada):** Ollama por defecto en producción clínica; OpenRouter como fallback opcional desactivado por defecto.
+**Estrategia híbrida (recomendada):**
+
+- **Desarrollo y clínicas con datos sensibles:** Ollama siempre (`AI_PROVIDER=ollama`), sin keys cloud.
+- **Producción exigente:** Ollama por defecto; OpenAI/OpenRouter solo si hace falta calidad extra o como fallback (`fallback_cloud=true`, desactivado por defecto).
+- **Nunca mezclar en dev:** evita poner `AI_PROVIDER=openai` en `.env` local para no generar cargos al probar el wizard.
 
 ---
 
@@ -342,6 +429,8 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 - [Documento 4 — Arquitectura](4%20Documento%20Arquitectura%20de%20alto%20nivel.md)
 - [PROMPTS_FASE2_DIVIDIDA.md](../PROMPTS_FASE2_DIVIDIDA.md) — Prompt 1 (infra IA)
 - [Ollama API](https://github.com/ollama/ollama/blob/main/docs/api.md)
+- [IBM Granite en Ollama](https://ollama.com/ibm/granite4)
+- [IBM Granite 4.1 docs](https://www.ibm.com/granite/docs/models/granite4-1)
 - Código actual: `apps/core/ai_services.py`, `tests/test_ai_services.py`
 
 ---
