@@ -8,7 +8,9 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from apps.citas.models import Cita
-from apps.core.ai_services import AIClient, AIConfigurationError, AIRequestError
+from apps.core.ai_institution_config import ai_provider_badge
+from apps.core.ai_services import AIConfigurationError, AIRequestError
+from apps.core.audit import log_ia_usage
 from apps.core.permissions import CAN_CONSULTA, CAN_VIEW_HISTORIA, MedicoRequiredMixin, role_required
 from apps.core.views import current_institucion
 from apps.pacientes.models import Paciente
@@ -17,7 +19,7 @@ from apps.variables_clinicas.services import variables_para_cita
 from apps.ia_predictiva.services import alertas_activas_paciente
 from .forms import AnamnesisForm, DiagnosticoForm, ExamenFisicoForm, MotivoForm, PlanForm
 from .models import Consulta, Diagnostico
-from .services import sugerir_diagnosticos
+from .services import ia_diagnostico_disponible, sugerir_diagnosticos
 from .wizard import CIE10_MVP, FINAL_STEP, STEPS, VARIABLES_STEP, paso_anterior, siguiente_paso
 
 AUTOSAVE_STEPS = {
@@ -123,7 +125,8 @@ class ConsultaWizardView(LoginRequiredMixin, MedicoRequiredMixin, View):
             "cie10": CIE10_MVP,
             "variables": variables,
             "paso_anterior": paso_anterior(step, cita),
-            "ai_available": AIClient(institucion).is_available() if step == DIAGNOSTICO_STEP else False,
+            "ai_available": ia_diagnostico_disponible(institucion) if step == DIAGNOSTICO_STEP else False,
+            "ai_badge": ai_provider_badge(institucion) if step == DIAGNOSTICO_STEP else "",
             "autosave_enabled": step in AUTOSAVE_STEPS,
         }
         if step == VARIABLES_STEP:
@@ -174,16 +177,29 @@ def sugerir_diagnostico(request, cita_id):
     cita = get_object_or_404(Cita, pk=cita_id, institucion=institucion)
     consulta = get_object_or_404(Consulta, cita=cita, institucion=institucion)
     try:
-        sugerencias = sugerir_diagnosticos(consulta, institucion)
+        sugerencias, meta = sugerir_diagnosticos(consulta, institucion)
     except AIConfigurationError as exc:
         return JsonResponse({"ok": False, "error": str(exc), "available": False}, status=400)
     except AIRequestError as exc:
         return JsonResponse({"ok": False, "error": str(exc), "available": True}, status=502)
 
+    log_ia_usage(
+        institucion,
+        feature="diagnostico_sugerido",
+        provider=meta.get("provider", ""),
+        model=meta.get("model", ""),
+        usuario=request.user,
+        request=request,
+        extra={"consulta_id": consulta.pk, "fallback": meta.get("fallback", False)},
+    )
+
     return JsonResponse(
         {
             "ok": True,
             "available": True,
+            "provider": meta.get("provider"),
+            "model": meta.get("model"),
+            "fallback": meta.get("fallback", False),
             "disclaimer": "Sugerencias de apoyo. Confirme manualmente antes de registrar el diagnostico.",
             "sugerencias": sugerencias,
         }

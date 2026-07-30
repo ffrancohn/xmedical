@@ -302,6 +302,17 @@ def build_provider(config: AIConfig) -> BaseAIProvider:
     return OpenAIProvider(default_model=config.model)
 
 
+def build_cloud_fallback_provider() -> Optional[BaseAIProvider]:
+    """Proveedor cloud de respaldo cuando Ollama falla (OpenRouter > OpenAI)."""
+    openrouter = OpenRouterProvider()
+    if openrouter.is_configured():
+        return openrouter
+    openai = OpenAIProvider()
+    if openai.is_configured():
+        return openai
+    return None
+
+
 class AIClient:
     """Cliente unificado para llamadas IA con configuracion global o por institucion."""
 
@@ -311,6 +322,8 @@ class AIClient:
         self.provider = build_provider(self.config)
 
     def is_available(self) -> bool:
+        if not self.config.enabled:
+            return False
         return self.provider.is_configured()
 
     def complete(
@@ -318,16 +331,46 @@ class AIClient:
         system_prompt: str,
         user_prompt: str,
         model: Optional[str] = None,
-        temperature: float = 0.2,
+        temperature: Optional[float] = None,
     ) -> str:
         if not self.is_available():
             raise AIConfigurationError(
                 f"IA no disponible para el proveedor '{self.config.provider}'. "
                 "Revisa las variables de entorno o la configuracion de la institucion."
             )
+        effective_temp = self.config.temperature if temperature is None else temperature
         return self.provider.complete(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             model=model or self.config.model,
-            temperature=temperature,
+            temperature=effective_temp,
         )
+
+    def complete_with_fallback(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: Optional[str] = None,
+        temperature: Optional[float] = None,
+    ) -> tuple[str, str]:
+        """Ejecuta complete(); si Ollama falla y fallback_cloud, usa proveedor cloud.
+
+        Returns:
+            (contenido, provider_usado)
+        """
+        try:
+            return self.complete(system_prompt, user_prompt, model=model, temperature=temperature), self.config.provider
+        except AIRequestError:
+            if self.config.provider != "ollama" or not self.config.fallback_cloud:
+                raise
+            fallback = build_cloud_fallback_provider()
+            if not fallback:
+                raise
+            effective_temp = self.config.temperature if temperature is None else temperature
+            content = fallback.complete(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                model=model,
+                temperature=effective_temp,
+            )
+            return content, fallback.provider_name

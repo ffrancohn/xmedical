@@ -72,3 +72,24 @@ def save_institution_ai_settings(institucion, data: dict[str, Any]) -> None:
     }
     institucion.configuracion = configuracion
     institucion.save(update_fields=["configuracion"])
+
+
+def diagnostico_ia_habilitado(institucion) -> bool:
+    """True si la institución tiene IA activa y la feature de diagnóstico sugerido."""
+    cfg = get_institution_ai_settings(institucion)
+    if not cfg.get("enabled", True):
+        return False
+    features = cfg.get("features") or {}
+    return bool(features.get("diagnostico_sugerido", True))
+
+
+def ai_provider_badge(institucion) -> str:
+    """Etiqueta corta para UI: «Local (llama3.2)» o «Cloud (gpt-4o-mini)»."""
+    cfg = get_institution_ai_settings(institucion)
+    provider = cfg.get("provider", "openai")
+    model = cfg.get("model") or "—"
+    if provider == "ollama":
+        return f"Local ({model})"
+    if provider == "openrouter":
+        return f"Cloud OpenRouter ({model})"
+    return f"Cloud OpenAI ({model})"

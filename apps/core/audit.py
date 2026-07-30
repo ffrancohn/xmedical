@@ -75,3 +75,34 @@ def log_audit(instance, accion, valor_anterior=None, valor_nuevo=None, usuario=N
         valor_nuevo=valor_nuevo,
         ip_address=ip_address,
     )
+
+
+def log_ia_usage(institucion, feature, provider, model, usuario=None, request=None, extra=None):
+    """Registra uso de IA sin almacenar prompts clínicos."""
+    request = request or get_current_request()
+    if usuario is None and request and getattr(request, "user", None) and request.user.is_authenticated:
+        usuario = request.user
+    if not institucion:
+        return
+
+    ip_address = None
+    if request:
+        forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+        if forwarded:
+            ip_address = forwarded.split(",")[0].strip()
+        else:
+            ip_address = request.META.get("REMOTE_ADDR")
+
+    payload = {"feature": feature, "provider": provider, "model": model}
+    if extra:
+        payload.update(extra)
+
+    LogAuditoria.objects.create(
+        institucion=institucion,
+        usuario=usuario,
+        accion="CREATE",
+        tabla_afectada="ia_uso",
+        registro_id=None,
+        valor_nuevo=payload,
+        ip_address=ip_address,
+    )
