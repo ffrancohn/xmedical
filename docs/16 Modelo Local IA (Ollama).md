@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.4 | 2026-07 | Equipo XMedical | Fase 4 OCR local Ollama implementada |
+| 1.5 | 2026-07 | Equipo XMedical | §6.4 VPS con Ollama preinstalado (evitar duplicar disco) |
 
 ---
 
@@ -315,9 +315,11 @@ sudo systemctl start ollama
 ollama pull llama3.2:3b
 ```
 
-### 6.2 Docker (junto a XMedical)
+### 6.2 Docker (junto a XMedical) — **opcional**
 
-Añadir a `docker-compose.yml` (planificado):
+> **Si ya tienes Ollama instalado en el VPS** (systemd, binario nativo), **no añadas** un segundo servicio Ollama en Docker: duplicarías modelos en disco (varios GB por modelo). Usa la [§6.4 VPS con Ollama preinstalado](#64-vps-con-ollama-ya-instalado-recomendado-si-aplica).
+
+Añadir a `docker-compose.yml` solo cuando **no** exista Ollama en el host (entornos dev nuevos, CI, etc.):
 
 ```yaml
   ollama:
@@ -333,12 +335,12 @@ Añadir a `docker-compose.yml` (planificado):
             - capabilities: [gpu]  # opcional NVIDIA
 ```
 
-XMedical en `.env`:
+XMedical en `.env` (contenedor `web` en la misma red Docker):
 
 ```env
 AI_PROVIDER=ollama
 OLLAMA_BASE_URL=http://ollama:11434
-OLLAMA_MODEL=llama3.2:3b
+OLLAMA_MODEL=ibm/granite4:3b
 ```
 
 ### 6.3 Windows (desarrollo)
@@ -348,6 +350,77 @@ winget install Ollama.Ollama
 ollama pull llama3.2:3b
 ollama serve
 ```
+
+### 6.4 VPS con Ollama ya instalado (recomendado si aplica)
+
+Escenario habitual en producción: **un solo Ollama en el sistema operativo** del VPS y XMedical (nativo o en Docker) apuntando a esa instancia. **No hace falta la Fase 5** (servicio `ollama` en Compose) ni volver a descargar modelos.
+
+#### Por qué no duplicar Ollama
+
+| Escenario | Modelos en disco | Notas |
+|-----------|------------------|-------|
+| Ollama solo en el host (VPS) | 1× (~2–8 GB por modelo) | ✅ Recomendado si ya lo tienes |
+| Ollama host **+** contenedor Docker | 2× (doble espacio) | ❌ Evitar |
+| Solo contenedor Docker | 1× en volumen `ollama_data` | OK si no hay Ollama en el host |
+
+Comprobar modelos ya instalados:
+
+```bash
+ollama list
+systemctl status ollama   # Linux con systemd
+curl -s http://127.0.0.1:11434/api/tags | head
+```
+
+#### XMedical en el mismo VPS (Django nativo)
+
+`.env` o **Configuración IA** en la web:
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=ibm/granite4:3b          # o el nombre exacto de ollama list
+OLLAMA_VISION_MODEL=llava:7b
+OPENAI_API_KEY=                       # vacío si no usas cloud
+```
+
+En `/configuracion-ia/`: URL `http://127.0.0.1:11434` → **Probar conexión** → elegir modelos del dropdown → **Guardar**.
+
+#### XMedical en Docker, Ollama en el host del VPS
+
+No levantes un contenedor Ollama. En el `.env` del servicio `web`:
+
+```env
+OLLAMA_BASE_URL=http://host.docker.internal:11434
+```
+
+En Linux, si `host.docker.internal` no resuelve, usa la IP del gateway Docker (suele ser `172.17.0.1`) o añade en `docker-compose.yml` bajo `web`:
+
+```yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+```
+
+Verifica desde el contenedor:
+
+```bash
+docker compose exec web curl -s http://host.docker.internal:11434/api/tags
+```
+
+#### Seguridad en VPS
+
+- Ollama debe escuchar en **localhost** o red privada, no en `0.0.0.0` público.
+- Firewall: no abrir el puerto `11434` a Internet.
+- XMedical sí puede estar detrás de nginx/HTTPS; Ollama queda solo para la app.
+
+#### Fase 5 del plan — cuándo aplicarla
+
+| Tu situación | Acción |
+|--------------|--------|
+| VPS con Ollama ya instalado | **Omitir Fase 5**; usar §6.4 |
+| Servidor nuevo sin Ollama | Fase 5 (Compose) o §6.1 (install.sh) |
+| Dev local en laptop | §6.3 Windows o Ollama nativo en Linux |
+
+La Fase 5 del roadmap (**Docker Compose servicio `ollama`**) queda **opcional** y orientada a entornos donde aún no hay motor IA en el host.
 
 ---
 
@@ -375,7 +448,7 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 | **2** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 1 | ✅ Implementado |
 | **3** | Integración wizard consulta (paso 5 diagnóstico) | Fase 2 | ✅ Implementado |
 | **4** | OCR local con `llava` en pacientes | Fase 2 | ✅ Implementado |
-| **5** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 |
+| **5** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 | Opcional — omitir si Ollama ya está en el VPS (§6.4) |
 | **6** | API REST endpoint `POST /api/v1/ia/sugerir/` (opcional) | Fase 3 |
 
 ### Historias de usuario (backlog)
