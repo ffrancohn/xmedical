@@ -93,3 +93,30 @@ def ai_provider_badge(institucion) -> str:
     if provider == "openrouter":
         return f"Cloud OpenRouter ({model})"
     return f"Cloud OpenAI ({model})"
+
+
+def ocr_ia_habilitado(institucion) -> bool:
+    """True si la institución tiene OCR asistido activo."""
+    cfg = get_institution_ai_settings(institucion)
+    if not cfg.get("enabled", True):
+        return False
+    features = cfg.get("features") or {}
+    return bool(features.get("ocr_asistido", True))
+
+
+def ocr_ollama_configured(institucion) -> bool:
+    """True si hay URL Ollama y modelo de visión configurados."""
+    cfg = get_institution_ai_settings(institucion)
+    base_url = (cfg.get("ollama_base_url") or getattr(settings, "OLLAMA_BASE_URL", "")).strip()
+    vision_model = (cfg.get("vision_model") or getattr(settings, "OLLAMA_VISION_MODEL", "")).strip()
+    return bool(base_url and vision_model)
+
+
+def get_ollama_vision_client(institucion) -> "OllamaProvider":
+    """Instancia OllamaProvider apuntando al modelo de visión."""
+    from apps.core.ai_services import OllamaProvider
+
+    cfg = get_institution_ai_settings(institucion)
+    base_url = (cfg.get("ollama_base_url") or getattr(settings, "OLLAMA_BASE_URL", "")).strip()
+    vision_model = (cfg.get("vision_model") or getattr(settings, "OLLAMA_VISION_MODEL", "")).strip()
+    return OllamaProvider(default_model=vision_model, base_url=base_url or None)

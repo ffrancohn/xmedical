@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.3 | 2026-07 | Equipo XMedical | Catálogo ampliado de modelos (Granite, dev sin coste cloud) |
+| 1.4 | 2026-07 | Equipo XMedical | Fase 4 OCR local Ollama implementada |
 
 ---
 
@@ -32,7 +32,7 @@ Permitir que XMedical use un **modelo de lenguaje ejecutado localmente** (sin en
 | Prueba de conexión | No existe | Botón «Probar modelo» en UI | ✅ |
 | Listado de modelos | Manual en `.env` | GET `/api/tags` de Ollama | ✅ |
 | Wizard consulta (paso 5) | Cloud si hay API key | Local u cloud según config | ✅ |
-| OCR pacientes | Cloud vision (planificado) | LLaVA local vía Ollama (opcional) |
+| OCR pacientes | Cloud vision (planificado) | LLaVA local vía Ollama (opcional) | ✅ |
 | Privacidad / HIPAA | Depende del proveedor cloud | Datos clínicos no salen del servidor |
 
 ---
@@ -374,7 +374,7 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 | **1** | `OllamaProvider` + tests con mock | Ninguna | ✅ Implementado |
 | **2** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 1 | ✅ Implementado |
 | **3** | Integración wizard consulta (paso 5 diagnóstico) | Fase 2 | ✅ Implementado |
-| **4** | OCR local con `llava` en pacientes | Fase 2 |
+| **4** | OCR local con `llava` en pacientes | Fase 2 | ✅ Implementado |
 | **5** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 |
 | **6** | API REST endpoint `POST /api/v1/ia/sugerir/` (opcional) | Fase 3 |
 

@@ -7,7 +7,13 @@ from typing import Optional
 
 from django.conf import settings
 
-from apps.core.ai_services import AIConfigurationError, AIRequestError, get_ai_config, _post_chat_completion
+from apps.core.ai_institution_config import (
+    get_institution_ai_settings,
+    get_ollama_vision_client,
+    ocr_ia_habilitado,
+    ocr_ollama_configured,
+)
+from apps.core.ai_services import AIConfigurationError, AIRequestError, _post_chat_completion
 
 
 class VisionServiceError(Exception):
@@ -94,14 +100,23 @@ def _parse_ai_json(content: str) -> OCRResult:
     )
 
 
+_OCR_VISION_PROMPT = (
+    "Extrae datos de un documento de identidad (cedula o pasaporte). "
+    "Responde SOLO JSON valido con claves: "
+    "nombre, apellido, documento, fecha_nacimiento (YYYY-MM-DD), confianza (0-1)."
+)
+
+
 class VisionService:
     """Extrae datos de documentos de identidad mediante proveedores configurados."""
 
     def __init__(self, institucion=None):
         self.institucion = institucion
-        self.ai_config = get_ai_config(institucion)
+        self._settings = get_institution_ai_settings(institucion)
 
     def is_provider_configured(self, provider: str) -> bool:
+        if provider == "ollama":
+            return ocr_ollama_configured(self.institucion)
         if provider == "google":
             return bool(getattr(settings, "GOOGLE_APPLICATION_CREDENTIALS", ""))
         if provider == "aws":
@@ -112,13 +127,42 @@ class VisionService:
             return bool(getattr(settings, "OPENAI_API_KEY", "") and getattr(settings, "OPENAI_MODEL", ""))
         return False
 
-    def available_providers(self):
-        orden = getattr(settings, "VISION_PROVIDER_ORDER", ["openai", "openrouter", "google", "aws"])
-        return [proveedor for proveedor in orden if self.is_provider_configured(proveedor)]
+    def available_providers(self) -> list[str]:
+        if not ocr_ia_habilitado(self.institucion):
+            return []
+        providers: list[str] = []
+        if ocr_ollama_configured(self.institucion):
+            providers.append("ollama")
+        orden = getattr(
+            settings,
+            "VISION_PROVIDER_ORDER",
+            ["ollama", "openai", "openrouter", "google", "aws"],
+        )
+        for proveedor in orden:
+            if proveedor == "ollama":
+                continue
+            if self.is_provider_configured(proveedor) and proveedor not in providers:
+                providers.append(proveedor)
+        return providers
+
+    def provider_labels(self) -> list[str]:
+        labels = {
+            "ollama": "Ollama (local)",
+            "openai": "OpenAI (cloud)",
+            "openrouter": "OpenRouter (cloud)",
+            "google": "Google Vision",
+            "aws": "AWS Textract",
+        }
+        return [labels.get(p, p) for p in self.available_providers()]
 
     def extract_from_image(self, image_bytes: bytes, content_type: str = "image/jpeg") -> OCRResult:
+        if not ocr_ia_habilitado(self.institucion):
+            return OCRResult(manual_fallback=True, proveedor="manual")
+
         for proveedor in self.available_providers():
             try:
+                if proveedor == "ollama":
+                    return self._extract_with_ollama_vision(image_bytes)
                 if proveedor in ("openai", "openrouter"):
                     return self._extract_with_ai_vision(image_bytes, content_type, proveedor)
                 if proveedor == "google":
@@ -126,8 +170,25 @@ class VisionService:
                 if proveedor == "aws":
                     return self._extract_with_aws_textract(image_bytes)
             except (VisionServiceError, AIConfigurationError, AIRequestError):
+                if proveedor == "ollama" and not self._settings.get("fallback_cloud"):
+                    break
                 continue
         return OCRResult(manual_fallback=True, proveedor="manual")
+
+    def _extract_with_ollama_vision(self, image_bytes: bytes) -> OCRResult:
+        client = get_ollama_vision_client(self.institucion)
+        cfg = self._settings
+        encoded = base64.b64encode(image_bytes).decode("ascii")
+        content = client.complete_with_image(
+            _OCR_VISION_PROMPT,
+            encoded,
+            model=cfg.get("vision_model") or getattr(settings, "OLLAMA_VISION_MODEL", ""),
+            temperature=float(cfg.get("temperature", 0.1)),
+        )
+        resultado = _parse_ai_json(content)
+        resultado.proveedor = "ollama"
+        resultado.manual_fallback = False
+        return resultado
 
     def _extract_with_ai_vision(self, image_bytes: bytes, content_type: str, provider: str) -> OCRResult:
         if provider == "openrouter":
@@ -153,17 +214,13 @@ class VisionService:
             raise AIConfigurationError("Proveedor IA vision no configurado.")
 
         encoded = base64.b64encode(image_bytes).decode("ascii")
-        prompt = (
-            "Extrae datos de un documento de identidad. Responde SOLO JSON valido con claves: "
-            "nombre, apellido, documento, fecha_nacimiento (YYYY-MM-DD), confianza (0-1)."
-        )
         payload = {
             "model": model,
             "messages": [
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": prompt},
+                        {"type": "text", "text": _OCR_VISION_PROMPT},
                         {"type": "image_url", "image_url": {"url": f"data:{content_type};base64,{encoded}"}},
                     ],
                 }

@@ -211,6 +211,46 @@ class OllamaProvider(BaseAIProvider):
         )
         return _extract_ollama_content(response)
 
+    def complete_with_image(
+        self,
+        user_prompt: str,
+        image_base64: str,
+        model: Optional[str] = None,
+        system_prompt: str = "",
+        temperature: float = 0.1,
+    ) -> str:
+        """Vision: POST /api/chat con imágenes base64 (LLaVA, moondream, etc.)."""
+        vision_model = (model or self.default_model or "").strip()
+        if not self.base_url or not vision_model:
+            raise AIConfigurationError(
+                "Ollama vision no configurado. Define OLLAMA_BASE_URL y OLLAMA_VISION_MODEL."
+            )
+
+        messages: list[dict] = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append(
+            {
+                "role": "user",
+                "content": user_prompt,
+                "images": [image_base64],
+            }
+        )
+        payload = {
+            "model": vision_model,
+            "messages": messages,
+            "stream": False,
+            "options": {"temperature": temperature},
+        }
+        headers = {"Content-Type": "application/json"}
+        response = _post_json(
+            f"{self.base_url}/api/chat",
+            headers,
+            payload,
+            timeout=self.timeout,
+        )
+        return _extract_ollama_content(response)
+
     def list_models(self) -> list[str]:
         if not self.base_url:
             raise AIConfigurationError("Ollama no esta configurado. Define OLLAMA_BASE_URL.")
