@@ -163,7 +163,7 @@ GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS", default="
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
 AWS_REGION = env("AWS_REGION", default="us-east-1")
-VISION_PROVIDER_ORDER = env.list("VISION_PROVIDER_ORDER", default=["openai", "openrouter", "google", "aws"])
+VISION_PROVIDER_ORDER = env.list("VISION_PROVIDER_ORDER", default=["ollama", "openai", "openrouter", "google", "aws"])
 
 BACKUP_RETENTION_DAYS = env.int("BACKUP_RETENTION_DAYS", default=30)
 BACKUP_REMOTE_DIR = env("BACKUP_REMOTE_DIR", default="")

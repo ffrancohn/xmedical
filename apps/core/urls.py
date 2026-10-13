@@ -10,11 +10,15 @@ from .views import (
     superadmin_import_tenant,
     superadmin_restore,
 )
+from .views_ai import ConfiguracionIAModelosView, ConfiguracionIAProbarView, ConfiguracionIAView
 
 urlpatterns = [
     path("", home, name="home"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("auditoria/", AuditoriaListView.as_view(), name="auditoria_lista"),
+    path("configuracion-ia/", ConfiguracionIAView.as_view(), name="configuracion_ia"),
+    path("configuracion-ia/probar/", ConfiguracionIAProbarView.as_view(), name="configuracion_ia_probar"),
+    path("configuracion-ia/modelos/", ConfiguracionIAModelosView.as_view(), name="configuracion_ia_modelos"),
     path("superadmin/", superadmin_dashboard, name="superadmin_dashboard"),
     path("superadmin/backup/", superadmin_backup, name="superadmin_backup"),
     path("superadmin/restore/", superadmin_restore, name="superadmin_restore"),

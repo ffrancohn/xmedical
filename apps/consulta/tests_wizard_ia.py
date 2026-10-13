@@ -89,7 +89,7 @@ class WizardIASuggestionTests(TestCase):
         payload = json.dumps(
             [{"codigo": "I10", "nombre": "Hipertension esencial primaria", "justificacion": "Por cuadro clinico"}]
         )
-        with patch("apps.consulta.services.AIClient.complete", return_value=payload):
+        with patch("apps.consulta.services.AIClient.complete_with_fallback", return_value=(payload, "openai")):
             response = self.client.post(
                 f"/consulta/cita/{self.cita.pk}/sugerir-diagnostico/",
                 **{"HTTP_HOST": "xmedical.cloud"},
@@ -102,9 +102,10 @@ class WizardIASuggestionTests(TestCase):
     @override_settings(OPENAI_API_KEY="test-key", OPENAI_MODEL="gpt-4o")
     def test_servicio_sugerir_diagnosticos(self):
         payload = json.dumps([{"codigo": "R51", "nombre": "Cefalea", "justificacion": "Sintoma principal"}])
-        with patch("apps.consulta.services.AIClient.complete", return_value=payload):
-            sugerencias = sugerir_diagnosticos(self.consulta, self.institucion)
+        with patch("apps.consulta.services.AIClient.complete_with_fallback", return_value=(payload, "openai")):
+            sugerencias, meta = sugerir_diagnosticos(self.consulta, self.institucion)
         self.assertEqual(sugerencias[0]["codigo"], "R51")
+        self.assertEqual(meta["provider"], "openai")
 
     @override_settings(OPENAI_API_KEY="", OPENROUTER_API_KEY="")
     def test_servicio_ia_no_configurada(self):

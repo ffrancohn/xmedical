@@ -3,7 +3,7 @@
 
 | Versión | Fecha | Autor | Estado |
 |---------|-------|-------|--------|
-| 1.1 | 2026-07 | Equipo XMedical | **Fase 1 implementada** (`OllamaProvider`) |
+| 1.5 | 2026-07 | Equipo XMedical | §6.4 VPS con Ollama preinstalado (evitar duplicar disco) |
 
 ---
 
@@ -27,12 +27,12 @@ Permitir que XMedical use un **modelo de lenguaje ejecutado localmente** (sin en
 |------------|----------------|----------|
 | `apps/core/ai_services.py` | OpenAI + OpenRouter | + `OllamaProvider` |
 | `AI_PROVIDER` | `openai` \| `openrouter` | + `ollama` |
-| Config por institución | JSON `configuracion.ai` (parcial) | UI completa en superadmin/admin |
-| Interfaz de selección | Solo variables `.env` | Pantalla **Configuración IA** |
-| Prueba de conexión | No existe | Botón «Probar modelo» en UI |
-| Listado de modelos | Manual en `.env` | GET `/api/tags` de Ollama |
-| Wizard consulta (paso 5) | Cloud si hay API key | Local u cloud según config |
-| OCR pacientes | Cloud vision (planificado) | LLaVA local vía Ollama (opcional) |
+| Config por institución | JSON `configuracion.ai` (parcial) | UI completa en superadmin/admin | ✅ Panel `/configuracion-ia/` |
+| Interfaz de selección | Solo variables `.env` | Pantalla **Configuración IA** | ✅ |
+| Prueba de conexión | No existe | Botón «Probar modelo» en UI | ✅ |
+| Listado de modelos | Manual en `.env` | GET `/api/tags` de Ollama | ✅ |
+| Wizard consulta (paso 5) | Cloud si hay API key | Local u cloud según config | ✅ |
+| OCR pacientes | Cloud vision (planificado) | LLaVA local vía Ollama (opcional) | ✅ |
 | Privacidad / HIPAA | Depende del proveedor cloud | Datos clínicos no salen del servidor |
 
 ---
@@ -209,15 +209,98 @@ Estructura en `Institucion.configuracion`:
 
 ## 5. MODELOS RECOMENDADOS (OLLAMA)
 
-| Modelo | RAM mínima | Uso en XMedical | Comando |
-|--------|------------|-----------------|---------|
-| `llama3.2:3b` | 4 GB | Sugerencia diagnóstica, resúmenes | `ollama pull llama3.2:3b` |
-| `mistral:7b` | 8 GB | Mejor calidad clínica en español | `ollama pull mistral:7b` |
-| `gemma2:2b` | 4 GB | Tareas ligeras, baja latencia | `ollama pull gemma2:2b` |
-| `llava:7b` | 8 GB | OCR / análisis de imágenes médicas | `ollama pull llava:7b` |
-| `medllama2` | 8 GB | Especializado salud (si disponible) | `ollama pull medllama2` |
+XMedical **no exige un modelo concreto**: cualquier modelo instalado en Ollama aparece en `/configuracion-ia/` → «Actualizar modelos». Lo importante es elegir según **RAM**, **idioma (español clínico)** y **tipo de tarea** (texto vs visión).
 
-**Recomendación inicial para clínicas pequeñas:** `llama3.2:3b` (texto) + `llava:7b` (visión opcional).
+### 5.1 Desarrollo vs producción (coste cero en dev)
+
+| Entorno | Proveedor recomendado | Por qué |
+|---------|----------------------|---------|
+| **Desarrollo local** | `ollama` | Sin API keys ni coste por token; datos no salen del equipo |
+| **Staging / demo interna** | `ollama` | Misma stack que producción clínica on-premise |
+| **Producción clínica** | `ollama` por defecto | Privacidad HIPAA / datos en servidor |
+| **Producción (calidad máxima)** | `openai` o `openrouter` | Mejor razonamiento; **de pago** por uso |
+| **Fallback opcional** | Cloud solo si `fallback_cloud=true` | Si Ollama cae, sube a OpenAI/OpenRouter (también de pago) |
+
+> **Para no gastar en desarrollo:** deja `AI_PROVIDER=ollama` y **no configures** `OPENAI_API_KEY` (o déjala vacía). El wizard, tests con mock y la UI funcionan sin cloud. OpenAI/OpenRouter resérvalos para entornos donde ya tengas presupuesto o cuota de prueba.
+
+**`.env` típico de desarrollo (gratis):**
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+OLLAMA_VISION_MODEL=llava:7b
+OLLAMA_TIMEOUT=120
+
+# Cloud vacío = cero coste accidental
+OPENAI_API_KEY=
+OPENROUTER_API_KEY=
+```
+
+**`.env` producción con cloud (opcional, de pago):**
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_MODEL=ibm/granite4:3b
+
+# Solo si necesitas fallback o modo cloud explícito
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
+```
+
+---
+
+### 5.2 Modelos locales compactos (texto — sugerencia diagnóstica, resúmenes)
+
+| Modelo | RAM ~ | Coste | Fortaleza | Comando Ollama |
+|--------|-------|-------|-----------|----------------|
+| `llama3.2:3b` | 4 GB | Gratis | Buen equilibrio general; JSON estructurado | `ollama pull llama3.2:3b` |
+| `ibm/granite4:3b` | 4 GB | Gratis (Apache 2.0) | Enterprise IBM; RAG, JSON, tool calling | `ollama pull ibm/granite4:3b` |
+| `ibm/granite4.1:3b` | 4 GB | Gratis | Versión 4.1; mejor instrucción y código | `ollama pull ibm/granite4.1:3b` |
+| `ibm/granite4:1b` | 3 GB | Gratis | Muy ligero; laptops con poca RAM | `ollama pull ibm/granite4:1b` |
+| `ibm/granite4:350m` | 1 GB | Gratis | Pruebas rápidas; calidad limitada | `ollama pull ibm/granite4:350m` |
+| `gemma2:2b` | 4 GB | Gratis | Baja latencia, tareas simples | `ollama pull gemma2:2b` |
+| `phi3:mini` | 4 GB | Gratis | Microsoft; compacto y rápido | `ollama pull phi3:mini` |
+| `qwen2.5:3b` | 4 GB | Gratis | Multilingüe; buen español relativo | `ollama pull qwen2.5:3b` |
+| `mistral:7b` | 8 GB | Gratis | Mejor calidad en español si tienes RAM | `ollama pull mistral:7b` |
+| `medllama2` | 8 GB | Gratis | Orientado salud (disponibilidad variable) | `ollama pull medllama2` |
+
+**IBM Granite** es probablemente el modelo compacto de IBM que buscabas. En Ollama el tag suele ser `ibm/granite4:3b` (alias `micro`) o `ibm/granite4.1:3b`. Configúralo en la UI escribiendo el nombre exacto que devuelve «Actualizar modelos».
+
+---
+
+### 5.3 Modelos de visión (OCR / documentos — Fase 4 planificada)
+
+| Modelo | RAM ~ | Uso en XMedical | Comando |
+|--------|-------|-----------------|---------|
+| `llava:7b` | 8 GB | OCR asistido, lectura de imágenes | `ollama pull llava:7b` |
+| `llava:13b` | 12 GB | Mejor lectura de documentos complejos | `ollama pull llava:13b` |
+| `moondream` | 2 GB | Visión muy ligera; calidad menor | `ollama pull moondream` |
+| `granite3.2-vision:2b` | 4 GB | Visión IBM compacta | `ollama pull granite3.2-vision:2b` |
+
+---
+
+### 5.4 Proveedores cloud (de pago — no recomendados para dev diario)
+
+| Proveedor | Modelos ejemplo | Coste | Cuándo usarlo |
+|-----------|-----------------|-------|---------------|
+| **OpenAI** | `gpt-4o-mini`, `gpt-4o` | Por token | Producción cuando la calidad local no basta |
+| **OpenRouter** | Claude, Llama cloud, etc. | Por token | Un solo API key; comparar modelos sin instalar |
+
+En XMedical se configuran solo con variables `.env` (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`). **No se guardan keys en la base de datos.** Para desarrollo, mantén el proveedor en `ollama` y evita llamadas cloud.
+
+---
+
+### 5.5 Combinaciones sugeridas
+
+| Perfil | Texto | Visión | Notas |
+|--------|-------|--------|-------|
+| **Dev en laptop (8 GB RAM)** | `ibm/granite4:1b` o `gemma2:2b` | — (omitir OCR local) | Rápido; probar wizard paso 6 |
+| **Dev estándar (16 GB RAM)** | `llama3.2:3b` o `ibm/granite4:3b` | `llava:7b` | Recomendado para el equipo |
+| **Clínica pequeña producción** | `ibm/granite4.1:3b` o `mistral:7b` | `llava:7b` | Privacidad total on-premise |
+| **Máxima calidad (cloud)** | `gpt-4o-mini` vía OpenAI | API vision OpenAI | Presupuesto y datos según política |
+
+**Recomendación inicial:** `llama3.2:3b` o `ibm/granite4:3b` (texto) + `llava:7b` (visión opcional). Prueba ambos en español clínico con casos reales de tu institución antes de decidir.
 
 ---
 
@@ -232,9 +315,11 @@ sudo systemctl start ollama
 ollama pull llama3.2:3b
 ```
 
-### 6.2 Docker (junto a XMedical)
+### 6.2 Docker (junto a XMedical) — **opcional**
 
-Añadir a `docker-compose.yml` (planificado):
+> **Si ya tienes Ollama instalado en el VPS** (systemd, binario nativo), **no añadas** un segundo servicio Ollama en Docker: duplicarías modelos en disco (varios GB por modelo). Usa la [§6.4 VPS con Ollama preinstalado](#64-vps-con-ollama-ya-instalado-recomendado-si-aplica).
+
+Añadir a `docker-compose.yml` solo cuando **no** exista Ollama en el host (entornos dev nuevos, CI, etc.):
 
 ```yaml
   ollama:
@@ -250,12 +335,12 @@ Añadir a `docker-compose.yml` (planificado):
             - capabilities: [gpu]  # opcional NVIDIA
 ```
 
-XMedical en `.env`:
+XMedical en `.env` (contenedor `web` en la misma red Docker):
 
 ```env
 AI_PROVIDER=ollama
 OLLAMA_BASE_URL=http://ollama:11434
-OLLAMA_MODEL=llama3.2:3b
+OLLAMA_MODEL=ibm/granite4:3b
 ```
 
 ### 6.3 Windows (desarrollo)
@@ -265,6 +350,77 @@ winget install Ollama.Ollama
 ollama pull llama3.2:3b
 ollama serve
 ```
+
+### 6.4 VPS con Ollama ya instalado (recomendado si aplica)
+
+Escenario habitual en producción: **un solo Ollama en el sistema operativo** del VPS y XMedical (nativo o en Docker) apuntando a esa instancia. **No hace falta la Fase 5** (servicio `ollama` en Compose) ni volver a descargar modelos.
+
+#### Por qué no duplicar Ollama
+
+| Escenario | Modelos en disco | Notas |
+|-----------|------------------|-------|
+| Ollama solo en el host (VPS) | 1× (~2–8 GB por modelo) | ✅ Recomendado si ya lo tienes |
+| Ollama host **+** contenedor Docker | 2× (doble espacio) | ❌ Evitar |
+| Solo contenedor Docker | 1× en volumen `ollama_data` | OK si no hay Ollama en el host |
+
+Comprobar modelos ya instalados:
+
+```bash
+ollama list
+systemctl status ollama   # Linux con systemd
+curl -s http://127.0.0.1:11434/api/tags | head
+```
+
+#### XMedical en el mismo VPS (Django nativo)
+
+`.env` o **Configuración IA** en la web:
+
+```env
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=ibm/granite4:3b          # o el nombre exacto de ollama list
+OLLAMA_VISION_MODEL=llava:7b
+OPENAI_API_KEY=                       # vacío si no usas cloud
+```
+
+En `/configuracion-ia/`: URL `http://127.0.0.1:11434` → **Probar conexión** → elegir modelos del dropdown → **Guardar**.
+
+#### XMedical en Docker, Ollama en el host del VPS
+
+No levantes un contenedor Ollama. En el `.env` del servicio `web`:
+
+```env
+OLLAMA_BASE_URL=http://host.docker.internal:11434
+```
+
+En Linux, si `host.docker.internal` no resuelve, usa la IP del gateway Docker (suele ser `172.17.0.1`) o añade en `docker-compose.yml` bajo `web`:
+
+```yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+```
+
+Verifica desde el contenedor:
+
+```bash
+docker compose exec web curl -s http://host.docker.internal:11434/api/tags
+```
+
+#### Seguridad en VPS
+
+- Ollama debe escuchar en **localhost** o red privada, no en `0.0.0.0` público.
+- Firewall: no abrir el puerto `11434` a Internet.
+- XMedical sí puede estar detrás de nginx/HTTPS; Ollama queda solo para la app.
+
+#### Fase 5 del plan — cuándo aplicarla
+
+| Tu situación | Acción |
+|--------------|--------|
+| VPS con Ollama ya instalado | **Omitir Fase 5**; usar §6.4 |
+| Servidor nuevo sin Ollama | Fase 5 (Compose) o §6.1 (install.sh) |
+| Dev local en laptop | §6.3 Windows o Ollama nativo en Linux |
+
+La Fase 5 del roadmap (**Docker Compose servicio `ollama`**) queda **opcional** y orientada a entornos donde aún no hay motor IA en el host.
 
 ---
 
@@ -289,12 +445,11 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 | Fase | Entregable | Dependencias |
 |------|------------|--------------|
 | **1** | `OllamaProvider` + tests con mock | Ninguna | ✅ Implementado |
-| **2** | Variables `.env` + `get_ai_config()` para ollama | Fase 1 |
-| **3** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 2 |
-| **4** | Integración wizard consulta (paso 5 diagnóstico) | Fase 3 |
-| **5** | OCR local con `llava` en pacientes | Fase 3 |
-| **6** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 |
-| **7** | API REST endpoint `POST /api/v1/ia/sugerir/` (opcional) | Fase 4 |
+| **2** | Vista `/configuracion-ia/` + listado modelos + probar conexión | Fase 1 | ✅ Implementado |
+| **3** | Integración wizard consulta (paso 5 diagnóstico) | Fase 2 | ✅ Implementado |
+| **4** | OCR local con `llava` en pacientes | Fase 2 | ✅ Implementado |
+| **5** | Docker Compose servicio `ollama` + doc despliegue | Fase 2 | Opcional — omitir si Ollama ya está en el VPS (§6.4) |
+| **6** | API REST endpoint `POST /api/v1/ia/sugerir/` (opcional) | Fase 3 |
 
 ### Historias de usuario (backlog)
 
@@ -333,7 +488,11 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 | Configuración | API key | Instalar Ollama + pull model |
 | Ideal para | Demos, baja carga GPU | Clínicas con política de datos estricta |
 
-**Estrategia híbrida (recomendada):** Ollama por defecto en producción clínica; OpenRouter como fallback opcional desactivado por defecto.
+**Estrategia híbrida (recomendada):**
+
+- **Desarrollo y clínicas con datos sensibles:** Ollama siempre (`AI_PROVIDER=ollama`), sin keys cloud.
+- **Producción exigente:** Ollama por defecto; OpenAI/OpenRouter solo si hace falta calidad extra o como fallback (`fallback_cloud=true`, desactivado por defecto).
+- **Nunca mezclar en dev:** evita poner `AI_PROVIDER=openai` en `.env` local para no generar cargos al probar el wizard.
 
 ---
 
@@ -343,6 +502,8 @@ Ver también: [Documento 7 — Seguridad](7%20Documento%20de%20Seguridad.md), [R
 - [Documento 4 — Arquitectura](4%20Documento%20Arquitectura%20de%20alto%20nivel.md)
 - [PROMPTS_FASE2_DIVIDIDA.md](../PROMPTS_FASE2_DIVIDIDA.md) — Prompt 1 (infra IA)
 - [Ollama API](https://github.com/ollama/ollama/blob/main/docs/api.md)
+- [IBM Granite en Ollama](https://ollama.com/ibm/granite4)
+- [IBM Granite 4.1 docs](https://www.ibm.com/granite/docs/models/granite4-1)
 - Código actual: `apps/core/ai_services.py`, `tests/test_ai_services.py`
 
 ---

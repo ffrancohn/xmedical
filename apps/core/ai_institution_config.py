@@ -1,0 +1,122 @@
+"""Configuración IA por institución (Institucion.configuracion['ai'])."""
+from __future__ import annotations
+
+from typing import Any
+
+from django.conf import settings
+
+DEFAULT_AI_FEATURES = {
+    "diagnostico_sugerido": True,
+    "resumen_clinico": True,
+    "ocr_asistido": True,
+}
+
+AI_PROVIDER_CHOICES = (
+    ("openai", "OpenAI"),
+    ("openrouter", "OpenRouter"),
+    ("ollama", "Ollama (local)"),
+)
+
+
+def _default_model_for_provider(provider: str) -> str:
+    if provider == "openrouter":
+        return getattr(settings, "OPENROUTER_MODEL", "")
+    if provider == "ollama":
+        return getattr(settings, "OLLAMA_MODEL", "")
+    return getattr(settings, "OPENAI_MODEL", "")
+
+
+def default_ai_settings() -> dict[str, Any]:
+    provider = getattr(settings, "AI_PROVIDER", "openai")
+    return {
+        "provider": provider,
+        "model": _default_model_for_provider(provider),
+        "vision_model": getattr(settings, "OLLAMA_VISION_MODEL", "llava:7b"),
+        "ollama_base_url": getattr(settings, "OLLAMA_BASE_URL", "http://localhost:11434"),
+        "temperature": 0.2,
+        "enabled": True,
+        "fallback_cloud": False,
+        "features": dict(DEFAULT_AI_FEATURES),
+    }
+
+
+def get_institution_ai_settings(institucion) -> dict[str, Any]:
+    defaults = default_ai_settings()
+    if not institucion:
+        return defaults
+    raw = institucion.configuracion if isinstance(institucion.configuracion, dict) else {}
+    cfg = raw.get("ai", {})
+    if not isinstance(cfg, dict):
+        cfg = {}
+    merged = {**defaults, **cfg}
+    feature_cfg = cfg.get("features") if isinstance(cfg.get("features"), dict) else {}
+    merged["features"] = {**DEFAULT_AI_FEATURES, **feature_cfg}
+    return merged
+
+
+def save_institution_ai_settings(institucion, data: dict[str, Any]) -> None:
+    configuracion = dict(institucion.configuracion or {})
+    configuracion["ai"] = {
+        "provider": data["provider"],
+        "model": data["model"],
+        "vision_model": data.get("vision_model", ""),
+        "ollama_base_url": data.get("ollama_base_url", ""),
+        "temperature": float(data.get("temperature", 0.2)),
+        "enabled": bool(data.get("enabled", True)),
+        "fallback_cloud": bool(data.get("fallback_cloud", False)),
+        "features": {
+            "diagnostico_sugerido": bool(data.get("feature_diagnostico_sugerido", True)),
+            "resumen_clinico": bool(data.get("feature_resumen_clinico", True)),
+            "ocr_asistido": bool(data.get("feature_ocr_asistido", True)),
+        },
+    }
+    institucion.configuracion = configuracion
+    institucion.save(update_fields=["configuracion"])
+
+
+def diagnostico_ia_habilitado(institucion) -> bool:
+    """True si la institución tiene IA activa y la feature de diagnóstico sugerido."""
+    cfg = get_institution_ai_settings(institucion)
+    if not cfg.get("enabled", True):
+        return False
+    features = cfg.get("features") or {}
+    return bool(features.get("diagnostico_sugerido", True))
+
+
+def ai_provider_badge(institucion) -> str:
+    """Etiqueta corta para UI: «Local (llama3.2)» o «Cloud (gpt-4o-mini)»."""
+    cfg = get_institution_ai_settings(institucion)
+    provider = cfg.get("provider", "openai")
+    model = cfg.get("model") or "—"
+    if provider == "ollama":
+        return f"Local ({model})"
+    if provider == "openrouter":
+        return f"Cloud OpenRouter ({model})"
+    return f"Cloud OpenAI ({model})"
+
+
+def ocr_ia_habilitado(institucion) -> bool:
+    """True si la institución tiene OCR asistido activo."""
+    cfg = get_institution_ai_settings(institucion)
+    if not cfg.get("enabled", True):
+        return False
+    features = cfg.get("features") or {}
+    return bool(features.get("ocr_asistido", True))
+
+
+def ocr_ollama_configured(institucion) -> bool:
+    """True si hay URL Ollama y modelo de visión configurados."""
+    cfg = get_institution_ai_settings(institucion)
+    base_url = (cfg.get("ollama_base_url") or getattr(settings, "OLLAMA_BASE_URL", "")).strip()
+    vision_model = (cfg.get("vision_model") or getattr(settings, "OLLAMA_VISION_MODEL", "")).strip()
+    return bool(base_url and vision_model)
+
+
+def get_ollama_vision_client(institucion) -> "OllamaProvider":
+    """Instancia OllamaProvider apuntando al modelo de visión."""
+    from apps.core.ai_services import OllamaProvider
+
+    cfg = get_institution_ai_settings(institucion)
+    base_url = (cfg.get("ollama_base_url") or getattr(settings, "OLLAMA_BASE_URL", "")).strip()
+    vision_model = (cfg.get("vision_model") or getattr(settings, "OLLAMA_VISION_MODEL", "")).strip()
+    return OllamaProvider(default_model=vision_model, base_url=base_url or None)

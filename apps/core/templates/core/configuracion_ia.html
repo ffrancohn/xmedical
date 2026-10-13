@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% block title %}Configuración IA{% endblock %}
+{% block content %}
+<div class="max-w-4xl" x-data="configuracionIA()">
+    <div class="xm-page-header">
+        <div>
+            <p class="xm-page-header__subtitle">Sistema</p>
+            <h1 class="xm-page-header__title">Configuración de Inteligencia Artificial</h1>
+            <p class="xm-page-header__desc">
+                Elige el proveedor, modelos y funciones activas para {{ institucion.nombre }}.
+            </p>
+        </div>
+    </div>
+
+    {% if is_superadmin_view %}
+    <div class="xm-card mb-4">
+        <div class="p-4">
+            <form method="get" class="flex flex-wrap gap-2 items-end">
+                <label class="form-control w-full max-w-md">
+                    <span class="label-text font-medium">Institución</span>
+                    <select name="institucion" class="select select-bordered select-sm" onchange="this.form.submit()">
+                        {% for inst in all_instituciones %}
+                        <option value="{{ inst.id }}" {% if selected_institucion_id == inst.id|stringformat:'s' %}selected{% endif %}>{{ inst.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-info mb-4 text-sm">
+        <span>Las sugerencias de IA son de apoyo clínico y no reemplazan el criterio médico.</span>
+    </div>
+
+    <div class="xm-card">
+        <div class="p-6">
+            <form method="post" class="xm-form space-y-6" id="form-config-ia">
+                {% csrf_token %}
+                {% if is_superadmin_view %}
+                <input type="hidden" name="institucion" value="{{ institucion.id }}">
+                {% endif %}
+
+                <fieldset>
+                    <legend class="font-semibold mb-3">Proveedor</legend>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        {% for radio in form.provider %}
+                        <label class="label cursor-pointer justify-start gap-3 border rounded-lg px-4 py-3 flex-1">
+                            {{ radio.tag }}
+                            <span class="label-text">{{ radio.choice_label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.provider.errors %}<p class="text-error text-sm mt-1">{{ form.provider.errors.0 }}</p>{% endif %}
+                </fieldset>
+
+                <div x-show="provider === 'ollama'" x-cloak class="space-y-4 border-t pt-4">
+                    <div>
+                        <label class="label"><span class="label-text font-medium">{{ form.ollama_base_url.label }}</span></label>
+                        <div class="flex flex-wrap gap-2">
+                            {{ form.ollama_base_url }}
+                            <button type="button" class="btn btn-outline btn-sm" @click="cargarModelos()" :disabled="cargandoModelos">
+                                <span x-show="!cargandoModelos">Actualizar modelos</span>
+                                <span x-show="cargandoModelos">Cargando…</span>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" @click="probarConexion()" :disabled="probando">
+                                <span x-show="!probando">Probar conexión</span>
+                                <span x-show="probando">Probando…</span>
+                            </button>
+                        </div>
+                        {% if form.ollama_base_url.errors %}<p class="text-error text-sm mt-1">{{ form.ollama_base_url.errors.0 }}</p>{% endif %}
+                        <p x-show="estadoPrueba" class="text-sm mt-2" :class="estadoPruebaOk ? 'text-success' : 'text-error'" x-text="estadoPrueba"></p>
+                    </div>
+
+                    <datalist id="ollama-modelos">
+                        <template x-for="m in modelos" :key="m">
+                            <option :value="m"></option>
+                        </template>
+                    </datalist>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4">
+                    <div>
+                        <label class="label"><span class="label-text font-medium">{{ form.model.label }}</span></label>
+                        {{ form.model }}
+                        {% if form.model.errors %}<p class="text-error text-sm mt-1">{{ form.model.errors.0 }}</p>{% endif %}
+                        <p class="text-xs opacity-60 mt-1" x-show="provider !== 'ollama'">
+                            Las credenciales cloud se configuran en variables de entorno del servidor.
+                        </p>
+                    </div>
+                    <div x-show="provider === 'ollama'" x-cloak>
+                        <label class="label"><span class="label-text font-medium">{{ form.vision_model.label }}</span></label>
+                        {{ form.vision_model }}
+                        <p class="text-xs opacity-60 mt-1">Opcional — p. ej. llava:7b para OCR</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label">
+                        <span class="label-text font-medium">{{ form.temperature.label }}</span>
+                        <span class="label-text-alt" x-text="temperatura.toFixed(1)"></span>
+                    </label>
+                    <input type="range" name="temperature" min="0" max="1" step="0.1"
+                           class="range range-primary" x-model.number="temperatura">
+                    {% if form.temperature.errors %}<p class="text-error text-sm mt-1">{{ form.temperature.errors.0 }}</p>{% endif %}
+                </div>
+
+                <fieldset class="space-y-2">
+                    <legend class="font-semibold mb-2">Estado y funciones</legend>
+                    <label class="label cursor-pointer justify-start gap-3">
+                        {{ form.enabled }}
+                        <span class="label-text">{{ form.enabled.label }}</span>
+                    </label>
+                    <label class="label cursor-pointer justify-start gap-3" x-show="provider === 'ollama'">
+                        {{ form.fallback_cloud }}
+                        <span class="label-text">{{ form.fallback_cloud.label }}</span>
+                    </label>
+                    <div class="divider my-2"></div>
+                    <label class="label cursor-pointer justify-start gap-3">
+                        {{ form.feature_diagnostico_sugerido }}
+                        <span class="label-text">{{ form.feature_diagnostico_sugerido.label }}</span>
+                    </label>
+                    <label class="label cursor-pointer justify-start gap-3">
+                        {{ form.feature_resumen_clinico }}
+                        <span class="label-text">{{ form.feature_resumen_clinico.label }}</span>
+                    </label>
+                    <label class="label cursor-pointer justify-start gap-3">
+                        {{ form.feature_ocr_asistido }}
+                        <span class="label-text">{{ form.feature_ocr_asistido.label }}</span>
+                    </label>
+                </fieldset>
+
+                <div class="flex flex-wrap gap-2 pt-2">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" name="action" value="restore_defaults" class="btn btn-ghost"
+                            onclick="return confirm('¿Restaurar la configuración IA a los valores por defecto?');">
+                        Restaurar defaults
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-ghost">Volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function configuracionIA() {
+    const providerInputs = document.querySelectorAll('input[name="provider"]');
+    const initialProvider = document.querySelector('input[name="provider"]:checked')?.value || 'openai';
+    return {
+        provider: initialProvider,
+        temperatura: {{ form.temperature.value|default:0.2 }},
+        modelos: [],
+        cargandoModelos: false,
+        probando: false,
+        estadoPrueba: '',
+        estadoPruebaOk: false,
+        init() {
+            providerInputs.forEach((input) => {
+                input.addEventListener('change', () => { this.provider = input.value; });
+            });
+            if (this.provider === 'ollama') {
+                this.cargarModelos();
+            }
+        },
+        payload() {
+            return {
+                provider: this.provider,
+                ollama_base_url: document.querySelector('[name="ollama_base_url"]')?.value || '',
+                model: document.querySelector('[name="model"]')?.value || '',
+            };
+        },
+        async cargarModelos() {
+            this.cargandoModelos = true;
+            this.estadoPrueba = '';
+            const params = new URLSearchParams({
+                base_url: document.querySelector('[name="ollama_base_url"]')?.value || '',
+                model: document.querySelector('[name="model"]')?.value || '',
+            });
+            try {
+                const res = await fetch(`/configuracion-ia/modelos/?${params}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    this.modelos = data.models || [];
+                } else {
+                    this.estadoPrueba = data.error || 'No se pudieron cargar los modelos.';
+                    this.estadoPruebaOk = false;
+                }
+            } catch (e) {
+                this.estadoPrueba = 'Error de red al cargar modelos.';
+                this.estadoPruebaOk = false;
+            } finally {
+                this.cargandoModelos = false;
+            }
+        },
+        async probarConexion() {
+            this.probando = true;
+            this.estadoPrueba = '';
+            const csrf = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            try {
+                const res = await fetch('/configuracion-ia/probar/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrf,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify(this.payload()),
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    const lat = data.chat_latency_ms ?? data.latency_ms ?? '—';
+                    this.estadoPrueba = `Conectado · latencia ${lat} ms · ${(data.models || []).length} modelo(s)`;
+                    this.estadoPruebaOk = true;
+                    if (data.models?.length) {
+                        this.modelos = data.models;
+                    }
+                } else {
+                    this.estadoPrueba = data.error || 'Error de conexión con Ollama.';
+                    this.estadoPruebaOk = false;
+                }
+            } catch (e) {
+                this.estadoPrueba = 'Error de red al probar la conexión.';
+                this.estadoPruebaOk = false;
+            } finally {
+                this.probando = false;
+            }
+        },
+    };
+}
+</script>
+<style>[x-cloak] { display: none !important; }</style>
+{% endblock %}

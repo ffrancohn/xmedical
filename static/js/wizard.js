@@ -83,7 +83,13 @@
           suggestBox.innerHTML = '<p class="alert alert-warning">Sin sugerencias para los datos actuales.</p>';
           return;
         }
+        const providerNote = data.fallback
+          ? `<p class="text-xs opacity-70 mb-2">Respuesta via fallback cloud (${data.provider || "cloud"}).</p>`
+          : data.provider === "ollama"
+            ? `<p class="text-xs opacity-70 mb-2">Modelo local: ${data.model || "Ollama"}.</p>`
+            : "";
         suggestBox.innerHTML =
+          providerNote +
           `<p class="text-sm text-warning mb-2">${data.disclaimer}</p>` +
           data.sugerencias
             .map(

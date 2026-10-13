@@ -3,7 +3,7 @@ import base64
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, TestCase, override_settings
 
 from apps.core.models import Institucion
 from apps.core.test_utils import auth_client
@@ -16,7 +16,7 @@ PNG_1X1 = base64.b64decode(
 )
 
 
-class VisionServiceParserTests(TestCase):
+class VisionServiceParserTests(SimpleTestCase):
     def test_parse_document_text(self):
         texto = "JUAN PEREZ LOPEZ\nIdentidad 0801-1990-12345\nNac: 15/03/1990"
         resultado = parse_document_text(texto)
@@ -25,14 +25,47 @@ class VisionServiceParserTests(TestCase):
         self.assertIn("0801199012345", resultado.documento)
         self.assertEqual(resultado.fecha_nacimiento, "1990-03-15")
 
-    @override_settings(OPENAI_API_KEY="", OPENROUTER_API_KEY="")
+    @override_settings(
+        OPENAI_API_KEY="",
+        OPENROUTER_API_KEY="",
+        OLLAMA_BASE_URL="",
+        OLLAMA_VISION_MODEL="",
+    )
     def test_fallback_manual_sin_proveedores(self):
         servicio = VisionService()
         resultado = servicio.extract_from_image(PNG_1X1, "image/png")
         self.assertTrue(resultado.manual_fallback)
         self.assertEqual(resultado.proveedor, "manual")
 
-    @override_settings(OPENAI_API_KEY="test-key", OPENAI_MODEL="gpt-4o")
+    @override_settings(
+        OPENAI_API_KEY="",
+        OPENROUTER_API_KEY="",
+        OLLAMA_BASE_URL="http://localhost:11434",
+        OLLAMA_VISION_MODEL="llava:7b",
+    )
+    def test_extract_with_ollama_vision_mock(self):
+        payload = {
+            "message": {
+                "role": "assistant",
+                "content": (
+                    '{"nombre":"Maria","apellido":"Lopez","documento":"123456",'
+                    '"fecha_nacimiento":"1991-04-02","confianza":0.9}'
+                ),
+            }
+        }
+        servicio = VisionService()
+        with patch("apps.core.ai_services._post_json", return_value=payload):
+            resultado = servicio.extract_from_image(PNG_1X1, "image/png")
+        self.assertEqual(resultado.nombre, "Maria")
+        self.assertEqual(resultado.proveedor, "ollama")
+        self.assertFalse(resultado.manual_fallback)
+
+    @override_settings(
+        OPENAI_API_KEY="test-key",
+        OPENAI_MODEL="gpt-4o",
+        OLLAMA_BASE_URL="",
+        OLLAMA_VISION_MODEL="",
+    )
     def test_extract_with_ai_vision_mock(self):
         payload = {
             "choices": [
@@ -63,7 +96,12 @@ class PacienteOCRViewTests(TestCase):
         self.institucion = Institucion.objects.get(pk=1)
         self.imagen = SimpleUploadedFile("cedula.png", PNG_1X1, content_type="image/png")
 
-    @override_settings(OPENAI_API_KEY="", OPENROUTER_API_KEY="")
+    @override_settings(
+        OPENAI_API_KEY="",
+        OPENROUTER_API_KEY="",
+        OLLAMA_BASE_URL="",
+        OLLAMA_VISION_MODEL="",
+    )
     def test_subida_ocr_fallback_manual(self):
         response = self.client.post(
             "/pacientes/ocr/",
@@ -76,7 +114,39 @@ class PacienteOCRViewTests(TestCase):
         self.assertIn("ocr_paciente_data", session)
         self.assertTrue(session["ocr_paciente_data"]["manual_fallback"])
 
-    @override_settings(OPENAI_API_KEY="test-key", OPENAI_MODEL="gpt-4o")
+    @override_settings(
+        OPENAI_API_KEY="",
+        OPENROUTER_API_KEY="",
+        OLLAMA_BASE_URL="http://localhost:11434",
+        OLLAMA_VISION_MODEL="llava:7b",
+    )
+    def test_subida_ocr_ollama_local(self):
+        payload = {
+            "message": {
+                "role": "assistant",
+                "content": (
+                    '{"nombre":"Ana","apellido":"Garcia","documento":"999",'
+                    '"fecha_nacimiento":"1990-05-01","confianza":0.85}'
+                ),
+            }
+        }
+        with patch("apps.core.ai_services._post_json", return_value=payload):
+            response = self.client.post(
+                "/pacientes/ocr/",
+                {"documento_imagen": SimpleUploadedFile("cedula.png", PNG_1X1, content_type="image/png")},
+                **{"HTTP_HOST": "xmedical.cloud"},
+            )
+        self.assertEqual(response.status_code, 302)
+        session = self.client.session
+        self.assertFalse(session["ocr_paciente_data"]["manual_fallback"])
+        self.assertEqual(session["ocr_paciente_data"]["proveedor"], "ollama")
+
+    @override_settings(
+        OPENAI_API_KEY="test-key",
+        OPENAI_MODEL="gpt-4o",
+        OLLAMA_BASE_URL="",
+        OLLAMA_VISION_MODEL="",
+    )
     def test_flujo_ocr_confirmar_y_precargar_formulario(self):
         payload = {
             "choices": [

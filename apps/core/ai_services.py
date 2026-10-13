@@ -24,24 +24,19 @@ class AIRequestError(AIProviderError):
 class AIConfig:
     provider: str
     model: str
+    ollama_base_url: str = ""
+    vision_model: str = ""
+    temperature: float = 0.2
+    enabled: bool = True
+    fallback_cloud: bool = False
 
 
 def get_ai_config(institucion=None) -> AIConfig:
-    provider = getattr(settings, "AI_PROVIDER", "openai")
-    model = ""
+    from apps.core.ai_institution_config import get_institution_ai_settings
 
-    if provider == "openrouter":
-        model = getattr(settings, "OPENROUTER_MODEL", "")
-    elif provider == "ollama":
-        model = getattr(settings, "OLLAMA_MODEL", "")
-    else:
-        model = getattr(settings, "OPENAI_MODEL", "")
-
-    if institucion and isinstance(institucion.configuracion, dict):
-        ai_cfg = institucion.configuracion.get("ai", {})
-        if isinstance(ai_cfg, dict):
-            provider = ai_cfg.get("provider") or provider
-            model = ai_cfg.get("model") or model
+    cfg = get_institution_ai_settings(institucion)
+    provider = cfg["provider"]
+    model = cfg["model"] or ""
 
     if not model:
         if provider == "openrouter":
@@ -51,7 +46,15 @@ def get_ai_config(institucion=None) -> AIConfig:
         else:
             model = getattr(settings, "OPENAI_MODEL", "")
 
-    return AIConfig(provider=provider, model=model)
+    return AIConfig(
+        provider=provider,
+        model=model,
+        ollama_base_url=(cfg.get("ollama_base_url") or "").strip(),
+        vision_model=(cfg.get("vision_model") or "").strip(),
+        temperature=float(cfg.get("temperature", 0.2)),
+        enabled=bool(cfg.get("enabled", True)),
+        fallback_cloud=bool(cfg.get("fallback_cloud", False)),
+    )
 
 
 def _extract_message_content(payload: dict) -> str:
@@ -208,6 +211,46 @@ class OllamaProvider(BaseAIProvider):
         )
         return _extract_ollama_content(response)
 
+    def complete_with_image(
+        self,
+        user_prompt: str,
+        image_base64: str,
+        model: Optional[str] = None,
+        system_prompt: str = "",
+        temperature: float = 0.1,
+    ) -> str:
+        """Vision: POST /api/chat con imágenes base64 (LLaVA, moondream, etc.)."""
+        vision_model = (model or self.default_model or "").strip()
+        if not self.base_url or not vision_model:
+            raise AIConfigurationError(
+                "Ollama vision no configurado. Define OLLAMA_BASE_URL y OLLAMA_VISION_MODEL."
+            )
+
+        messages: list[dict] = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append(
+            {
+                "role": "user",
+                "content": user_prompt,
+                "images": [image_base64],
+            }
+        )
+        payload = {
+            "model": vision_model,
+            "messages": messages,
+            "stream": False,
+            "options": {"temperature": temperature},
+        }
+        headers = {"Content-Type": "application/json"}
+        response = _post_json(
+            f"{self.base_url}/api/chat",
+            headers,
+            payload,
+            timeout=self.timeout,
+        )
+        return _extract_ollama_content(response)
+
     def list_models(self) -> list[str]:
         if not self.base_url:
             raise AIConfigurationError("Ollama no esta configurado. Define OLLAMA_BASE_URL.")
@@ -290,10 +333,24 @@ class OpenRouterProvider(BaseAIProvider):
 
 def build_provider(config: AIConfig) -> BaseAIProvider:
     if config.provider == "ollama":
-        return OllamaProvider(default_model=config.model)
+        kwargs = {"default_model": config.model}
+        if config.ollama_base_url:
+            kwargs["base_url"] = config.ollama_base_url
+        return OllamaProvider(**kwargs)
     if config.provider == "openrouter":
         return OpenRouterProvider(default_model=config.model)
     return OpenAIProvider(default_model=config.model)
+
+
+def build_cloud_fallback_provider() -> Optional[BaseAIProvider]:
+    """Proveedor cloud de respaldo cuando Ollama falla (OpenRouter > OpenAI)."""
+    openrouter = OpenRouterProvider()
+    if openrouter.is_configured():
+        return openrouter
+    openai = OpenAIProvider()
+    if openai.is_configured():
+        return openai
+    return None
 
 
 class AIClient:
@@ -305,6 +362,8 @@ class AIClient:
         self.provider = build_provider(self.config)
 
     def is_available(self) -> bool:
+        if not self.config.enabled:
+            return False
         return self.provider.is_configured()
 
     def complete(
@@ -312,16 +371,46 @@ class AIClient:
         system_prompt: str,
         user_prompt: str,
         model: Optional[str] = None,
-        temperature: float = 0.2,
+        temperature: Optional[float] = None,
     ) -> str:
         if not self.is_available():
             raise AIConfigurationError(
                 f"IA no disponible para el proveedor '{self.config.provider}'. "
                 "Revisa las variables de entorno o la configuracion de la institucion."
             )
+        effective_temp = self.config.temperature if temperature is None else temperature
         return self.provider.complete(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             model=model or self.config.model,
-            temperature=temperature,
+            temperature=effective_temp,
         )
+
+    def complete_with_fallback(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: Optional[str] = None,
+        temperature: Optional[float] = None,
+    ) -> tuple[str, str]:
+        """Ejecuta complete(); si Ollama falla y fallback_cloud, usa proveedor cloud.
+
+        Returns:
+            (contenido, provider_usado)
+        """
+        try:
+            return self.complete(system_prompt, user_prompt, model=model, temperature=temperature), self.config.provider
+        except AIRequestError:
+            if self.config.provider != "ollama" or not self.config.fallback_cloud:
+                raise
+            fallback = build_cloud_fallback_provider()
+            if not fallback:
+                raise
+            effective_temp = self.config.temperature if temperature is None else temperature
+            content = fallback.complete(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                model=model,
+                temperature=effective_temp,
+            )
+            return content, fallback.provider_name

@@ -5,9 +5,11 @@
         <h1 class="card-title">Escanear documento de identidad</h1>
         <p class="opacity-70">Suba una foto de cedula o pasaporte para extraer nombre, documento y fecha de nacimiento.</p>
         {% if proveedores %}
-            <p class="text-sm">Proveedores disponibles: {{ proveedores|join:", " }}</p>
+            <p class="text-sm">OCR disponible: {{ proveedores|join:", " }}</p>
+        {% elif not ocr_habilitado %}
+            <div class="alert alert-warning">OCR desactivado para esta institución (Configuración IA).</div>
         {% else %}
-            <div class="alert alert-warning">OCR automatico no configurado. Podra ingresar los datos manualmente en la siguiente pantalla.</div>
+            <div class="alert alert-warning">OCR automático no configurado. Configure Ollama + modelo visión en Configuración IA, o ingrese datos manualmente.</div>
         {% endif %}
         <form method="post" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}

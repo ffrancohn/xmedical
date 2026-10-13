@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views import View
 
+from apps.core.audit import log_ia_usage
 from apps.core.views import current_institucion
 
 from .forms import DocumentoIdentidadForm, PacienteOCRReviewForm
@@ -21,30 +22,49 @@ class PacienteOCRUploadView(LoginRequiredMixin, View):
         return redirect("dashboard")
 
     def get(self, request):
+        institucion = current_institucion(request)
+        servicio = VisionService(institucion)
         return render(
             request,
             self.template_name,
             {
                 "form": DocumentoIdentidadForm(),
-                "proveedores": VisionService(current_institucion(request)).available_providers(),
+                "proveedores": servicio.provider_labels(),
+                "ocr_habilitado": bool(servicio.available_providers()),
             },
         )
 
     def post(self, request):
         institucion = current_institucion(request)
+        servicio = VisionService(institucion)
         form = DocumentoIdentidadForm(request.POST, request.FILES)
         if not form.is_valid():
-            return render(request, self.template_name, {"form": form, "proveedores": []})
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": form,
+                    "proveedores": servicio.provider_labels(),
+                    "ocr_habilitado": bool(servicio.available_providers()),
+                },
+            )
 
         archivo = form.cleaned_data["documento_imagen"]
         try:
             VisionService.validar_imagen(archivo)
             contenido = archivo.read()
-            servicio = VisionService(institucion)
             resultado = servicio.extract_from_image(contenido, archivo.content_type or "image/jpeg")
         except VisionServiceError as exc:
             messages.error(request, str(exc))
-            return render(request, self.template_name, {"form": form, "proveedores": []})
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": form,
+                    "proveedores": servicio.provider_labels(),
+                    "ocr_habilitado": bool(servicio.available_providers()),
+                },
+            )
 
         if institucion and not resultado.manual_fallback:
             DocumentoOCRLog.objects.create(
@@ -59,6 +79,15 @@ class PacienteOCRUploadView(LoginRequiredMixin, View):
                     "fecha_nacimiento": resultado.fecha_nacimiento,
                 },
                 texto_raw=resultado.texto_raw[:5000],
+            )
+            cfg = servicio._settings
+            log_ia_usage(
+                institucion,
+                feature="ocr_asistido",
+                provider=resultado.proveedor,
+                model=cfg.get("vision_model") or cfg.get("model") or "",
+                usuario=request.user,
+                request=request,
             )
 
         request.session["ocr_paciente_data"] = {
