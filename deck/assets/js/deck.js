@@ -227,7 +227,8 @@
     els.overview.setAttribute("aria-hidden", "false");
     const current = els.overviewGrid.querySelector(".overview-card.is-current");
     if (current) current.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
-    window.setTimeout(() => els.overviewClose && els.overviewClose.focus(), 50);
+    els.overview.setAttribute("tabindex", "-1");
+    window.setTimeout(() => els.overview.focus({ preventScroll: true }), 50);
     if (els.overviewBtn) els.overviewBtn.setAttribute("aria-expanded", "true");
   }
 
@@ -390,12 +391,56 @@
     }
   }
 
+  /* ---------- decorative QR ---------- */
+  function buildQR() {
+    document.querySelectorAll("[data-qr]").forEach((grid) => {
+      const n = 21;
+      const cells = Array.from({ length: n * n }, () => false);
+      const at = (x, y) => y * n + x;
+      const finder = (ox, oy) => {
+        for (let y = 0; y < 7; y++) {
+          for (let x = 0; x < 7; x++) {
+            const edge = x === 0 || y === 0 || x === 6 || y === 6;
+            const core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+            cells[at(ox + x, oy + y)] = edge || core;
+          }
+        }
+      };
+      finder(0, 0); finder(14, 0); finder(0, 14);
+      for (let i = 8; i < 13; i++) {
+        cells[at(i, 6)] = i % 2 === 0;
+        cells[at(6, i)] = i % 2 === 0;
+      }
+      // deterministic pseudo-random data modules
+      let seed = 7319;
+      const rand = () => {
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        return seed / 0x7fffffff;
+      };
+      for (let y = 0; y < n; y++) {
+        for (let x = 0; x < n; x++) {
+          if ((x < 8 && y < 8) || (x > 13 && y < 8) || (x < 8 && y > 13)) continue;
+          if (x === 6 || y === 6) continue;
+          cells[at(x, y)] = rand() > 0.52;
+        }
+      }
+      const frag = document.createDocumentFragment();
+      cells.forEach((on) => {
+        const cell = document.createElement("span");
+        cell.className = "qr-cell" + (on ? " on" : "");
+        frag.appendChild(cell);
+      });
+      grid.appendChild(frag);
+    });
+  }
+
   /* ---------- init ---------- */
   function init() {
     if (!slides.length) return;
     if (els.totalNum) els.totalNum.textContent = String(total).padStart(2, "0");
     buildChapterNav();
     buildOverview();
+    buildQR();
     bind();
     index = slideFromHash();
     slides.forEach((slide, i) => {
@@ -418,6 +463,7 @@
     updateChapterNav();
     runCounters(slide);
     setPlanView(params.get("plan") === "flat" ? "flat" : "iso");
+    if (params.get("overview") === "1") window.setTimeout(openOverview, 80);
     window.setTimeout(() => { body.classList.add("is-ready"); }, 60);
   }
 

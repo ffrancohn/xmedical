@@ -400,6 +400,13 @@
             <p>Pide cita, registra llegada y descarga su historia.</p>
             <span class="role-card-scope">Portal</span>
           </a>
+          <div class="role-card role-card--note" aria-label="RBAC">
+            <span class="role-card-num">RBAC</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg></span>
+            <h3>Un mismo límite<br>en cada capa.</h3>
+            <p>El menú, la vista y la API validan el rol. La base filtra por institución.</p>
+            <span class="role-card-scope">Permisos · datos</span>
+          </div>
         </div>
 
         <div class="role-index-foot" data-reveal style="--d:360ms">
@@ -603,6 +610,563 @@
           <div class="role-annotation"><span class="annotation-dot"></span><p><strong>El paciente también es un usuario del flujo.</strong> Su llegada actualiza el estado de la cita y avisa a recepción.</p></div>
         </div>
       </div>
+    </section>
+
+    <!-- ============ 14 · MÓDULOS ============ -->
+    <section class="slide" id="s14" data-title="Mapa de módulos" data-chapter="02" data-chapter-label="Módulos" data-summary="Once módulos entre la operación, la inteligencia y la plataforma." data-tone="light" data-accent="teal">
+      <div class="slide-inner module-index-layout">
+        <div class="module-index-copy">
+          <p class="kicker" data-reveal style="--d:60ms"><span class="kicker-num">02</span> Módulos</p>
+          <h2 class="slide-title" data-reveal style="--d:120ms">Once piezas.<br><em>Un mismo estándar.</em></h2>
+          <p class="lead" data-reveal style="--d:190ms">Cada módulo tiene una promesa, un flujo y un conjunto de reglas. Juntos cubren el ciclo completo: registrar, agendar, medir, atender, derivar y aprender.</p>
+          <div class="module-index-meta" data-reveal style="--d:250ms">
+            <strong>11</strong>
+            <span>módulos<br>en cuatro capas</span>
+          </div>
+          <div class="map-secondary" data-reveal style="--d:300ms;margin-top:16px">
+            <span class="tag">Núcleo clínico</span>
+            <span class="tag">Coordinación</span>
+            <span class="tag">Inteligencia</span>
+            <span class="tag">Plataforma</span>
+          </div>
+        </div>
+        <div class="module-tiles" data-reveal style="--d:240ms">
+          <a class="module-tile" href="#s15" data-goto="15" style="--mt:#0f766e"><div class="module-tile-top"><span class="module-tile-num">01</span><svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg></div><h3>Pacientes</h3><p>Identidad, ficha e historia.</p></a>
+          <a class="module-tile" href="#s16" data-goto="16" style="--mt:#0f766e"><div class="module-tile-top"><span class="module-tile-num">02</span><svg class="icon" aria-hidden="true"><use href="#i-calendar"></use></svg></div><h3>Citas</h3><p>Disponibilidad y agenda.</p></a>
+          <a class="module-tile" href="#s17" data-goto="17" style="--mt:#0f766e"><div class="module-tile-top"><span class="module-tile-num">03</span><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg></div><h3>Preclínica</h3><p>Signos, IMC y triaje.</p></a>
+          <a class="module-tile" href="#s18" data-goto="18" style="--mt:#0f766e"><div class="module-tile-top"><span class="module-tile-num">04</span><svg class="icon" aria-hidden="true"><use href="#i-stethoscope"></use></svg></div><h3>Consulta</h3><p>Wizard clínico y CIE-10.</p></a>
+          <a class="module-tile" href="#s19" data-goto="19" style="--mt:#c14e38"><div class="module-tile-top"><span class="module-tile-num">05</span><svg class="icon" aria-hidden="true"><use href="#i-share"></use></svg></div><h3>Referencias</h3><p>Derivación y retorno.</p></a>
+          <a class="module-tile" href="#s20" data-goto="20" style="--mt:#c14e38"><div class="module-tile-top"><span class="module-tile-num">06</span><svg class="icon" aria-hidden="true"><use href="#i-qr"></use></svg></div><h3>QR</h3><p>Receta, examen y check-in.</p></a>
+          <a class="module-tile" href="#s21" data-goto="21" style="--mt:#6556a0"><div class="module-tile-top"><span class="module-tile-num">07</span><svg class="icon" aria-hidden="true"><use href="#i-chart"></use></svg></div><h3>Dashboards</h3><p>Cuatro tableros por rol.</p></a>
+          <a class="module-tile" href="#s22" data-goto="22" style="--mt:#6556a0"><div class="module-tile-top"><span class="module-tile-num">08</span><svg class="icon" aria-hidden="true"><use href="#i-cpu"></use></svg></div><h3>IA predictiva</h3><p>Ausentismo, demanda, riesgo.</p></a>
+          <a class="module-tile" href="#s23" data-goto="23" style="--mt:#c14e38"><div class="module-tile-top"><span class="module-tile-num">09</span><svg class="icon" aria-hidden="true"><use href="#i-bell"></use></svg></div><h3>Notificaciones</h3><p>Recordatorios y logs.</p></a>
+          <a class="module-tile" href="#s24" data-goto="24" style="--mt:#356f92"><div class="module-tile-top"><span class="module-tile-num">10</span><svg class="icon" aria-hidden="true"><use href="#i-api"></use></svg></div><h3>API & integraciones</h3><p>JWT, OpenAPI, móvil.</p></a>
+          <a class="module-tile" href="#s25" data-goto="25" style="--mt:#356f92"><div class="module-tile-top"><span class="module-tile-num">11</span><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg></div><h3>Seguridad y respaldos</h3><p>RLS, auditoría, backups.</p></a>
+          <div class="module-tile module-tile--note"><div class="module-tile-top"><span class="module-tile-num">CAPAS</span><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></div><h3>Operación,<br>inteligencia, plataforma.</h3><p>Un módulo no vive solo: comparte paciente, institución y permisos.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 15 · PACIENTES ============ -->
+    <section class="slide" id="s15" data-title="Pacientes" data-chapter="02" data-chapter-label="Módulos" data-summary="Una ficha única por institución, con OCR y revisión humana." data-tone="light" data-accent="teal">
+      <div class="slide-inner module-layout">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">01</span> Módulo · Registro</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Pacientes</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Una ficha única, construida una vez.</p>
+          <p class="lead" data-reveal style="--d:200ms">Cada paciente existe una sola vez por institución. La ficha se enriquece en cada encuentro y es la puerta de entrada a toda la historia clínica.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Identidad sin duplicados</h3><p>Documento único por tenant: si ya existe, el sistema encuentra la ficha.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Ficha 360</h3><p>Demografía, contacto, dirección, emergencia y observaciones.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>OCR asistido</h3><p>Cédula o pasaporte; los datos se proponen y una persona los confirma.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Historia centralizada</h3><p>Consultas, diagnósticos y variables de la especialidad en un solo lugar.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>Si el documento existe, no se crea otra ficha:</strong> se abre la que ya tiene historia.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">OCR · VISIÓN <b>ASISTIDA</b></span><span class="panel-status"><span class="dot"></span>confianza 0.94</span></div>
+            <div class="panel-body">
+              <div class="ocr-stage">
+                <div class="id-card">
+                  <div class="id-top"><span>República · Documento</span><span>ID</span></div>
+                  <div class="id-chip"></div>
+                  <div class="id-photo"></div>
+                  <div class="id-lines"><span class="id-line"></span><span class="id-line"></span><span class="id-line"></span></div>
+                  <div class="id-mrz">0801-1995-02741&lt;&lt;&lt;&lt;&lt;LOPEZ&lt;&lt;MARIA&lt;&lt;JOSE</div>
+                  <div class="scan-beam"></div>
+                </div>
+                <div class="ocr-fields">
+                  <div class="ocr-field"><span>Documento</span><b>0801-1995-02741</b></div>
+                  <div class="ocr-field"><span>Nombre</span><b>María José López</b></div>
+                  <div class="ocr-field"><span>Nacimiento</span><b>1987-04-12</b></div>
+                  <div class="ocr-field"><span>Confianza</span><b>0.94 · revisar</b></div>
+                </div>
+              </div>
+              <div class="ocr-flow">
+                <span class="ocr-step is-done">Captura</span><span class="ocr-sep">→</span>
+                <span class="ocr-step is-done">OCR</span><span class="ocr-sep">→</span>
+                <span class="ocr-step is-done">Revisión</span><span class="ocr-sep">→</span>
+                <span class="ocr-step">Ficha</span><span class="ocr-sep">→</span>
+                <span class="ocr-step">Historia</span>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Revisión humana obligatoria</span><span>ollama vision · fallback manual</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 16 · CITAS ============ -->
+    <section class="slide" id="s16" data-title="Citas" data-chapter="02" data-chapter-label="Módulos" data-summary="Agendamiento específico y flexible sobre un único motor de disponibilidad." data-tone="light" data-accent="teal">
+      <div class="slide-inner module-layout module-layout--reverse">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">02</span> Módulo · Agenda</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Citas</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Certeza o flexibilidad. Nunca doble reserva.</p>
+          <p class="lead" data-reveal style="--d:200ms">Dos formas de agendar, un mismo motor: horario del médico, duración de la especialidad y turnos ya ocupados. El sistema calcula; la persona elige.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Agenda específica</h3><p>Especialidad → médico → fecha → hora, con disponibilidad real.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Agenda flexible</h3><p>Rango de fechas y jornada; el sistema asigna el primer turno libre.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Calendario operable</h3><p>Día, semana, mes, dos y tres meses; estados y cancelación a 2 horas.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Sin doble turno</h3><p>Restricción única por profesional, fecha y hora; el cupo se bloquea al confirmar.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>20 minutos por defecto,</strong> ajustables por especialidad. Cancelar libera el cupo solo si faltan 2 horas o más.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">AGENDA · <b>SEMANA 42</b></span><div class="dash-tabs"><span class="dash-tab">Específico</span><span class="dash-tab is-active">Flexible</span></div></div>
+            <div class="panel-body">
+              <div class="cal-grid">
+                <div class="cal-corner">HORA</div><div class="cal-day">Lun 12</div><div class="cal-day">Mar 13</div><div class="cal-day">Mié 14</div><div class="cal-day">Jue 15</div><div class="cal-day">Vie 16</div>
+                <div class="cal-time">08:00</div><div class="cal-slot is-filled"><span>M. López</span></div><div class="cal-slot is-free"></div><div class="cal-slot is-filled"><span>J. Pérez</span></div><div class="cal-slot is-free"></div><div class="cal-slot is-coral"><span>A. Ruiz</span></div>
+                <div class="cal-time">10:00</div><div class="cal-slot is-free"></div><div class="cal-slot is-filled"><span>R. Díaz</span></div><div class="cal-slot is-free"></div><div class="cal-slot is-filled"><span>S. Mata</span></div><div class="cal-slot is-free"></div>
+                <div class="cal-time">12:00</div><div class="cal-slot is-coral"><span>L. Vega</span></div><div class="cal-slot is-free"></div><div class="cal-slot is-filled"><span>P. Cruz</span></div><div class="cal-slot is-free"></div><div class="cal-slot is-free"></div>
+                <div class="cal-time">15:00</div><div class="cal-slot is-free"></div><div class="cal-slot is-filled"><span>M. Solís</span></div><div class="cal-slot is-free"></div><div class="cal-slot is-free"></div><div class="cal-slot is-coral"><span>C. Núñez</span></div>
+              </div>
+              <div class="cal-legend"><span><i style="background:#5eead4"></i>confirmada</span><span><i style="background:#e5765d"></i>flexible</span><span><i style="background:rgba(94,234,212,.16)"></i>libre</span><span style="margin-left:auto">rango 12–16 oct · mañana</span></div>
+              <div class="cal-formula"><b>horario</b> − <b>ocupados</b> = <b>disponibles</b><span style="margin-left:auto">unique(profesional, fecha, hora)</span></div>
+            </div>
+            <div class="panel-foot"><span>Vista semanal · 5 días</span><span>primer turno libre: mar 13 · 08:00</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 17 · PRECLÍNICA ============ -->
+    <section class="slide" id="s17" data-title="Preclínica" data-chapter="02" data-chapter-label="Módulos" data-summary="Signos, IMC, triaje y alertas antes de la consulta." data-tone="light" data-accent="coral">
+      <div class="slide-inner module-layout">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">03</span> Módulo · Triaje</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Preclínica</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Medir antes de escuchar.</p>
+          <p class="lead" data-reveal style="--d:200ms">Enfermería registra los signos, el sistema calcula el IMC y dispara alertas. El médico empieza la consulta con contexto, no con una hoja en blanco.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Cola del día</h3><p>Pendientes y evaluados, ordenados por hora de cita.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Signos completos</h3><p>PA, FC, temperatura, SpO₂, peso, talla e IMC automático.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Alertas</h3><p>PA ≥140/90, fiebre ≥38 °C y SpO₂ &lt;92% se destacan solas.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Riesgo crónico</h3><p>Diabetes e hipertensión se evalúan con el historial y las mediciones.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>La alerta no diagnostica: prioriza.</strong> El triaje ordena la atención; la decisión clínica ocurre en consulta.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">PRECLÍNICA · <b>MARÍA LÓPEZ</b></span><span class="panel-status"><span class="dot"></span>3 alertas</span></div>
+            <div class="panel-body">
+              <div class="vitals-body">
+                <div class="vitals-monitor">
+                  <div class="ecg-wrap"><svg viewBox="0 0 300 60" preserveAspectRatio="none"><path class="ecg-path" d="M0 30h50l9-2 6-16 8 34 9-18 10 2h30l7-3 5-10 7 22 8-9 8-2h40l6-1 4-8 6 17 7-8h60"/><path d="M0 30h300" stroke="rgba(94,234,212,.08)" stroke-width="1"/></svg></div>
+                  <div class="vitals-grid">
+                    <div class="vital is-alert"><span>Presión arterial</span><b>148/94<small>mmHg</small></b></div>
+                    <div class="vital"><span>Frecuencia cardiaca</span><b>96<small>bpm</small></b></div>
+                    <div class="vital is-alert"><span>Temperatura</span><b>38.4<small>°C</small></b></div>
+                    <div class="vital is-alert"><span>Saturación O₂</span><b>91<small>%</small></b></div>
+                  </div>
+                </div>
+                <div class="vitals-alerts">
+                  <div class="alert-card">PA sistólica elevada<b>≥140</b></div>
+                  <div class="alert-card">Fiebre<b>≥38 °C</b></div>
+                  <div class="alert-card">Saturación baja<b>&lt;92%</b></div>
+                  <div class="thresholds">
+                    <div class="threshold"><span>IMC calculado</span><b>31.2</b></div>
+                    <div class="threshold"><span>Triaje</span><b>Alta</b></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Guardado · listo para consulta</span><span>enfermería → paso 1 del wizard</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 18 · CONSULTA ============ -->
+    <section class="slide" id="s18" data-title="Consulta médica" data-chapter="02" data-chapter-label="Módulos" data-summary="Wizard de 8 pantallas con autosave y CIE-10." data-tone="light" data-accent="teal">
+      <div class="slide-inner module-layout module-layout--reverse">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">04</span> Módulo · Encuentro</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Consulta</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Ocho pantallas, cero cabos sueltos.</p>
+          <p class="lead" data-reveal style="--d:200ms">El wizard convierte la conversación en una historia estructurada: motivo, anamnesis, examen, variables, diagnóstico, plan y resumen. Sin perder el hilo.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Ocho pasos</h3><p>Preclínica, motivo, anamnesis, examen, variables, CIE-10, plan y resumen.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Autosave</h3><p>Motivo, anamnesis, examen y plan se guardan mientras se escribe.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>CIE-10 + IA</h3><p>Buscador de códigos y sugerencia opcional con confirmación humana.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Conducta</h3><p>Alta, cita subsiguiente o referencia; receta y orden con QR.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>El paso 5 es condicional:</strong> solo aparece si la especialidad define variables clínicas. El resumen siempre cierra.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">CONSULTA · <b>PASO 6 / 8</b></span><span class="panel-status"><span class="dot"></span>autosave activo</span></div>
+            <div class="panel-body">
+              <div class="wizard-body">
+                <div class="wizard-steps">
+                  <div class="wstep is-done"><b>1</b> Preclínica</div>
+                  <div class="wstep is-done"><b>2</b> Motivo</div>
+                  <div class="wstep is-done"><b>3</b> Anamnesis</div>
+                  <div class="wstep is-done"><b>4</b> Examen físico</div>
+                  <div class="wstep is-done is-optional"><b>5</b> Variables</div>
+                  <div class="wstep is-now"><b>6</b> Diagnóstico</div>
+                  <div class="wstep"><b>7</b> Plan</div>
+                  <div class="wstep"><b>8</b> Resumen</div>
+                </div>
+                <div class="wizard-sheet">
+                  <div class="wsheet-head"><b>María José López</b><span>F · 38 años</span></div>
+                  <div class="wsheet-label">Motivo</div><div class="wsheet-text">Cefalea y presión alta en casa desde hace 3 días.</div>
+                  <div class="wsheet-label">Examen físico</div><div class="wsheet-text">PA 148/94 · FC 96 · afebril · sin focalización neurológica.</div>
+                  <div class="wsheet-label">Diagnóstico principal</div>
+                  <div class="wsheet-dx"><b>I10</b><span>Hipertensión esencial primaria</span></div>
+                  <div class="wsheet-label">Plan</div><div class="wsheet-text">Control en 7 días, tratamiento y registro de presión domiciliaria.</div>
+                  <div class="wsheet-chips"><span>Tabaco: no</span><span>Alcohol: ocasional</span><span>Adherencia: buena</span></div>
+                  <div class="wsheet-foot"><span class="autosave"><i></i>guardado 12:42</span><span>CIE-10 · 1 diagnóstico</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Borrador persistente</span><span>finalizar → cita atendida</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 19 · REFERENCIAS ============ -->
+    <section class="slide" id="s19" data-title="Referencias" data-chapter="02" data-chapter-label="Módulos" data-summary="Derivación y contrarreferencia entre primer y segundo nivel." data-tone="light" data-accent="violet">
+      <div class="slide-inner module-layout">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">05</span> Módulo · Derivación</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Referencias</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">El caso no se pierde cuando cambia de nivel.</p>
+          <p class="lead" data-reveal style="--d:200ms">Una referencia nace de una consulta, viaja con su historia y vuelve convertida en contrarreferencia. El primer nivel no queda a ciegas.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Nace de la consulta</h3><p>Especialidad destino, prioridad, motivo y contexto clínico.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Bandeja del especialista</h3><p>Pendientes, aceptadas y rechazadas por especialidad y prioridad.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Aceptar y agendar</h3><p>El especialista agenda la cita derivada o rechaza con comentarios.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Contrarreferencia</h3><p>Resumen de atención y plan de seguimiento de regreso al primer nivel.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>Sin contrarreferencia, el ciclo no se cierra.</strong> Cada referencia tiene un estado y un responsable visibles.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">REFERENCIA · <b>#R-024</b></span><span class="panel-status"><span class="dot"></span>prioridad alta</span></div>
+            <div class="panel-body">
+              <div class="ref-body">
+                <div class="ref-pipe"><span class="ref-node is-active">Pendiente</span><span class="ref-arrow">→</span><span class="ref-node">Aceptada</span><span class="ref-arrow">→</span><span class="ref-node">Completada</span><span class="ref-arrow">↘</span><span class="ref-node is-rejected">Rechazada</span></div>
+                <div class="ref-card">
+                  <div class="ref-card-head"><b>CARDIOLOGÍA · 2.º NIVEL</b><span>ALTA</span></div>
+                  <div class="ref-patient"><span class="ref-avatar">ML</span><p>María José López<small>38 años · Medicina General → Cardiología</small></p></div>
+                  <div class="ref-reason">Hipertensión no controlada con cefalea persistente. Se solicita valoración especializada y ajuste de tratamiento.</div>
+                  <div class="ref-meta"><span><b>Refiere</b> Dra. Méndez</span><span><b>Creada</b> 12:10</span><span><b>Cita</b> 18 oct · 09:20</span></div>
+                </div>
+                <div class="ref-events">
+                  <div class="ref-event"><span>12:10</span><p><b>Referencia creada</b> desde la consulta #482.</p></div>
+                  <div class="ref-event"><span>12:25</span><p><b>Recibida por Cardiología</b> · prioridad alta.</p></div>
+                  <div class="ref-event"><span>14:00</span><p><b>Cita derivada agendada</b> · 18 oct, 09:20.</p></div>
+                </div>
+                <div class="ref-bridge">
+                  <span class="ref-bridge-label">primer nivel ↔ segundo nivel</span>
+                  <svg viewBox="0 0 400 55" preserveAspectRatio="none"><path d="M10 42 C120 -4 280 -4 390 42" fill="none" stroke="rgba(179,163,233,.3)" stroke-width="1" stroke-dasharray="3 5"/><circle cx="10" cy="42" r="4" fill="#2dd4bf"/><circle cx="390" cy="42" r="4" fill="#b3a3e9"/><g><rect x="188" y="10" width="18" height="12" rx="1.4" fill="#efe9dd" stroke="#e5765d" stroke-width="1"/><path d="M188 10l9 7 9-7" fill="none" stroke="#e5765d" stroke-width="1"/></g></svg>
+                </div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Estados persistidos</span><span>médico referente · especialista · cita</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 20 · QR ============ -->
+    <section class="slide" id="s20" data-title="QR y documentos" data-chapter="02" data-chapter-label="Módulos" data-summary="Receta, orden de examen y check-in con token de un solo uso." data-tone="light" data-accent="gold">
+      <div class="slide-inner module-layout module-layout--reverse">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">06</span> Módulo · Documentos</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">QR</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Una llave, no un expediente.</p>
+          <p class="lead" data-reveal style="--d:200ms">Tres documentos, un token URL-safe y una fecha de expiración. El QR abre la validación, no los datos clínicos: lo que viaja es una referencia, no la historia.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Tres tipos</h3><p>Receta, orden de examen y check-in de cita, cada uno con su payload.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Token seguro</h3><p>32 bytes URL-safe, único, con expiración y marca de uso.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Validación</h3><p>El personal escanea y el sistema resuelve el documento y el tenant.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Un solo uso</h3><p>Check-in y documentos sensibles se consumen una vez; queda registro.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>El QR no contiene diagnóstico ni documento de identidad.</strong> Solo un token que el sistema puede invalidar.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">DOCUMENTO QR · <b>RECETA</b></span><span class="panel-status"><span class="dot"></span>válido 72 h</span></div>
+            <div class="panel-body">
+              <div class="qr-body">
+                <div class="qr-frame">
+                  <div class="qr-grid" data-qr aria-hidden="true"></div>
+                  <span class="qr-scan"></span>
+                  <span class="qr-corner tl"></span><span class="qr-corner tr"></span><span class="qr-corner bl"></span><span class="qr-corner br"></span>
+                </div>
+                <div class="qr-side">
+                  <div class="qr-types">
+                    <div class="qr-type"><svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg><div><b>Receta</b><span>medicamento · dosis · caducidad</span></div></div>
+                    <div class="qr-type"><svg class="icon" aria-hidden="true"><use href="#i-scan"></use></svg><div><b>Orden de examen</b><span>estudios solicitados</span></div></div>
+                    <div class="qr-type"><svg class="icon" aria-hidden="true"><use href="#i-calendar"></use></svg><div><b>Check-in</b><span>cita · llegada · un solo uso</span></div></div>
+                  </div>
+                  <div class="qr-token"><span class="token-part"><b>tipo</b> receta</span><span class="token-part"><b>tenant</b> 7</span><span class="token-part"><b>exp</b> 72h</span><span class="token-part"><b>usado</b> no</span></div>
+                  <div class="qr-note">El token expira a las 72 h y se invalida al consumirse. No contiene diagnóstico ni identidad.</div>
+                </div>
+              </div>
+              <div class="qr-flow"><span class="ocr-step is-done">Generar</span><span class="ocr-sep">→</span><span class="ocr-step is-done">Mostrar</span><span class="ocr-sep">→</span><span class="ocr-step">Escanear</span><span class="ocr-sep">→</span><span class="ocr-step">Validar</span><span class="ocr-sep">→</span><span class="ocr-step">Consumir</span></div>
+            </div>
+            <div class="panel-foot"><span>Token URL-safe · 32 bytes</span><span>/qr/validar/&lt;token&gt;/</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 21 · DASHBOARDS ============ -->
+    <section class="slide" id="s21" data-title="Dashboards" data-chapter="02" data-chapter-label="Módulos" data-summary="Cuatro tableros: enfermería, administración, especialista y epidemiología." data-tone="light" data-accent="violet">
+      <div class="slide-inner module-layout">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">07</span> Módulo · Decisiones</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Dashboards</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Cuatro tableros, cuatro preguntas.</p>
+          <p class="lead" data-reveal style="--d:200ms">No todos necesitan el mismo gráfico. Cada rol ve las métricas que puede accionar: cola, ocupación, referencias o brotes.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Enfermería</h3><p>Pendientes, evaluados y alertas vitales del día.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Administración</h3><p>Ocupación, ausentismo, cancelaciones, consultas y demanda.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Especialista</h3><p>Referencias pendientes y aceptadas, más agenda propia.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Epidemiología</h3><p>Brotes ≥5 casos en 7 días, tendencias a 6 meses y top CIE-10.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>Cada rol ve solo lo que puede accionar.</strong> El mismo dato se presenta distinto según la decisión que habilita.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">DASHBOARD · <b>ADMINISTRACIÓN</b></span><span class="panel-status"><span class="dot"></span>hoy</span></div>
+            <div class="panel-body">
+              <div class="dash-tabs"><span class="dash-tab">Enfermería</span><span class="dash-tab is-active">Administración</span><span class="dash-tab">Especialista</span><span class="dash-tab">Epidemiología</span></div>
+              <div class="dash-kpis">
+                <div class="dash-kpi"><span>Ocupación agenda</span><b>82<small>%</small></b></div>
+                <div class="dash-kpi"><span>Ausentismo semana</span><b>14<small>%</small></b></div>
+                <div class="dash-kpi"><span>Consultas atendidas</span><b>26</b></div>
+              </div>
+              <div class="dash-charts">
+                <div class="dash-chart">
+                  <div class="dash-chart-head"><span>Citas por día</span><b>últimos 7 días</b></div>
+                  <div class="bars">
+                    <span class="bar" style="height:42%"></span><span class="bar" style="height:68%"></span><span class="bar" style="height:55%"></span><span class="bar" style="height:82%"></span><span class="bar" style="height:71%"></span><span class="bar is-coral" style="height:38%"></span><span class="bar" style="height:64%"></span>
+                  </div>
+                </div>
+                <div class="dash-chart">
+                  <div class="dash-chart-head"><span>Estado</span><b>hoy</b></div>
+                  <div class="donut"><svg viewBox="0 0 60 60"><circle class="donut-track" cx="30" cy="30" r="23"/><circle class="donut-value" cx="30" cy="30" r="23"/></svg></div>
+                  <div class="dash-legend"><span><i></i>atendidas 62%</span><span><i class="c"></i>canceladas 14%</span><span><i></i>en espera 24%</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Filtro: hoy · institución</span><span>exportable · actualización por request</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 22 · IA ============ -->
+    <section class="slide" id="s22" data-title="IA predictiva" data-chapter="02" data-chapter-label="Módulos" data-summary="Ausentismo, demanda y riesgo crónico como apoyo a la decisión." data-tone="light" data-accent="violet">
+      <div class="slide-inner module-layout module-layout--reverse">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">08</span> Módulo · Inteligencia</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">IA predictiva</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Tres señales antes de que sea tarde.</p>
+          <p class="lead" data-reveal style="--d:200ms">Modelos simples y explicables: probabilidad de ausentismo, demanda esperada y riesgo crónico. No reemplazan al equipo; le dan tiempo para actuar.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Ausentismo</h3><p>Score 0–100 con historial, flexibilidad, horario, anticipación y estado.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Demanda</h3><p>Especialidad × día × franja, calculada con citas históricas.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Riesgo crónico</h3><p>Diabetes por IMC/antecedentes; HTA por tres mediciones elevadas.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Configurable</h3><p>Proveedor OpenAI, OpenRouter u Ollama local, por institución.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Límite</span><p><strong>Apoyo a la decisión, no diagnóstico.</strong> La sugerencia se muestra con disclaimer y requiere confirmación humana.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">SEÑALES · <b>PREDICCIÓN</b></span><span class="panel-status"><span class="dot"></span>3 modelos activos</span></div>
+            <div class="panel-body">
+              <div class="ai-body">
+                <div class="gauges">
+                  <div class="gauge"><svg viewBox="0 0 60 60"><circle class="gauge-track" cx="30" cy="30" r="25"/><circle class="gauge-value" cx="30" cy="30" r="25" style="stroke-dashoffset:44"/></svg><span class="gauge-label">Ausentismo</span><span class="gauge-val">72%</span></div>
+                  <div class="gauge is-gold"><svg viewBox="0 0 60 60"><circle class="gauge-track" cx="30" cy="30" r="25"/><circle class="gauge-value" cx="30" cy="30" r="25" style="stroke-dashoffset:82"/></svg><span class="gauge-label">Demanda</span><span class="gauge-val">48%</span></div>
+                  <div class="gauge is-coral"><svg viewBox="0 0 60 60"><circle class="gauge-track" cx="30" cy="30" r="25"/><circle class="gauge-value" cx="30" cy="30" r="25" style="stroke-dashoffset:30"/></svg><span class="gauge-label">Riesgo crónico</span><span class="gauge-val">81%</span></div>
+                </div>
+                <div class="factor-bars">
+                  <div class="fb-row"><span>Historial del paciente</span><i><b style="width:80%"></b></i><em>40</em></div>
+                  <div class="fb-row"><span>Agenda flexible</span><i><b style="width:20%"></b></i><em>10</em></div>
+                  <div class="fb-row"><span>Fin de semana</span><i><b style="width:20%"></b></i><em>10</em></div>
+                  <div class="fb-row"><span>Anticipación &gt; 7 días</span><i><b style="width:10%"></b></i><em>5</em></div>
+                  <div class="fb-row"><span>Cita pendiente</span><i><b style="width:10%"></b></i><em>5</em></div>
+                </div>
+                <div class="ai-note">El detalle de factores queda guardado con cada predicción. Si cambia la cita, el score se recalcula; si se cancela, se elimina.</div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Local · llama3.2</span><span>fallback cloud opcional</span><span>feature flags por institución</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 23 · NOTIFICACIONES ============ -->
+    <section class="slide" id="s23" data-title="Notificaciones" data-chapter="02" data-chapter-label="Módulos" data-summary="Recordatorios de cita y medicación con registro de cada envío." data-tone="light" data-accent="coral">
+      <div class="slide-inner module-layout">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">09</span> Módulo · Seguimiento</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Notificaciones</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">El seguimiento también es parte del flujo.</p>
+          <p class="lead" data-reveal style="--d:200ms">Celery envía recordatorios de cita y medicación, y registra cada intento para no duplicar ni molestar. El silencio también deja huella.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>Cita 24 h y 1 h</h3><p>Dos avisos por correo con paciente, hora, médico y sede.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Medicación</h3><p>Recordatorios diarios, cada 12 h o cada 8 h según la indicación.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Log por envío</h3><p>Enviado, fallido u omitido; destinatario, asunto y detalle.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Sin duplicados</h3><p>Un solo envío exitoso por cita y tipo, garantizado en base.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>Si no hay email, se registra como omitido.</strong> El sistema no inventa destinos ni reintenta indefinidamente.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">NOTIFICACIONES · <b>COLA</b></span><span class="panel-status"><span class="dot"></span>worker activo</span></div>
+            <div class="panel-body">
+              <div class="notif-body">
+                <div class="notif-timeline">
+                  <div class="notif-item"><span class="notif-time">T−48 h</span><b>Confirmación de cita</b><p>La cita quedó reservada · 18 oct, 10:30.</p></div>
+                  <div class="notif-item"><span class="notif-time">T−24 h</span><b>Recordatorio de cita</b><p>Mañana 10:30 · Dra. Méndez · Clinica Demo</p></div>
+                  <div class="notif-item"><span class="notif-time">T−1 h</span><b>Tu cita es en 1 hora</b><p>Confirma llegada desde el portal o el QR.</p></div>
+                  <div class="notif-item is-muted"><span class="notif-time">T+0</span><b>Medicación · 08:00</b><p>Losartán 50 mg · recordatorio diario.</p></div>
+                  <div class="notif-item is-muted"><span class="notif-time">T+8 h</span><b>Próxima dosis</b><p>Losartán 50 mg · siguiente aviso 16:00.</p></div>
+                </div>
+                <div class="notif-log">
+                  <div class="notif-log-head"><span>envío</span><span>estado</span></div>
+                  <div class="log-row"><span>cita #482 · 24 h</span><span class="ok">enviado</span></div>
+                  <div class="log-row"><span>cita #482 · 1 h</span><span class="ok">enviado</span></div>
+                  <div class="log-row"><span>cita #479 · 24 h</span><span class="fail">fallido</span></div>
+                  <div class="log-row"><span>medicamento #31</span><span class="ok">enviado</span></div>
+                  <div class="log-row"><span>cita #477 · 1 h</span><span class="skip">omitido</span></div>
+                  <div class="log-row"><span>cita #476 · 24 h</span><span class="ok">enviado</span></div>
+                  <div class="log-row"><span>medicamento #30</span><span class="ok">enviado</span></div>
+                  <div class="log-row"><span>cita #474 · 1 h</span><span class="ok">enviado</span></div>
+                </div>
+              </div>
+              <div class="notif-summary"><span><b>12</b> enviados hoy</span><span><b>1</b> fallido</span><span><b>3</b> en cola</span><span style="margin-left:auto">próximo envío 16:00</span></div>
+            </div>
+            <div class="panel-foot"><span>Celery beat · cada hora</span><span>plantillas por tipo</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 24 · API ============ -->
+    <section class="slide" id="s24" data-title="API e integraciones" data-chapter="02" data-chapter-label="Módulos" data-summary="API REST con JWT, OpenAPI y aislamiento por tenant." data-tone="light" data-accent="blue">
+      <div class="slide-inner module-layout module-layout--reverse">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">10</span> Módulo · Plataforma</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">API &<br>integraciones</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">La web es la primera cliente.</p>
+          <p class="lead" data-reveal style="--d:200ms">La API JWT abre XMedical a la app móvil, laboratorios y sistemas externos con el mismo aislamiento por tenant. La web no es un caso especial: usa las mismas reglas.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>JWT</h3><p>Login, refresh y logout; permisos por rol en cada endpoint.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>Recursos</h3><p>Pacientes, citas, preclínica, consultas y dashboard.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>OpenAPI</h3><p>Esquema y Swagger en `/api/v1/docs/` para integradores.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Tenant explícito</h3><p>Subdominio, sesión o `X-Institution-ID`; nunca datos cruzados.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>La API no esquiva el aislamiento.</strong> Cada request pasa por el mismo contexto de institución y las mismas políticas RLS.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">API · <b>V1</b></span><span class="panel-status"><span class="dot"></span>JWT válido</span></div>
+            <div class="panel-body">
+              <div class="api-body">
+                <div class="api-terminal">
+                  <div class="api-term-head"><span class="api-method get">GET</span><span>/api/v1/health/</span><span style="margin-left:auto">200</span></div>
+                  <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/v1/auth/login/</span><span class="api-code">200</span></div>
+                  <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/v1/pacientes/</span><span class="api-code">200</span></div>
+                  <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/v1/citas/</span><span class="api-code">201</span></div>
+                  <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/v1/preclinica/</span><span class="api-code">200</span></div>
+                  <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/v1/consultas/</span><span class="api-code">201</span></div>
+                  <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/v1/dashboard/</span><span class="api-code">200</span></div>
+                  <div class="api-row"><span class="api-method post">POST</span><span class="api-path">/api/v1/auth/refresh/</span><span class="api-code">200</span></div>
+                  <div class="api-row"><span class="api-method get">GET</span><span class="api-path">/api/v1/schema/</span><span class="api-code">200</span></div>
+                </div>
+                <div class="api-json">{<br>&nbsp;&nbsp;<span class="k">"id"</span>: <span class="n">482</span>,<br>&nbsp;&nbsp;<span class="k">"paciente"</span>: <span class="s">"María José López"</span>,<br>&nbsp;&nbsp;<span class="k">"estado"</span>: <span class="s">"confirmada"</span>,<br>&nbsp;&nbsp;<span class="k">"institucion"</span>: <span class="n">7</span><br>}</div>
+                <div class="jwt"><span class="jwt-seg"><b>header</b></span><span class="jwt-seg"><b>payload</b></span><span class="jwt-seg"><b>signature</b></span><span style="margin-left:auto">HS256</span></div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>OpenAPI · /api/v1/docs/</span><span>mobile-ready</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 25 · SEGURIDAD ============ -->
+    <section class="slide" id="s25" data-title="Seguridad, auditoría y respaldos" data-chapter="02" data-chapter-label="Módulos" data-summary="RLS, RBAC, auditoría y respaldos por institución." data-tone="light" data-accent="blue">
+      <div class="slide-inner module-layout">
+        <div class="module-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">11</span> Módulo · Confianza</p>
+          <h2 class="module-title" data-reveal style="--d:90ms">Seguridad,<br>auditoría y respaldos</h2>
+          <p class="module-sub" data-reveal style="--d:140ms">Aislar, registrar, recuperar.</p>
+          <p class="lead" data-reveal style="--d:200ms">RLS en la base, RBAC en las vistas, auditoría en cada cambio y respaldos por institución. La confianza no es una capa: es el diseño.</p>
+          <div class="feature-grid">
+            <div class="feature" data-reveal style="--d:250ms"><span class="feature-num">01</span><h3>RLS</h3><p>Cada fila se filtra por `institucion_id` en PostgreSQL.</p></div>
+            <div class="feature" data-reveal style="--d:290ms"><span class="feature-num">02</span><h3>RBAC</h3><p>Roles y permisos centralizados; vistas y API comparten la matriz.</p></div>
+            <div class="feature" data-reveal style="--d:330ms"><span class="feature-num">03</span><h3>Auditoría</h3><p>CREATE, UPDATE y DELETE con usuario, IP, antes y después.</p></div>
+            <div class="feature" data-reveal style="--d:370ms"><span class="feature-num">04</span><h3>Respaldos</h3><p>Global o por tenant; exportación e importación JSON completa.</p></div>
+          </div>
+          <div class="module-rule" data-reveal style="--d:420ms"><span class="rule-label">Regla</span><p><strong>Cada cambio deja huella; cada tenant se puede llevar completo.</strong> Restaurar no es improvisar: queda en el historial.</p></div>
+        </div>
+        <div class="module-visual" data-reveal style="--d:260ms">
+          <div class="module-panel">
+            <div class="panel-top"><span class="panel-label">CONFIANZA · <b>4 CAPAS</b></span><span class="panel-status"><span class="dot"></span>tenant 7</span></div>
+            <div class="panel-body">
+              <div class="sec-body">
+                <div class="sec-layers">
+                  <div class="sec-status"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg><div><b>4 controles activos</b><span>0 incidentes · tenant 7</span></div><span class="sec-layer-state">OK</span></div>
+                  <div class="sec-layer"><svg class="icon" aria-hidden="true"><use href="#i-database"></use></svg><div><b>Row Level Security</b><span>filtro por institución</span></div><span class="sec-layer-state">on</span></div>
+                  <div class="sec-layer"><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg><div><b>RBAC</b><span>rol → permiso → vista</span></div><span class="sec-layer-state">on</span></div>
+                  <div class="sec-layer"><svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg><div><b>Auditoría</b><span>CREATE · UPDATE · DELETE</span></div><span class="sec-layer-state">on</span></div>
+                  <div class="sec-layer"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg><div><b>Respaldos</b><span>global · tenant · restore</span></div><span class="sec-layer-state">on</span></div>
+                  <div class="sec-note">Retención 30 días · restore auditado · exportación por tenant</div>
+                </div>
+                <div class="sec-right">
+                  <div class="audit">
+                    <div class="notif-log-head"><span>auditoría reciente</span><span>hoy</span></div>
+                    <div class="audit-row"><span>12:42</span><b>CREATE cita #482</b><span class="tag">ok</span></div>
+                    <div class="audit-row"><span>12:40</span><b>UPDATE paciente #91</b><span class="tag">ok</span></div>
+                    <div class="audit-row"><span>12:31</span><b>LOGIN admin.demo</b><span class="tag">ok</span></div>
+                    <div class="audit-row"><span>02:00</span><b>BACKUP tenant 7</b><span class="tag">ok</span></div>
+                  </div>
+                  <div class="backup-bar"><span class="backup-icon"><svg class="icon" aria-hidden="true"><use href="#i-database"></use></svg></span><div class="backup-info"><b>xmedical_tenant_demo.json</b><span>hoy 02:00 · 1.8 MB</span></div><span class="backup-check">✓</span></div>
+                  <div class="sec-code"><span class="k">SET</span> app.current_institucion_id = 7;
+<span class="k">USING</span> (institucion_id = current_setting(...))</div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-foot"><span>Backup global o por institución</span><span>restore auditado</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 26 · CIERRE ============ -->
+    <section class="slide slide--closing" id="s26" data-title="Horizonte" data-chapter="03" data-chapter-label="Horizonte" data-summary="Cierre: una clínica, un hilo, todo el equipo." data-tone="dark" data-accent="cyan">
+      <div class="closing-grid" aria-hidden="true"></div>
+      <div class="closing-glow" aria-hidden="true"></div>
+      <div class="closing-scene" aria-hidden="true"><svg data-iso="hero"></svg></div>
+      <div class="slide-inner closing-inner">
+        <p class="kicker kicker--light" data-reveal style="--d:60ms"><span class="kicker-num">03</span> Horizonte</p>
+        <h2 class="closing-title" data-reveal style="--d:120ms">Una clínica.<br><em>Un hilo.</em><br>Todo el equipo.</h2>
+        <p class="closing-lead" data-reveal style="--d:220ms">XMedical ya cubre el ciclo completo de primer y segundo nivel. Lo que viene no cambia el hilo: lo extiende al bolsillo del paciente, al laboratorio y a la recepción omnicanal.</p>
+        <div class="roadmap" data-reveal style="--d:300ms">
+          <div class="roadmap-item"><span>01</span><b>App móvil</b><p>iOS/Android sobre la API JWT.</p></div>
+          <div class="roadmap-item"><span>02</span><b>IA local</b><p>Ollama on-premise para datos sensibles.</p></div>
+          <div class="roadmap-item"><span>03</span><b>Recepción omnicanal</b><p>Email, WhatsApp y voz.</p></div>
+          <div class="roadmap-item"><span>04</span><b>Tercer nivel</b><p>Hospitalización y cirugía.</p></div>
+        </div>
+        <div class="closing-cta" data-reveal style="--d:380ms">
+          <button class="btn btn--light" type="button" data-goto="1">Volver al inicio <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+          <button class="btn btn--outline-light" type="button" data-goto="6">Ver perfiles</button>
+          <span class="closing-source">Fuentes: <code>apps/</code> · <code>docs/</code> · <code>README</code></span>
+        </div>
+      </div>
+      <div class="closing-footer" aria-hidden="true"><span>XMEDICAL · ATLAS DEL SISTEMA</span><span>Gestión clínica multi-tenant · 2026</span><span>FIN / 26</span></div>
     </section>
 
     <!-- SLIDES_INSERT -->

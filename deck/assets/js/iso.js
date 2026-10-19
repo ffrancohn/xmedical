@@ -546,7 +546,6 @@
       box(s, { x: t.x + 2.4, y: t.y + 1.8, w: 9.2, d: 5.4, h: 0.6, z: 4.2, top: t.c, sideA: t.c, sideB: t.c, stroke: "rgba(8,23,29,.3)", opacity: 0.78 });
       const top = P(t.x + 7, t.y + 4.5, 5.2);
       s.add(`<circle cx="${f(top[0])}" cy="${f(top[1])}" r="1.6" fill="${t.c}"/>`);
-      s.text(top[0], top[1] - 6, `TENANT ${t.n}`, { anchor: "middle", size: 4.6, cls: "iso-sub" });
     });
 
     // beacon tower
@@ -653,7 +652,7 @@
     for (let i = 0; i < 8; i++) {
       s.add(`<rect x="${f(b[0] + i * 9.4)}" y="${f(b[1])}" width="6.4" height="6.4" rx="1" fill="${i < 3 ? "rgba(94,234,212,.6)" : "rgba(94,234,212,.12)"}" stroke="rgba(94,234,212,.35)" stroke-width=".4"/>`);
     }
-    person(s, 39, 15, 0, T.teal, { opacity: 0.75 });
+    shelves(s, 44.5, 20, 2.6, 8, 7.5);
     plant(s, 46, 29, 0, 0.9);
   };
 
@@ -693,22 +692,27 @@
     slab(s, { x: -24, y: -18, w: 48, d: 36, z: 0, t: 2.4, top: "#123a43", sideA: "#0b2931", sideB: "#082229", stroke: "rgba(94,234,212,.32)" });
     floorGrid(s, -24, -18, 48, 36, 5);
     // giant phone / tablet
-    box(s, { x: -12, y: -16, w: 22, d: 32, h: 1.6, z: 0.2, top: "#0a2229", sideA: "#071a20", sideB: "#06181d", stroke: "rgba(94,234,212,.5)" });
-    box(s, { x: -11, y: -15, w: 20, d: 30, h: 0.23, z: 1.8, top: "#0d3039", sideA: "#0d3039", sideB: "#0d3039", stroke: "rgba(94,234,212,.3)" });
+    box(s, { x: -12, y: -16, w: 22, d: 32, h: 1.6, z: 0.2, top: "#0a2229", sideA: "#071a20", sideB: "#06181d", stroke: "rgba(94,234,212,.55)" });
+    box(s, { x: -11, y: -15, w: 20, d: 30, h: 0.23, z: 1.8, top: "#103b44", sideA: "#103b44", sideB: "#103b44", stroke: "rgba(94,234,212,.4)" });
     const screen = { x: -10.4, y: -14.2, w: 18.8, d: 28.4 };
     // header
-    s.poly([P(screen.x, screen.y, 2.1), P(screen.x + screen.w, screen.y, 2.1), P(screen.x + screen.w, screen.y + 3.4, 2.1), P(screen.x, screen.y + 3.4, 2.1)], "rgba(45,212,191,.18)", { stroke: "rgba(94,234,212,.3)", sw: 0.35 });
+    s.poly([P(screen.x, screen.y, 2.1), P(screen.x + screen.w, screen.y, 2.1), P(screen.x + screen.w, screen.y + 3.4, 2.1), P(screen.x, screen.y + 3.4, 2.1)], "rgba(45,212,191,.34)", { stroke: "rgba(94,234,212,.6)", sw: 0.4 });
     // next appointment card
-    s.poly([P(screen.x + 1.2, screen.y + 5, 2.1), P(screen.x + screen.w - 1.2, screen.y + 5, 2.1), P(screen.x + screen.w - 1.2, screen.y + 12.5, 2.1), P(screen.x + 1.2, screen.y + 12.5, 2.1)], "rgba(94,234,212,.08)", { stroke: "rgba(94,234,212,.38)", sw: 0.4 });
+    s.poly([P(screen.x + 1.2, screen.y + 5, 2.1), P(screen.x + screen.w - 1.2, screen.y + 5, 2.1), P(screen.x + screen.w - 1.2, screen.y + 12.5, 2.1), P(screen.x + 1.2, screen.y + 12.5, 2.1)], "rgba(94,234,212,.17)", { stroke: "rgba(94,234,212,.65)", sw: 0.45 });
+    // appointment accent
+    s.poly([P(screen.x + 1.2, screen.y + 5, 2.2), P(screen.x + 2.2, screen.y + 5, 2.2), P(screen.x + 2.2, screen.y + 12.5, 2.2), P(screen.x + 1.2, screen.y + 12.5, 2.2)], "#e5765d", { stroke: "none", sw: 0 });
     // list rows
     for (let i = 0; i < 3; i++) {
-      s.poly([P(screen.x + 1.2, screen.y + 15 + i * 3.4, 2.1), P(screen.x + screen.w - 1.2, screen.y + 15 + i * 3.4, 2.1), P(screen.x + screen.w - 1.2, screen.y + 17.2 + i * 3.4, 2.1), P(screen.x + 1.2, screen.y + 17.2 + i * 3.4, 2.1)], "rgba(94,234,212,.06)", { stroke: "rgba(94,234,212,.16)", sw: 0.3 });
+      s.poly([P(screen.x + 1.2, screen.y + 15 + i * 3.4, 2.1), P(screen.x + screen.w - 1.2, screen.y + 15 + i * 3.4, 2.1), P(screen.x + screen.w - 1.2, screen.y + 17.2 + i * 3.4, 2.1), P(screen.x + 1.2, screen.y + 17.2 + i * 3.4, 2.1)], "rgba(94,234,212,.13)", { stroke: "rgba(94,234,212,.32)", sw: 0.35 });
     }
     // bottom nav
-    s.poly([P(screen.x, screen.y + 27.2, 2.1), P(screen.x + screen.w, screen.y + 27.2, 2.1), P(screen.x + screen.w, screen.y + screen.d - 0.8, 2.1), P(screen.x, screen.y + screen.d - 0.8, 2.1)], "rgba(94,234,212,.1)", { stroke: "rgba(94,234,212,.25)", sw: 0.3 });
+    s.poly([P(screen.x, screen.y + 27.2, 2.1), P(screen.x + screen.w, screen.y + 27.2, 2.1), P(screen.x + screen.w, screen.y + screen.d - 0.8, 2.1), P(screen.x, screen.y + screen.d - 0.8, 2.1)], "rgba(94,234,212,.18)", { stroke: "rgba(94,234,212,.4)", sw: 0.35 });
     // notification card floating
     const n = P(15, -12, 11);
     s.add(`<g transform="translate(${f(n[0])},${f(n[1])})"><rect x="-24" y="-10" width="48" height="20" rx="3" fill="rgba(8,23,29,.94)" stroke="rgba(94,234,212,.55)" stroke-width=".7"/><circle cx="-16" cy="-2" r="3.2" fill="#e5765d"/><path d="M-16-5.2v3.4M-16 .4v.4" stroke="#08171d" stroke-width=".8"/><text x="-9" y="-1" font-size="7" fill="rgba(238,250,246,.9)" font-family="IBM Plex Mono,monospace">CITA HOY</text><text x="-9" y="6" font-size="5.4" fill="rgba(226,240,236,.5)" font-family="IBM Plex Mono,monospace">10:30 · MEDICINA GENERAL</text></g>`);
+    // second floating card: portable history
+    const h = P(-19, 18, 9);
+    s.add(`<g transform="translate(${f(h[0])},${f(h[1])})"><rect x="-30" y="-10" width="60" height="22" rx="3" fill="rgba(8,23,29,.95)" stroke="rgba(94,234,212,.4)" stroke-width=".7"/><rect x="-23" y="-5" width="11" height="13" rx="1.2" fill="rgba(94,234,212,.14)" stroke="rgba(94,234,212,.5)" stroke-width=".5"/><path d="M-20-1h5M-20 2h5M-20 5h3" stroke="#5eead4" stroke-width=".45"/><text x="-7" y="-1" font-size="6.2" fill="rgba(238,250,246,.9)" font-family="IBM Plex Mono,monospace">HCE · PDF</text><text x="-7" y="6" font-size="5" fill="rgba(226,240,236,.45)" font-family="IBM Plex Mono,monospace">DESCARGAR HISTORIA</text></g>`);
     person(s, 15.5, 14, 0.2, T.sky);
     person(s, -17.5, 16, 0.2, T.teal, { opacity: 0.7 });
     plant(s, 19, 20, 0.2, 1.1);
