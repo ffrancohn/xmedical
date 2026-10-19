@@ -11,6 +11,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/deck.css">
+<noscript><style>
+  .stage{position:relative;height:auto;overflow:visible}
+  .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;height:100vh;page-break-after:always}
+  .chrome,.overview,.edge-hint,.grain{display:none!important}
+</style></noscript>
 </head>
 <body data-tone="dark" data-slide="1">
 
@@ -691,7 +696,7 @@
                 <span class="ocr-step">Historia</span>
               </div>
             </div>
-            <div class="panel-foot"><span>Revisión humana obligatoria</span><span>ollama vision · fallback manual</span></div>
+            <div class="panel-foot"><span>Revisión humana obligatoria</span><span>visión local o cloud · fallback manual</span></div>
           </div>
         </div>
       </div>
@@ -767,12 +772,16 @@
                   <div class="alert-card">PA sistólica elevada<b>≥140</b></div>
                   <div class="alert-card">Fiebre<b>≥38 °C</b></div>
                   <div class="alert-card">Saturación baja<b>&lt;92%</b></div>
+                  <div class="alert-card">IMC elevado<b>31.2</b></div>
                   <div class="thresholds">
                     <div class="threshold"><span>IMC calculado</span><b>31.2</b></div>
                     <div class="threshold"><span>Triaje</span><b>Alta</b></div>
+                    <div class="threshold"><span>Motivo</span><b>Cefalea</b></div>
                   </div>
+                  <div class="vitals-risk"><span>RIESGO CRÓNICO</span><b>HTA · nivel medio</b><p>Tres tomas elevadas en los últimos 90 días.</p></div>
                 </div>
               </div>
+              <div class="vitals-foot"><span><b>IMC</b> 31.2</span><span><b>Triaje</b> Alta</span><span><b>Motivo</b> Cefalea 3 días</span><span><b>Registrado</b> 12:40</span></div>
             </div>
             <div class="panel-foot"><span>Guardado · listo para consulta</span><span>enfermería → paso 1 del wizard</span></div>
           </div>
@@ -862,8 +871,11 @@
                   <div class="ref-event"><span>12:25</span><p><b>Recibida por Cardiología</b> · prioridad alta.</p></div>
                   <div class="ref-event"><span>14:00</span><p><b>Cita derivada agendada</b> · 18 oct, 09:20.</p></div>
                 </div>
+                <div class="ref-return">
+                  <div class="ref-return-head"><span>CONTRARREFERENCIA</span><b>PENDIENTE</b></div>
+                  <p>Al cerrar la consulta especializada, el resumen y el plan de seguimiento vuelven al médico referente.</p>
+                </div>
                 <div class="ref-bridge">
-                  <span class="ref-bridge-label">primer nivel ↔ segundo nivel</span>
                   <svg viewBox="0 0 400 55" preserveAspectRatio="none"><path d="M10 42 C120 -4 280 -4 390 42" fill="none" stroke="rgba(179,163,233,.3)" stroke-width="1" stroke-dasharray="3 5"/><circle cx="10" cy="42" r="4" fill="#2dd4bf"/><circle cx="390" cy="42" r="4" fill="#b3a3e9"/><g><rect x="188" y="10" width="18" height="12" rx="1.4" fill="#efe9dd" stroke="#e5765d" stroke-width="1"/><path d="M188 10l9 7 9-7" fill="none" stroke="#e5765d" stroke-width="1"/></g></svg>
                 </div>
               </div>
@@ -892,7 +904,7 @@
         </div>
         <div class="module-visual" data-reveal style="--d:260ms">
           <div class="module-panel">
-            <div class="panel-top"><span class="panel-label">DOCUMENTO QR · <b>RECETA</b></span><span class="panel-status"><span class="dot"></span>válido 72 h</span></div>
+            <div class="panel-top"><span class="panel-label">DOCUMENTO QR · <b>RECETA</b></span><span class="panel-status"><span class="dot"></span>válido 30 días</span></div>
             <div class="panel-body">
               <div class="qr-body">
                 <div class="qr-frame">
@@ -906,8 +918,8 @@
                     <div class="qr-type"><svg class="icon" aria-hidden="true"><use href="#i-scan"></use></svg><div><b>Orden de examen</b><span>estudios solicitados</span></div></div>
                     <div class="qr-type"><svg class="icon" aria-hidden="true"><use href="#i-calendar"></use></svg><div><b>Check-in</b><span>cita · llegada · un solo uso</span></div></div>
                   </div>
-                  <div class="qr-token"><span class="token-part"><b>tipo</b> receta</span><span class="token-part"><b>tenant</b> 7</span><span class="token-part"><b>exp</b> 72h</span><span class="token-part"><b>usado</b> no</span></div>
-                  <div class="qr-note">El token expira a las 72 h y se invalida al consumirse. No contiene diagnóstico ni identidad.</div>
+                  <div class="qr-token"><span class="token-part"><b>tipo</b> receta</span><span class="token-part"><b>tenant</b> 7</span><span class="token-part"><b>exp</b> 30d</span><span class="token-part"><b>usado</b> no</span></div>
+                  <div class="qr-note">El token expira a los 30 días (configurable) y se invalida al consumirse. No contiene diagnóstico ni identidad.</div>
                 </div>
               </div>
               <div class="qr-flow"><span class="ocr-step is-done">Generar</span><span class="ocr-sep">→</span><span class="ocr-step is-done">Mostrar</span><span class="ocr-sep">→</span><span class="ocr-step">Escanear</span><span class="ocr-sep">→</span><span class="ocr-step">Validar</span><span class="ocr-sep">→</span><span class="ocr-step">Consumir</span></div>
@@ -997,6 +1009,8 @@
                   <div class="fb-row"><span>Anticipación &gt; 7 días</span><i><b style="width:10%"></b></i><em>5</em></div>
                   <div class="fb-row"><span>Cita pendiente</span><i><b style="width:10%"></b></i><em>5</em></div>
                 </div>
+                <div class="ai-action"><div><span>ACCIÓN SUGERIDA</span><b>12 citas con riesgo alto</b><p>Confirmar 48 h antes y ofrecer reasignación de turno.</p></div><em>12</em></div>
+                <div class="ai-models"><span><b>Ausentismo</b>30 días</span><span><b>Demanda</b>90 días</span><span><b>Riesgo</b>historial</span></div>
                 <div class="ai-note">El detalle de factores queda guardado con cada predicción. Si cambia la cita, el score se recalcula; si se cancela, se elimina.</div>
               </div>
             </div>
@@ -1169,7 +1183,6 @@
       <div class="closing-footer" aria-hidden="true"><span>XMEDICAL · ATLAS DEL SISTEMA</span><span>Gestión clínica multi-tenant · 2026</span><span>FIN / 26</span></div>
     </section>
 
-    <!-- SLIDES_INSERT -->
 
   </main>
 

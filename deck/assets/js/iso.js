@@ -411,9 +411,6 @@
     const d = `M${pts.map((p) => `${f(p[0])},${f(p[1])}`).join(" L")}`;
     s.add(`<path d="${d}" class="iso-route-base"/><path d="${d}" class="iso-route"/>`);
     const dot = pts[0];
-    s.add(`<circle r="2.4" class="iso-route-dot"><animateMotion dur="14s" repeatCount="indefinite"><mpath href="#heroRoute"/></animateMotion></circle>`);
-    // animateMotion needs a path id; replace with path id
-    s.body = s.body.replace(`<path d="${d}" class="iso-route-base"/>`, `<path id="heroRoute" d="${d}" class="iso-route-base"/>`);
     s.add(`<g opacity=".55"><circle cx="${f(dot[0])}" cy="${f(dot[1])}" r="7" fill="none" stroke="rgba(229,118,93,.35)"/><circle cx="${f(dot[0])}" cy="${f(dot[1])}" r="3" fill="none" stroke="rgba(229,118,93,.3)"/></g>`);
   };
 
@@ -473,7 +470,7 @@
       const b = P(m.x + w / 2, m.y + d + 0.1, 2.2);
       s.track(b[0] - 6, b[1] - 5);
       s.track(b[0] + 6, b[1] + 5);
-      s.add(`<g class="campus-plaque"><rect x="${f(b[0] - 6.2)}" y="${f(b[1] - 4.6)}" width="12.4" height="9.2" rx="2" fill="rgba(8,23,29,.9)" stroke="${m.color}" stroke-width=".65"/><text x="${f(b[0])}" y="${f(b[1] + 2.8)}" text-anchor="middle" font-size="5.6" fill="${m.color}" font-family="IBM Plex Mono,monospace" font-weight="600">${m.n}</text></g>`);
+      s.add(`<g class="campus-plaque"><rect x="${f(b[0] - 8)}" y="${f(b[1] - 6)}" width="16" height="12" rx="2.4" fill="rgba(8,23,29,.92)" stroke="${m.color}" stroke-width=".7"/><text x="${f(b[0])}" y="${f(b[1] + 3.3)}" text-anchor="middle" font-size="7" fill="${m.color}" font-family="IBM Plex Mono,monospace" font-weight="600">${m.n}</text></g>`);
     }
 
     mods.filter((m) => m.y < cy).forEach(plinth);
@@ -490,7 +487,7 @@
     const layers = [
       { z: 0, w: 62, d: 42, top: "#0e2931", a: "#0a2027", b: "#081b21", label: "Infraestructura", sub: "Apache · Gunicorn · Celery", color: T.gold },
       { z: 13, w: 54, d: 36, top: "#10333c", a: "#0b252c", b: "#092128", label: "Datos", sub: "PostgreSQL 15 · RLS · Redis", color: T.coral },
-      { z: 26, w: 46, d: 30, top: "#143c44", a: "#0e2d34", b: "#0b252c", label: "Aplicaciones", sub: "Django · 11 apps · RBAC", color: T.teal },
+      { z: 26, w: 46, d: 30, top: "#143c44", a: "#0e2d34", b: "#0b252c", label: "Aplicaciones", sub: "Django · 14 apps · RBAC", color: T.teal },
       { z: 39, w: 38, d: 24, top: "#194a52", a: "#123a42", b: "#0e3037", label: "Canales", sub: "Web · Portal · API JWT", color: T.blue }
     ];
     const x0 = -8, y0 = -8;
@@ -660,10 +657,11 @@
     // level 1 platform
     slab(s, { x: -32, y: 2, w: 26, d: 22, z: 0, t: 2.6, top: "#123a43", sideA: "#0b2931", sideB: "#082229", stroke: "rgba(94,234,212,.32)" });
     floorGrid(s, -32, 2, 26, 22, 4.5);
-    box(s, { x: -28, y: 6, w: 18, d: 12, h: 5, z: 0.2, top: "#1b4d56", sideA: "#143c44", sideB: "#10343c", stroke: "rgba(94,234,212,.3)" });
-    box(s, { x: -27.4, y: 6.6, w: 16.8, d: 11, h: 0.7, z: 5.2, top: T.teal, sideA: T.teal, sideB: T.teal, opacity: 0.7 });
-    person(s, -19, 20, 0, T.teal);
-    s.text(P(-19, 13, 9)[0], P(-19, 13, 9)[1], "NIVEL 1", { anchor: "middle", size: 6, fill: "rgba(238,250,246,.8)" });
+    room(s, { x: -28, y: 6, w: 18, d: 12, h: 7.5, rug: false, floor: "#174850", gridStep: 4 });
+    desk(s, -25, 9, 7, 3.2, 0, "#24616a");
+    monitor(s, -23.2, 8.6, 3, 3.4, T.teal);
+    person(s, -20, 16, 0, T.teal);
+    s.text(P(-19, 12, 10.5)[0], P(-19, 12, 10.5)[1], "NIVEL 1", { anchor: "middle", size: 6.2, cls: "iso-room-label" });
 
     // level 2 raised platform
     box(s, { x: 8, y: 0, w: 30, d: 24, h: 10, z: 0, top: "#123a43", sideA: "#0b2931", sideB: "#082229", stroke: "rgba(94,234,212,.32)" });
@@ -675,7 +673,7 @@
     person(s, 15.2, 14.4, 10, T.violet);
     person(s, 23.4, 14.2, 10, T.coral);
     plant(s, 33, 18, 10, 0.95);
-    s.text(P(23, 12, 16)[0], P(23, 12, 16)[1], "NIVEL 2", { anchor: "middle", size: 6, fill: "rgba(238,250,246,.8)" });
+    s.text(P(23, 12, 16.5)[0], P(23, 12, 16.5)[1], "NIVEL 2", { anchor: "middle", size: 6.2, cls: "iso-room-label" });
 
     // bridge
     const a = P(-10, 12, 5);
@@ -717,17 +715,6 @@
     person(s, -17.5, 16, 0.2, T.teal, { opacity: 0.7 });
     plant(s, 19, 20, 0.2, 1.1);
   };
-
-  /* placeholder scenes for later slides */
-  const placeholders = ["superadmin", "admin", "recepcion", "enfermeria", "medico", "especialista", "paciente", "pacientes", "citas", "seguridad"];
-  placeholders.forEach((name) => {
-    if (!scenes[name]) {
-      scenes[name] = (s) => {
-        box(s, { x: -10, y: -10, w: 20, d: 20, h: 8, z: 0, top: "#143c44", sideA: "#0e2d34", sideB: "#0b252c", stroke: T.edge });
-        s.text(0, -20, "ESCENA", { anchor: "middle", size: 7 });
-      };
-    }
-  });
 
   function render(name, svg) {
     const s = new Scene();
