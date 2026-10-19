@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="XMedical — Atlas visual del sistema de gestión clínica multi-tenant: perfiles, módulos, planos y arquitectura.">
+<meta name="color-scheme" content="light dark">
+<title>XMedical · Atlas del sistema</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b1f26'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='%235eead4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/deck.css">
+</head>
+<body data-tone="dark" data-slide="1">
+
+<svg class="svg-sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.8 19c.4-3.4 2.4-5.2 5.2-5.2s4.8 1.8 5.2 5.2"/><path d="M16.2 5.4a3.1 3.1 0 0 1 0 5.9"/><path d="M17 13.9c2.2.3 3.6 1.9 3.9 4.6"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3.5v4M16 3.5v4"/><path d="M7.5 14h2M11 14h2M14.5 14h2M7.5 17h2M11 17h2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.4 5.6a5.1 5.1 0 0 0-7.2 0L12 6.8l-1.2-1.2a5.1 5.1 0 0 0-7.2 7.2L12 21l8.4-8.2a5.1 5.1 0 0 0 0-7.2Z"/></symbol>
+  <symbol id="i-stethoscope" viewBox="0 0 24 24"><path d="M5 4v5a4 4 0 0 0 8 0V4"/><path d="M9 13v2.5a5.5 5.5 0 0 0 11 0V13"/><circle cx="20" cy="10.5" r="1.8"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="m8.2 10.9 7.6-3.8M8.2 13.1l7.6 3.8"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><path d="M14.5 14.5h2.5v2.5h-2.5zM19 14.5h1.5v1.5M14.5 19v1.5h1.5M19 19h1.5v1.5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2.5v3.5M15 2.5v3.5M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+  <symbol id="i-api" viewBox="0 0 24 24"><path d="M8 4 4 12l4 8M16 4l4 8-4 8M13.5 6.5l-3 11"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 5 3.2 7.9 7.5 9 4.3-1.1 7.5-4 7.5-9V6L12 3Z"/><path d="m8.7 12.2 2.2 2.2 4.4-4.6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 3.5H3.5V9M15 3.5h5.5V9M9 20.5H3.5V15M15 20.5h5.5V15"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5 10-11"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2 12h4l2.2-6 4.2 13 3-7H22"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17V7.5Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5" rx="2"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10M12 14v2.5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5Z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.5l3.5 2"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M8 3.5H4.5A1 1 0 0 0 3.5 4.5V8M16 3.5h3.5a1 1 0 0 1 1 1V8M8 20.5H4.5a1 1 0 0 1-1-1V16M16 20.5h3.5a1 1 0 0 0 1-1V16M7 12h10"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5V3Z"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V6l7-3v18M11 21h9V10h-9"/><path d="M7 9h1M7 12h1M7 15h1M7 18h1M14 13h2M14 16h2M14 19h2"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></symbol>
+</svg>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div class="deck" id="deck">
+
+  <header class="chrome chrome-top">
+    <a class="brand" href="#s01" data-goto="1" aria-label="XMedical, ir a la portada">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5V3Z"/></svg></span>
+      <span class="brand-name">XMEDICAL</span>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <span class="brand-sub">Atlas del sistema</span>
+    </a>
+    <div class="chrome-chapter" aria-live="polite">
+      <span class="chapter-dot" aria-hidden="true"></span>
+      <span id="chapterLabel">00 · Introducción</span>
+    </div>
+    <div class="chrome-actions">
+      <button class="icon-btn" id="overviewBtn" type="button" aria-label="Abrir mapa de slides" title="Mapa de slides (G)">
+        <svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg>
+      </button>
+      <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="Pantalla completa" title="Pantalla completa (F)">
+        <svg class="icon" aria-hidden="true"><use href="#i-expand"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+
+    <!-- ============ 01 · PORTADA ============ -->
+    <section class="slide slide--cover" id="s01" data-title="Portada" data-chapter="00" data-chapter-label="Introducción" data-summary="El sistema completo, en un solo recorrido visual." data-tone="dark" data-accent="teal">
+      <div class="cover-grid" aria-hidden="true"></div>
+      <div class="cover-glow" aria-hidden="true"></div>
+      <div class="cover-scene" aria-hidden="true">
+        <svg class="iso-svg" data-iso="hero"></svg>
+        <div class="scanline"></div>
+      </div>
+      <div class="slide-inner cover-inner">
+        <div class="cover-copy">
+          <p class="kicker kicker--light" data-reveal style="--d:80ms"><span>Atlas del sistema</span><span class="kicker-sep"></span><span>Edición 2026</span></p>
+          <h1 class="cover-title" data-reveal style="--d:160ms">
+            <span class="cover-brand">XMedical</span>
+            <span class="cover-line">La clínica entera,</span>
+            <span class="cover-line cover-line--em">en un solo hilo.</span>
+          </h1>
+          <p class="cover-lead" data-reveal style="--d:280ms">Un recorrido visual por el sistema de gestión clínica multi-tenant: del primer turno al último diagnóstico, con cada perfil y cada módulo en su lugar.</p>
+          <div class="cover-meta" data-reveal style="--d:360ms">
+            <span class="meta-chip">Django 4.2</span>
+            <span class="meta-chip">PostgreSQL + RLS</span>
+            <span class="meta-chip">7 perfiles</span>
+            <span class="meta-chip">11 módulos</span>
+          </div>
+          <div class="cover-cta" data-reveal style="--d:440ms">
+            <button class="btn btn--light" type="button" data-goto="2">Comenzar recorrido <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+            <span class="key-hint"><kbd>←</kbd><kbd>→</kbd> navegar <span class="hint-divider"></span> <kbd>G</kbd> mapa</span>
+          </div>
+        </div>
+      </div>
+      <div class="cover-footer" aria-hidden="true">
+        <span>Gestión clínica · primer y segundo nivel</span>
+        <span class="cover-footer-mid">01 — 26</span>
+        <span>XMEDICAL / 2026</span>
+      </div>
+    </section>
+
+    <!-- ============ 02 · QUÉ HACE ============ -->
+    <section class="slide" id="s02" data-title="Qué hace el sistema" data-chapter="00" data-chapter-label="Introducción" data-summary="De la agenda al seguimiento: el ciclo completo del paciente." data-tone="light" data-accent="teal">
+      <div class="slide-inner slide-inner--stack">
+        <div class="slide-head slide-head--split">
+          <div>
+            <p class="kicker" data-reveal style="--d:60ms"><span class="kicker-num">00</span> El sistema</p>
+            <h2 class="slide-title" data-reveal style="--d:120ms">De la agenda al seguimiento,<br><em>sin puntos ciegos.</em></h2>
+          </div>
+          <p class="lead lead--right" data-reveal style="--d:200ms">XMedical conecta recepción, enfermería, consulta y especialidades en una sola historia clínica. Todo el equipo ve al mismo paciente, en el mismo hilo.</p>
+        </div>
+
+        <div class="stat-row" data-reveal style="--d:260ms">
+          <div class="stat"><span class="stat-value" data-count="1">1</span><span class="stat-label">historia por paciente</span></div>
+          <div class="stat"><span class="stat-value" data-count="2">2</span><span class="stat-label">niveles de atención</span></div>
+          <div class="stat"><span class="stat-value" data-count="4">4</span><span class="stat-label">dashboards por rol</span></div>
+          <div class="stat"><span class="stat-value" data-count="8">8</span><span class="stat-label">pantallas de consulta</span></div>
+        </div>
+
+        <div class="journey" data-reveal style="--d:330ms">
+          <div class="journey-line" aria-hidden="true"><span></span></div>
+          <article class="journey-step">
+            <span class="journey-num">01</span>
+            <svg class="icon journey-icon" aria-hidden="true"><use href="#i-calendar"></use></svg>
+            <h3>Agendar</h3>
+            <p>Recepción o portal. Turno específico o flexible.</p>
+            <span class="journey-role">Recepción · Paciente</span>
+          </article>
+          <article class="journey-step">
+            <span class="journey-num">02</span>
+            <svg class="icon journey-icon" aria-hidden="true"><use href="#i-scan"></use></svg>
+            <h3>Recibir</h3>
+            <p>Registro, check-in y cola de espera.</p>
+            <span class="journey-role">Recepción</span>
+          </article>
+          <article class="journey-step">
+            <span class="journey-num">03</span>
+            <svg class="icon journey-icon" aria-hidden="true"><use href="#i-heart"></use></svg>
+            <h3>Medir</h3>
+            <p>Signos, IMC, triaje y alertas tempranas.</p>
+            <span class="journey-role">Enfermería</span>
+          </article>
+          <article class="journey-step">
+            <span class="journey-num">04</span>
+            <svg class="icon journey-icon" aria-hidden="true"><use href="#i-stethoscope"></use></svg>
+            <h3>Atender</h3>
+            <p>Wizard clínico, CIE-10 y plan terapéutico.</p>
+            <span class="journey-role">Medicina</span>
+          </article>
+          <article class="journey-step">
+            <span class="journey-num">05</span>
+            <svg class="icon journey-icon" aria-hidden="true"><use href="#i-share"></use></svg>
+            <h3>Derivar</h3>
+            <p>Referencia, contrarreferencia y seguimiento.</p>
+            <span class="journey-role">Especialidad</span>
+          </article>
+        </div>
+
+        <div class="bottom-note" data-reveal style="--d:400ms">
+          <span class="note-mark" aria-hidden="true"></span>
+          <p><strong>Una sola fuente de verdad.</strong> Cada acción deja rastro en la HCE; cada rol ve solo lo que necesita para su parte del flujo.</p>
+          <span class="note-tags"><span class="tag">Multi-tenant</span><span class="tag">Trazable</span><span class="tag">Configurable</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 · PLANO / ISOMÉTRICO ============ -->
+    <section class="slide slide--plan" id="s03" data-title="La clínica en plano" data-chapter="00" data-chapter-label="Introducción" data-summary="Plano y maqueta isométrica del recorrido del paciente." data-tone="light" data-accent="teal">
+      <div class="slide-inner slide-inner--plan">
+        <div class="plan-head">
+          <div>
+            <p class="kicker" data-reveal style="--d:60ms"><span class="kicker-num">00</span> El flujo</p>
+            <h2 class="slide-title" data-reveal style="--d:120ms">La clínica, <em>en planta y en volumen.</em></h2>
+          </div>
+          <div class="plan-head-right" data-reveal style="--d:200ms">
+            <p class="lead">Cinco estaciones, cinco handoffs. El recorrido del paciente cabe en una sola línea.</p>
+            <div class="segmented" role="group" aria-label="Vista del plano">
+              <button type="button" class="segmented-btn is-active" data-plan-btn="iso">Isométrico</button>
+              <button type="button" class="segmented-btn" data-plan-btn="flat">Planta</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-stage" data-plan-view="iso" data-reveal style="--d:260ms">
+          <svg class="iso-svg plan-iso" data-iso="clinic" aria-label="Maqueta isométrica de la clínica: recepción, espera, preclínica, consulta y salida"></svg>
+          <svg class="plan-flat" viewBox="0 0 920 560" role="img" aria-label="Plano de planta de la clínica con el recorrido del paciente">
+            <defs>
+              <pattern id="planGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M20 0H0V20" fill="none" stroke="rgba(94,234,212,.09)" stroke-width="1"/>
+              </pattern>
+              <filter id="planGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect width="920" height="560" fill="url(#planGrid)"/>
+            <g class="plan-drawing">
+              <rect x="30" y="30" width="860" height="500" fill="rgba(8,28,35,.45)" stroke="#5eead4" stroke-width="2.5"/>
+              <path d="M30 280h860M30 340h860" stroke="#5eead4" stroke-width="1.5" opacity=".7"/>
+              <path d="M210 30v250M390 30v250M570 30v250M750 30v250" stroke="#5eead4" stroke-width="1.5" opacity=".7"/>
+              <path d="M300 340v190M570 340v190M750 340v190" stroke="#5eead4" stroke-width="1.5" opacity=".45"/>
+              <path d="M30 65h6M30 465h6M890 65h6M890 465h6" stroke="#5eead4" stroke-width="1"/>
+              <g class="plan-doors" stroke="#5eead4" stroke-width="1.2" fill="none" opacity=".8">
+                <path d="M110 280a22 22 0 0 1 22-22M270 280a22 22 0 0 1 22-22M450 280a22 22 0 0 1 22-22M640 280a22 22 0 0 1 22-22M810 280a22 22 0 0 1 22-22"/>
+                <path d="M300 340v22M525 340v22M720 340v22"/>
+                <path d="M30 150h22M30 390h22M890 430h-22"/>
+              </g>
+              <g class="plan-furniture">
+                <rect x="52" y="150" width="96" height="28" rx="3"/><rect x="70" y="120" width="30" height="24" rx="2"/>
+                <circle cx="176" cy="164" r="8"/><circle cx="176" cy="200" r="8"/>
+                <rect x="230" y="66" width="126" height="18" rx="4"/><rect x="230" y="106" width="126" height="18" rx="4"/><circle cx="368" cy="236" r="11"/>
+                <rect x="410" y="62" width="104" height="38" rx="5"/><rect x="430" y="70" width="28" height="14" rx="4"/><rect x="534" y="190" width="38" height="46" rx="3"/><circle cx="553" cy="180" r="6"/>
+                <rect x="596" y="70" width="108" height="30" rx="3"/><rect x="612" y="188" width="118" height="38" rx="5"/><circle cx="592" cy="115" r="8"/><circle cx="592" cy="145" r="8"/>
+                <rect x="770" y="62" width="94" height="112" rx="3"/><path d="M782 84h70M782 104h70M782 124h70"/>
+                <rect x="58" y="392" width="120" height="34" rx="3"/><rect x="214" y="392" width="60" height="34" rx="3"/>
+                <rect x="330" y="382" width="130" height="26" rx="3"/><circle cx="350" cy="440" r="8"/>
+                <rect x="606" y="382" width="110" height="90" rx="3"/><path d="M622 402h78M622 424h78M622 446h78"/>
+                <rect x="770" y="392" width="82" height="54" rx="3"/><path d="M790 392v54"/>
+              </g>
+              <g class="plan-labels">
+                <text x="48" y="248">01 · RECEPCIÓN</text>
+                <text x="228" y="248">02 · ESPERA</text>
+                <text x="408" y="248">03 · PRECLÍNICA</text>
+                <text x="588" y="248">04 · CONSULTA</text>
+                <text x="768" y="248">05 · SALIDA / QR</text>
+                <text x="48" y="362" class="plan-label-dim">ADMINISTRACIÓN</text>
+                <text x="318" y="362" class="plan-label-dim">REFERENCIAS</text>
+                <text x="586" y="362" class="plan-label-dim">ARCHIVO</text>
+                <text x="766" y="362" class="plan-label-dim">LABORATORIO</text>
+                <text x="370" y="520">PASILLO TÉCNICO</text>
+                <text x="804" y="446" class="plan-label-dim">LAB</text>
+                <text x="640" y="482" class="plan-label-dim">ARCHIVO</text>
+              </g>
+              <g class="plan-compass" transform="translate(842,58)">
+                <circle r="18" fill="none" stroke="rgba(94,234,212,.5)"/><path d="M0 10V-8M-4-4 0-8l4 4" stroke="#5eead4" fill="none" stroke-width="1.5"/><text x="0" y="30" text-anchor="middle">N</text>
+              </g>
+            </g>
+            <path id="flatRoute" class="plan-route" d="M8 310 H110 V220 H150 V310 H270 V220 H310 V310 H450 V220 H490 V310 H640 V220 H680 V310 H810 V220 H850 V310 H890" fill="none"/>
+            <circle class="route-dot" r="5" filter="url(#planGlow)"><animateMotion dur="15s" repeatCount="indefinite" rotate="auto"><mpath href="#flatRoute"/></animateMotion></circle>
+            <g class="plan-stations" fill="#e5765d">
+              <circle cx="110" cy="310" r="4"/><circle cx="270" cy="310" r="4"/><circle cx="450" cy="310" r="4"/><circle cx="640" cy="310" r="4"/><circle cx="810" cy="310" r="4"/>
+            </g>
+            <g class="plan-exit" transform="translate(884,310)">
+              <path d="M-10 0h18M2-5l6 5-6 5" fill="none" stroke="#5eead4" stroke-width="1.6"/>
+            </g>
+            <g class="plan-scale" transform="translate(52,512)"><path d="M0 0h80M0-4v8M80-4v8" stroke="rgba(94,234,212,.7)" fill="none"/><text x="40" y="-10" text-anchor="middle">10 m</text></g>
+          </svg>
+          <div class="plan-hud">
+            <span class="hud-dot"></span>
+            <span id="planHudLabel">Recorrido del paciente · 5 estaciones</span>
+            <span class="hud-sep"></span>
+            <span>2D / 3D</span>
+          </div>
+        </div>
+
+        <div class="plan-legend" data-reveal style="--d:340ms">
+          <span class="legend-item"><b>01</b> Recepción · registro y cita</span>
+          <span class="legend-item"><b>02</b> Espera · check-in QR</span>
+          <span class="legend-item"><b>03</b> Preclínica · signos y triaje</span>
+          <span class="legend-item"><b>04</b> Consulta · wizard clínico</span>
+          <span class="legend-item"><b>05</b> Salida · receta, orden o referencia</span>
+          <span class="legend-note">La enfermera cierra signos y el médico los ve en el paso 1.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 · MAPA DEL SISTEMA ============ -->
+    <section class="slide slide--dark slide--map" id="s04" data-title="Mapa del sistema" data-chapter="00" data-chapter-label="Introducción" data-summary="Seis módulos clínicos alrededor de una sola historia." data-tone="dark" data-accent="teal">
+      <div class="dark-grid" aria-hidden="true"></div>
+      <div class="slide-inner slide-inner--map">
+        <div class="map-copy">
+          <p class="kicker kicker--light" data-reveal style="--d:60ms"><span class="kicker-num">00</span> Arquitectura funcional</p>
+          <h2 class="slide-title" data-reveal style="--d:120ms">Seis módulos.<br><em>Una sola historia.</em></h2>
+          <p class="lead lead--dark" data-reveal style="--d:200ms">Cada módulo resuelve una estación del recorrido. La historia clínica es la columna que los mantiene unidos y evita que el paciente se repita.</p>
+          <div class="module-key" data-reveal style="--d:280ms">
+            <a class="key-row" href="#s15" data-goto="15"><span class="key-num">01</span><span class="key-name"><i class="swatch" style="background:#e7b85c"></i>Pacientes</span><span class="key-desc">identidad y ficha</span></a>
+            <a class="key-row" href="#s16" data-goto="16"><span class="key-num">02</span><span class="key-name"><i class="swatch" style="background:#2dd4bf"></i>Citas</span><span class="key-desc">agenda y turnos</span></a>
+            <a class="key-row" href="#s17" data-goto="17"><span class="key-num">03</span><span class="key-name"><i class="swatch" style="background:#e5765d"></i>Preclínica</span><span class="key-desc">signos y triaje</span></a>
+            <a class="key-row" href="#s18" data-goto="18"><span class="key-num">04</span><span class="key-name"><i class="swatch" style="background:#2dd4bf"></i>Consulta</span><span class="key-desc">encuentro clínico</span></a>
+            <a class="key-row" href="#s19" data-goto="19"><span class="key-num">05</span><span class="key-name"><i class="swatch" style="background:#b3a3e9"></i>Referencias</span><span class="key-desc">derivación</span></a>
+            <a class="key-row" href="#s20" data-goto="20"><span class="key-num">06</span><span class="key-name"><i class="swatch" style="background:#e7b85c"></i>QR</span><span class="key-desc">documentos</span></a>
+          </div>
+          <div class="map-secondary" data-reveal style="--d:340ms">
+            <span class="tag tag--dark">Dashboards</span>
+            <span class="tag tag--dark">IA predictiva</span>
+            <span class="tag tag--dark">Notificaciones</span>
+            <span class="tag tag--dark">API JWT</span>
+          </div>
+        </div>
+        <div class="map-scene" data-reveal style="--d:260ms">
+          <svg class="iso-svg" data-iso="campus" aria-label="Mapa isométrico de los seis módulos clínicos"></svg>
+          <div class="scene-badge scene-badge--tr"><span class="pulse-dot"></span> Núcleo clínico</div>
+          <div class="scene-badge scene-badge--bl">HCE · historia única</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 05 · ARQUITECTURA ============ -->
+    <section class="slide slide--dark slide--arch" id="s05" data-title="Arquitectura multi-tenant" data-chapter="00" data-chapter-label="Introducción" data-summary="Una instalación, muchas clínicas: subdominio, RLS y capas." data-tone="dark" data-accent="cyan">
+      <div class="dark-grid" aria-hidden="true"></div>
+      <div class="slide-inner slide-inner--split arch-layout">
+        <div class="arch-copy">
+          <p class="kicker kicker--light" data-reveal style="--d:60ms"><span class="kicker-num">00</span> Plataforma</p>
+          <h2 class="slide-title" data-reveal style="--d:120ms">Multi-tenant<br><em>de verdad.</em></h2>
+          <p class="lead lead--dark" data-reveal style="--d:200ms">Una sola instalación, muchas clínicas. El subdominio identifica la institución; PostgreSQL filtra cada fila; Django y Celery ejecutan el flujo. Los datos no se cruzan.</p>
+          <div class="arch-facts" data-reveal style="--d:280ms">
+            <div class="arch-fact"><span class="arch-fact-k">Aislamiento</span><span class="arch-fact-v">RLS por <code>institucion_id</code></span></div>
+            <div class="arch-fact"><span class="arch-fact-k">Identidad</span><span class="arch-fact-v">subdominio · sesión · header</span></div>
+            <div class="arch-fact"><span class="arch-fact-k">Operación</span><span class="arch-fact-v">Gunicorn + Celery + Redis</span></div>
+          </div>
+          <div class="code-card" data-reveal style="--d:360ms">
+            <div class="code-head"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-title">tenant_context.sql</span></div>
+            <pre><code><span class="c-muted">-- una consulta, un tenant</span>
+<span class="c-key">SET</span> app.current_institucion_id <span class="c-op">=</span> <span class="c-num">7</span>;
+
+<span class="c-key">CREATE POLICY</span> paciente_tenant
+  <span class="c-key">ON</span> paciente
+  <span class="c-key">USING</span> (institucion_id <span class="c-op">=</span>
+    current_setting(<span class="c-str">'app.current_institucion_id'</span>)::<span class="c-type">int</span>);</code></pre>
+          </div>
+        </div>
+        <div class="arch-scene" data-reveal style="--d:220ms">
+          <svg class="iso-svg" data-iso="stack" aria-label="Diagrama isométrico de capas: canales, Django, datos e infraestructura"></svg>
+          <div class="scene-badge scene-badge--tr">1 instalación · N instituciones</div>
+          <div class="scene-badge scene-badge--br">0 filas compartidas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 · PERFILES ============ -->
+    <section class="slide" id="s06" data-title="Perfiles y permisos" data-chapter="01" data-chapter-label="Perfiles" data-summary="Siete roles, siete puntos de entrada al mismo flujo." data-tone="light" data-accent="teal">
+      <div class="slide-inner slide-inner--stack">
+        <div class="role-index-head">
+          <div>
+            <p class="kicker" data-reveal style="--d:60ms"><span class="kicker-num">01</span> Perfiles y permisos</p>
+            <h2 class="slide-title" data-reveal style="--d:120ms">Siete formas de estar<br><em>en la misma clínica.</em></h2>
+            <p class="lead" data-reveal style="--d:190ms">El rol define el menú, los permisos y el dashboard. No es una etiqueta: es el punto de entrada al flujo y el límite de lo que cada persona puede ver.</p>
+          </div>
+          <div class="role-tally" data-reveal style="--d:250ms">
+            <span>07</span>
+            <p>roles operativos<br><em>+ portal del paciente</em></p>
+          </div>
+        </div>
+
+        <div class="role-cards" data-reveal style="--d:300ms">
+          <a class="role-card" href="#s07" data-goto="7" data-role="superadmin">
+            <span class="role-card-num">01</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg></span>
+            <h3>Superadministrador</h3>
+            <p>Instituciones, respaldos y salud global de la plataforma.</p>
+            <span class="role-card-scope">Global</span>
+          </a>
+          <a class="role-card" href="#s08" data-goto="8" data-role="admin">
+            <span class="role-card-num">02</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-building"></use></svg></span>
+            <h3>Administrador</h3>
+            <p>Configura la institución y lee la operación completa.</p>
+            <span class="role-card-scope">Institución</span>
+          </a>
+          <a class="role-card" href="#s09" data-goto="9" data-role="recepcion">
+            <span class="role-card-num">03</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-calendar"></use></svg></span>
+            <h3>Recepcionista</h3>
+            <p>Registra, agenda y recibe al paciente en el primer minuto.</p>
+            <span class="role-card-scope">Front desk</span>
+          </a>
+          <a class="role-card" href="#s10" data-goto="10" data-role="enfermeria">
+            <span class="role-card-num">04</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg></span>
+            <h3>Enfermería</h3>
+            <p>Signos, triaje y alertas que orientan la consulta.</p>
+            <span class="role-card-scope">Preclínica</span>
+          </a>
+          <a class="role-card" href="#s11" data-goto="11" data-role="medico">
+            <span class="role-card-num">05</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-stethoscope"></use></svg></span>
+            <h3>Médico general</h3>
+            <p>Conduce el encuentro clínico y decide la conducta.</p>
+            <span class="role-card-scope">Consulta</span>
+          </a>
+          <a class="role-card" href="#s12" data-goto="12" data-role="especialista">
+            <span class="role-card-num">06</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-share"></use></svg></span>
+            <h3>Especialista</h3>
+            <p>Recibe referencias, agenda y devuelve el caso resuelto.</p>
+            <span class="role-card-scope">Segundo nivel</span>
+          </a>
+          <a class="role-card" href="#s13" data-goto="13" data-role="paciente">
+            <span class="role-card-num">07</span>
+            <span class="role-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg></span>
+            <h3>Paciente</h3>
+            <p>Pide cita, registra llegada y descarga su historia.</p>
+            <span class="role-card-scope">Portal</span>
+          </a>
+        </div>
+
+        <div class="role-index-foot" data-reveal style="--d:360ms">
+          <span><strong>RBAC centralizado</strong> · apps/core/permissions.py</span>
+          <span>El menú, los permisos y el dashboard cambian con el rol.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 07 · SUPERADMIN ============ -->
+    <section class="slide" id="s07" data-title="Superadministrador" data-chapter="01" data-chapter-label="Perfiles" data-summary="Gobierna la plataforma y el ciclo de vida de cada institución." data-tone="light" data-accent="gold">
+      <div class="slide-inner role-layout">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">01</span> Perfil · Global</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Superadministrador</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">El plano completo, sin entrar en la consulta.</p>
+          <p class="lead" data-reveal style="--d:200ms">Gobierna la plataforma: crea instituciones, vigila la operación agregada y respalda o migra tenants completos. Es el único rol que ve el conjunto.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Dashboard global</strong><p>Instituciones, profesionales, pacientes, citas y consultas, con respaldos recientes.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Ciclo de vida del tenant</strong><p>Alta, suspensión, exportación e importación de una institución completa en JSON.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>Respaldos y restauración</strong><p>Global o por institución, con historial de operaciones y archivos descargables.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Soporte transversal</strong><p>Acceso a todos los módulos para diagnóstico y migración; no sustituye la decisión clínica.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Instituciones</span><span class="tag">Respaldos</span><span class="tag">Soporte</span><span class="tag">Auditoría</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Regla</span><p>No agenda ni diagnostica: opera la plataforma. Cada institución sigue aislada.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="superadmin" aria-label="Torre de control con tres instituciones aisladas"></svg>
+            <div class="scene-badge scene-badge--tr">Vista global</div>
+            <div class="scene-caption">Torre de control · tenants aislados</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>Un tenant = una clínica aislada.</strong> El superadmin ve el conjunto, pero nunca mezcla historias entre instituciones.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 · ADMIN ============ -->
+    <section class="slide" id="s08" data-title="Administrador de institución" data-chapter="01" data-chapter-label="Perfiles" data-summary="Parametriza la clínica y lee su operación sin programar." data-tone="light" data-accent="blue">
+      <div class="slide-inner role-layout role-layout--reverse">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">02</span> Perfil · Institución</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Administrador<br>de institución</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">El sistema se configura solo. Sin programar.</p>
+          <p class="lead" data-reveal style="--d:200ms">Define especialidades, profesionales, horarios y accesos. Después observa la operación en dashboards, auditoría y epidemiología.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Dashboard de administración</strong><p>Ocupación de agenda, ausentismo, cancelaciones, consultas atendidas y demanda.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Parametrización</strong><p>Especialidades, médicos, horarios, usuarios y preferencias visuales de la institución.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>Auditoría y configuración de IA</strong><p>Log de cambios y selección de proveedor/modelo por institución.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Epidemiología</strong><p>Brotes por umbral, tendencias de CIE-10 y diagnósticos más frecuentes del mes.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Administración</span><span class="tag">Auditoría</span><span class="tag">Epidemiología</span><span class="tag">IA</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Regla</span><p>Cada cambio queda en el log. La configuración es por institución, nunca global.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="admin" aria-label="Sala de operaciones con dashboard de administración"></svg>
+            <div class="scene-badge scene-badge--tr">Una institución</div>
+            <div class="scene-caption">Sala de operaciones · configuración y métricas</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>Configurar es parte del flujo.</strong> Un horario mal definido se convierte en un turno vacío o en una doble reserva.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 09 · RECEPCIÓN ============ -->
+    <section class="slide" id="s09" data-title="Recepcionista" data-chapter="01" data-chapter-label="Perfiles" data-summary="Registra, agenda y recibe; el primer minuto del paciente." data-tone="light" data-accent="coral">
+      <div class="slide-inner role-layout">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">03</span> Perfil · Front desk</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Recepcionista</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">El primer minuto del paciente.</p>
+          <p class="lead" data-reveal style="--d:200ms">Registra, busca y agenda. También rescata el turno cuando el paciente llega sin cita o cuando el documento ya existe.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Registro en menos de 2 minutos</strong><p>Búsqueda por documento o nombre; el duplicado se detecta antes de crear otra ficha.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Agenda específica o flexible</strong><p>Elige médico, fecha y hora, o un rango con jornada y deja que el sistema asigne el primer turno.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>Calendario operable</strong><p>Día, semana, mes, dos y tres meses; estados de cita y cancelación con regla de 2 horas.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Check-in y cola</strong><p>El paciente puede registrar llegada desde el portal; recepción ve el estado en espera.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Pacientes</span><span class="tag">Citas</span><span class="tag">Registro OCR</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Límite</span><p>Registra y agenda; no toma signos ni diagnostica. El handoff empieza en preclínica.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="recepcion" aria-label="Recepción con mostrador, cola de pacientes y kiosco de check-in"></svg>
+            <div class="scene-badge scene-badge--tr">Front desk</div>
+            <div class="scene-caption">Recepción · registro, agenda y check-in</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>Menos fricción en el mostrador.</strong> El OCR propone los datos de la cédula; la persona confirma antes de guardar.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 10 · ENFERMERÍA ============ -->
+    <section class="slide" id="s10" data-title="Enfermería" data-chapter="01" data-chapter-label="Perfiles" data-summary="Signos, IMC, triaje y alertas antes de la consulta." data-tone="light" data-accent="green">
+      <div class="slide-inner role-layout role-layout--reverse">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">04</span> Perfil · Preclínica</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Enfermería</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">Los números que orientan la consulta.</p>
+          <p class="lead" data-reveal style="--d:200ms">Toma signos, calcula IMC, asigna triaje y dispara alertas antes de que el paciente entre al consultorio. El médico recibe contexto, no una hoja en blanco.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Cola del día</strong><p>Pendientes de preclínica y ya evaluados, ordenados por hora de cita.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Signos y antropometría</strong><p>Presión, frecuencia cardiaca, temperatura, SpO₂, peso, talla, IMC y motivo inicial.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>Alertas automáticas</strong><p>Presión ≥140/90, fiebre ≥38 °C y saturación &lt;92%. El triaje prioriza la atención.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Riesgo crónico</strong><p>Alertas de diabetes e hipertensión sincronizadas desde el historial y las mediciones.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Preclínica</span><span class="tag">Dashboard enfermería</span><span class="tag">Alertas</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Regla</span><p>La alerta no diagnostica: prioriza. El juicio clínico sigue en consulta.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="enfermeria" aria-label="Estación de enfermería con camilla, monitor de signos y alertas"></svg>
+            <div class="scene-badge scene-badge--tr">Preclínica</div>
+            <div class="scene-caption">Estación de signos · medición y triaje</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>El handoff es digital.</strong> Al guardar, el paso 1 de la consulta ya muestra los signos y las alertas del paciente.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 11 · MÉDICO ============ -->
+    <section class="slide" id="s11" data-title="Médico general" data-chapter="01" data-chapter-label="Perfiles" data-summary="Agenda, wizard clínico y decisión: alta, siguiente cita o referencia." data-tone="light" data-accent="teal">
+      <div class="slide-inner role-layout">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">05</span> Perfil · Consulta</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Médico general</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">Ocho pantallas, una sola consulta.</p>
+          <p class="lead" data-reveal style="--d:200ms">Abre la agenda, revisa la preclínica y conduce el encuentro con un wizard que no deja cabos sueltos. Todo queda en la historia clínica.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Agenda e historia</strong><p>Pacientes del día, estados de cita e historia por episodios y encuentros.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Wizard clínico</strong><p>Preclínica, motivo, anamnesis, examen físico, variables, diagnóstico, plan y resumen.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>CIE-10 y apoyo IA</strong><p>Buscador de diagnósticos, autosave y sugerencia opcional con confirmación humana.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Conducta y salida</strong><p>Alta, cita subsiguiente o referencia; receta y orden de examen con QR.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Consulta</span><span class="tag">Pacientes</span><span class="tag">Citas</span><span class="tag">Referencias</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Regla</span><p>El wizard no decide por el médico: ordena la evidencia y deja rastro de cada paso.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="medico" aria-label="Consultorio médico con escritorio, paciente y tablero de pasos"></svg>
+            <div class="scene-badge scene-badge--tr">Consulta</div>
+            <div class="scene-caption">Consultorio · wizard de 8 pantallas</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>La consulta no se pierde.</strong> El autosave guarda motivo, anamnesis, examen y plan mientras el médico escribe.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 12 · ESPECIALISTA ============ -->
+    <section class="slide" id="s12" data-title="Médico especialista" data-chapter="01" data-chapter-label="Perfiles" data-summary="Bandeja de referencias, agenda y contrarreferencia al primer nivel." data-tone="light" data-accent="violet">
+      <div class="slide-inner role-layout role-layout--reverse">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">06</span> Perfil · Segundo nivel</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Médico especialista</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">Recibe, decide y devuelve el caso.</p>
+          <p class="lead" data-reveal style="--d:200ms">Su bandeja no es una agenda cualquiera: es la entrada de referencias del primer nivel. Acepta, agenda y cierra el ciclo con una contrarreferencia.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Bandeja de referencias</strong><p>Por especialidad destino, prioridad y estado; con el contexto de la consulta origen.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Aceptar, rechazar, agendar</strong><p>Comentarios del especialista, cita derivada y notificación al médico referente.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>Dashboard propio</strong><p>Referencias pendientes y aceptadas, más la agenda del día del especialista.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Contrarreferencia</strong><p>Resumen de atención y plan de seguimiento que regresan al primer nivel.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Referencias</span><span class="tag">Especialista</span><span class="tag">Citas</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Regla</span><p>Sin contrarreferencia, el ciclo no se cierra: el primer nivel queda a ciegas.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="especialista" aria-label="Puente entre el primer y el segundo nivel con una referencia en tránsito"></svg>
+            <div class="scene-badge scene-badge--tr">1.er ↔ 2.º nivel</div>
+            <div class="scene-caption">Puente de referencia · ida y contrarreferencia</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>El caso viaja con su historia.</strong> La referencia lleva consulta origen, prioridad y motivo; no es un correo suelto.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 13 · PACIENTE ============ -->
+    <section class="slide" id="s13" data-title="Paciente" data-chapter="01" data-chapter-label="Perfiles" data-summary="Portal móvil: cita, llegada, historia y exportación." data-tone="light" data-accent="sky">
+      <div class="slide-inner role-layout">
+        <div class="role-copy">
+          <p class="kicker" data-reveal style="--d:40ms"><span class="kicker-num">07</span> Perfil · Portal</p>
+          <h2 class="role-title" data-reveal style="--d:90ms">Paciente</h2>
+          <p class="role-sub" data-reveal style="--d:140ms">Menos llamadas, más control.</p>
+          <p class="lead" data-reveal style="--d:200ms">Desde el celular: pide cita, registra llegada, cancela a tiempo y descarga su historia. Sin filas y sin papeles.</p>
+          <ul class="role-facts">
+            <li data-reveal style="--d:250ms"><span class="f-num">01</span><div><strong>Cuenta propia</strong><p>Registro, login y recuperación de clave; una cuenta por institución.</p></div></li>
+            <li data-reveal style="--d:290ms"><span class="f-num">02</span><div><strong>Cita flexible</strong><p>Rango de fechas y jornada; el sistema asigna el primer turno disponible y confirma.</p></div></li>
+            <li data-reveal style="--d:330ms"><span class="f-num">03</span><div><strong>Llegada y cancelación</strong><p>Check-in el mismo día; cancelación hasta 2 horas antes, con liberación del cupo.</p></div></li>
+            <li data-reveal style="--d:370ms"><span class="f-num">04</span><div><strong>Historia portátil</strong><p>Consulta episodios y descarga su HCE en JSON o PDF.</p></div></li>
+          </ul>
+          <div class="role-access" data-reveal style="--d:410ms"><span class="eyebrow">Acceso</span><span class="tag tag--accent">Portal</span><span class="tag">Mis citas</span><span class="tag">Mi historia</span></div>
+          <div class="role-rule" data-reveal style="--d:450ms"><span class="rule-label">Privacidad</span><p>Solo ve su historia y su institución. El portal no cruza datos entre tenants.</p></div>
+        </div>
+        <div class="role-visual" data-reveal style="--d:260ms">
+          <div class="role-scene">
+            <svg data-iso="paciente" aria-label="Portal del paciente en un dispositivo móvil con tarjetas de cita"></svg>
+            <div class="scene-badge scene-badge--tr">Portal móvil</div>
+            <div class="scene-caption">Portal del paciente · cita, llegada e historia</div>
+          </div>
+          <div class="role-annotation"><span class="annotation-dot"></span><p><strong>El paciente también es un usuario del flujo.</strong> Su llegada actualiza el estado de la cita y avisa a recepción.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDES_INSERT -->
+
+  </main>
+
+  <footer class="chrome chrome-bottom">
+    <div class="counter" aria-live="polite">
+      <span class="counter-current" id="currentNum">01</span>
+      <span class="counter-sep">/</span>
+      <span class="counter-total" id="totalNum">26</span>
+      <span class="counter-title" id="currentTitle">Portada</span>
+    </div>
+    <div class="progress-wrap">
+      <nav class="chapter-nav" id="chapterNav" aria-label="Capítulos"></nav>
+      <div class="progress" role="progressbar" aria-label="Progreso del deck" aria-valuemin="0" aria-valuemax="100" aria-valuenow="4">
+        <span class="progress-fill" id="progressFill"></span>
+      </div>
+    </div>
+    <div class="pager">
+      <button class="pager-btn" id="prevBtn" type="button" aria-label="Slide anterior" title="Anterior (←)">
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+      </button>
+      <button class="pager-btn" id="nextBtn" type="button" aria-label="Slide siguiente" title="Siguiente (→)">
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+      </button>
+    </div>
+  </footer>
+
+  <div class="overview" id="overview" role="dialog" aria-modal="true" aria-labelledby="overviewTitle" aria-hidden="true">
+    <div class="overview-bg" aria-hidden="true"></div>
+    <div class="overview-head">
+      <div>
+        <p class="kicker">Mapa del deck</p>
+        <h2 id="overviewTitle">26 slides · 4 capítulos</h2>
+      </div>
+      <div class="overview-actions">
+        <span class="key-hint"><kbd>G</kbd> abrir / cerrar</span>
+        <button class="btn btn--ghost" id="overviewClose" type="button">Cerrar <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+      </div>
+    </div>
+    <div class="overview-scroll">
+      <div class="overview-grid" id="overviewGrid"></div>
+    </div>
+  </div>
+
+  <div class="edge-hint edge-hint--left" aria-hidden="true">←</div>
+  <div class="edge-hint edge-hint--right" aria-hidden="true">→</div>
+</div>
+
+<script src="assets/js/iso.js"></script>
+<script src="assets/js/deck.js"></script>
+</body>
+</html>
