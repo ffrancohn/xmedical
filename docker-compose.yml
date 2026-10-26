@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:15
+    restart: unless-stopped
     environment:
       POSTGRES_DB: xmedical
       POSTGRES_USER: xmedical_user
@@ -12,6 +13,7 @@ services:
 
   redis:
     image: redis:7
+    restart: unless-stopped
     ports:
       - "6379:6379"
 

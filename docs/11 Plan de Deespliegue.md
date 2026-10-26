@@ -725,7 +725,10 @@ Cliente HTTPS → Apache (:443) → Gunicorn (:8000) → Django
 systemctl status xmedical
 systemctl restart xmedical
 systemctl reload apache2
-docker compose -f /var/www/xmedical/docker-compose.yml ps
+docker compose -f /var/www/xmedical/docker-compose.yml up -d db redis
+sudo cp deploy/systemd/xmedical.service.d/10-after-datastores.conf /etc/systemd/system/xmedical.service.d/
+sudo systemctl daemon-reload
+/var/www/xmedical/scripts/verify_xmedical_boot.sh
 certbot renew --dry-run
 ```
 
