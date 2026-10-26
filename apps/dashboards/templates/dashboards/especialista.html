@@ -13,6 +13,7 @@
     </div>
 </div>
 {% include 'partials/institution_filter.html' %}
+{% if hilo %}{% include 'components/hilo.html' %}{% endif %}
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="xm-stat-card xm-card xm-stat-card--warning"><div><p class="xm-stat-card__label">Referencias pendientes</p><p class="xm-stat-card__value">{{ total_pendientes }}</p></div></div>

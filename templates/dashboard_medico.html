@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard médico{% endblock %}
 {% block content %}
+{% if hilo %}{% include 'components/hilo.html' %}{% endif %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="xm-stat-card xm-card xm-stat-card--primary">
         <div>

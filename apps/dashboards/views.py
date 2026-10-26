@@ -7,11 +7,13 @@ from apps.core.permissions import (
     CAN_DASHBOARD_ADMIN,
     CAN_DASHBOARD_ENFERMERIA,
     CAN_DASHBOARD_EPIDEMIOLOGIA,
+    CAN_DASHBOARD_RECEPCION,
     RoleRequiredMixin,
 )
 from apps.core.views import institution_filter_context, selected_instituciones
 
 from .epidemiologia import epidemiologia_dashboard_data
+from .hilo import hilo_del_dia
 from .services import administracion_dashboard_data, enfermeria_dashboard_data, especialista_dashboard_data
 
 
@@ -33,6 +35,25 @@ class EnfermeriaDashboardView(LoginRequiredMixin, RoleRequiredMixin, Institution
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(enfermeria_dashboard_data(self.get_instituciones()))
+        profesional = get_profesional(self.request.user)
+        if profesional and profesional.tipo == "enfermera":
+            context["hilo"] = hilo_del_dia(self.get_instituciones(), "enfermeria")
+        return context
+
+
+class RecepcionDashboardView(LoginRequiredMixin, RoleRequiredMixin, TemplateView):
+    allowed_roles = CAN_DASHBOARD_RECEPCION
+    template_name = "dashboards/recepcion.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_superuser:
+            return redirect("superadmin_dashboard")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instituciones, _ = selected_instituciones(self.request)
+        context["hilo"] = hilo_del_dia(instituciones, "recepcion")
         return context
 
 
@@ -63,6 +84,8 @@ class EspecialistaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Temp
         profesional = get_profesional(self.request.user)
         context["profesional"] = profesional
         context.update(especialista_dashboard_data(self.get_instituciones(), profesional=profesional))
+        if profesional and profesional.tipo == "medico":
+            context["hilo"] = hilo_del_dia(self.get_instituciones(), "especialista")
         return context
 
 

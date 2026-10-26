@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Prototipo navegable de XMedical con el aspecto del Atlas. Elige un perfil y recorre sus pantallas.">
+<title>XMedical · Prototipo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b1f26'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='%235eead4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/proto.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.8 19c.4-3.4 2.4-5.2 5.2-5.2s4.8 1.8 5.2 5.2"/><path d="M16.2 5.4a3.1 3.1 0 0 1 0 5.9M17 13.9c2.2.3 3.6 1.9 3.9 4.6"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3.5v4M16 3.5v4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.4 5.6a5.1 5.1 0 0 0-7.2 0L12 6.8l-1.2-1.2a5.1 5.1 0 0 0-7.2 7.2L12 21l8.4-8.2a5.1 5.1 0 0 0 0-7.2Z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="m8.2 10.9 7.6-3.8M8.2 13.1l7.6 3.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2.5v3.5M15 2.5v3.5M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M7 3.5h7l5 5V20a1.5 1.5 0 0 1-1.5 1.5h-10.5A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z"/><path d="M14 3.5V9h5.5"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V6l7-3v18M11 21h9V10h-9"/><path d="M7 9h1M7 12h1M7 15h1M14 13h2M14 16h2"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l2.2-6 4.2 13 3-7H21"/></symbol>
+  <symbol id="i-stethoscope" viewBox="0 0 24 24"><path d="M5 4v5a4 4 0 0 0 8 0V4"/><path d="M9 13v2.5a5.5 5.5 0 0 0 11 0V13"/><circle cx="20" cy="10.5" r="1.8"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+</svg>
+
+<section class="picker" id="picker">
+  <div class="picker-top">
+    <a class="brand" href="#"><span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5V3Z"/></svg></span><span><span class="brand-name">XMEDICAL</span><span class="brand-sub">Prototipo Atlas</span></span></a>
+    <p class="key-hint"><kbd>←</kbd><kbd>→</kbd> pantallas <kbd>G</kbd> perfiles <kbd>Esc</kbd> portada</p>
+  </div>
+  <p class="picker-kicker">Cómo se vería el sistema</p>
+  <h1>Elige un perfil y <em>entra a su día.</em></h1>
+  <p class="picker-lead">Siete recorridos cortos con el papel, la tinta y las escenas del Atlas. Los datos son sintéticos y nada se guarda.</p>
+  <div class="pick-grid">
+    <button class="pick" type="button" data-pick="superadmin" style="--accent:var(--gold)"><svg class="iso" data-iso="superadmin" aria-hidden="true"></svg><span class="num">01</span><h2>Superadministrador</h2><p>Instituciones, respaldos y auditoría de la plataforma.</p></button>
+    <button class="pick" type="button" data-pick="admin" style="--accent:var(--blue)"><svg class="iso" data-iso="admin" aria-hidden="true"></svg><span class="num">02</span><h2>Administrador</h2><p>Tablero de la clínica, auditoría y configuración de IA.</p></button>
+    <button class="pick" type="button" data-pick="recepcion" style="--accent:var(--coral)"><svg class="iso" data-iso="recepcion" aria-hidden="true"></svg><span class="num">03</span><h2>Recepción</h2><p>Agenda del día, pacientes y una cita nueva.</p></button>
+    <button class="pick" type="button" data-pick="enfermeria" style="--accent:var(--green)"><svg class="iso" data-iso="enfermeria" aria-hidden="true"></svg><span class="num">04</span><h2>Enfermería</h2><p>Cola, signos vitales y una alerta de triaje.</p></button>
+    <button class="pick" type="button" data-pick="medico" style="--accent:var(--teal)"><svg class="iso" data-iso="medico" aria-hidden="true"></svg><span class="num">05</span><h2>Médico general</h2><p>Agenda, un paso de consulta y la historia.</p></button>
+    <button class="pick" type="button" data-pick="especialista" style="--accent:var(--violet)"><svg class="iso" data-iso="especialista" aria-hidden="true"></svg><span class="num">06</span><h2>Especialista</h2><p>Bandeja de referencias, agenda y respuesta.</p></button>
+    <button class="pick" type="button" data-pick="paciente" style="--accent:var(--sky)"><svg class="iso" data-iso="paciente" aria-hidden="true"></svg><span class="num">07</span><h2>Paciente</h2><p>Portal: próxima cita, calendario e historia.</p></button>
+  </div>
+</section>
+
+<div class="app" id="app" hidden>
+  <div class="backdrop" data-menu></div>
+  <aside class="sidebar">
+    <button class="side-brand" type="button" data-picker>
+      <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5V3Z"/></svg></span>
+      <span><span class="brand-name">XMEDICAL</span><span class="brand-sub" id="side-kicker">Clínica Demo</span></span>
+    </button>
+    <div class="who">
+      <div class="avatar" id="session-avatar" data-file="fallback"><img alt="" hidden><span data-fallback>XM</span></div>
+      <div><strong id="who-name">Perfil</strong><em id="who-role">Rol</em></div>
+    </div>
+    <nav class="nav" id="nav" aria-label="Menú del perfil"></nav>
+    <p class="side-note">Recorrido de tres pantallas. Datos sintéticos. El avatar sale de <code>avatars/</code> si el archivo existe.</p>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <button class="ghost menu-btn" type="button" data-menu aria-label="Abrir menú"><svg class="icon"><use href="#i-menu"></use></svg></button>
+      <div class="crumb">
+        <p class="kicker" id="crumb-kicker">Perfil</p>
+        <strong id="crumb-title">Pantalla</strong>
+      </div>
+      <div class="top-actions">
+        <button class="ghost icon-btn" type="button" data-prev aria-label="Pantalla anterior"><svg class="icon" style="transform:scaleX(-1)"><use href="#i-chevron"></use></svg></button>
+        <span class="count" id="count">1 / 3</span>
+        <button class="ghost icon-btn" type="button" data-next aria-label="Pantalla siguiente"><svg class="icon"><use href="#i-chevron"></use></svg></button>
+        <button class="switch" type="button" data-map aria-label="Cambiar perfil"><svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg><span>Perfiles</span></button>
+      </div>
+    </header>
+    <div class="canvas" id="canvas">
+
+      <section class="screen" data-profile="superadmin" data-screen="instituciones" data-kicker="Plataforma" data-title="Instituciones">
+        <div class="head reveal"><div><p class="kicker">Superadministrador</p><h1>Las clínicas, <em>en una sola mesa.</em></h1></div><p class="lead">Cada institución conserva su subdominio, su personal y su historia. Desde aquí se abre o se cierra el ciclo de vida.</p></div>
+        <div class="hero reveal" style="--d:80ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="superadmin"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="superadmin"><img alt="" hidden><span data-fallback>AR</span></div><div><strong>Ana Ruiz</strong><span>Gobierna la plataforma, no la consulta.</span></div></div>
+            <p class="lead">Tres clínicas activas en este prototipo. Ninguna acción escribe en la base.</p>
+          </div>
+        </div>
+        <div class="kpis reveal" style="--d:140ms">
+          <div class="kpi"><b data-count="3">3</b><span>Instituciones</span></div>
+          <div class="kpi"><b data-count="42">42</b><span>Usuarios clínicos</span></div>
+          <div class="kpi"><b data-count="1">1</b><span>Respaldo de hoy</span></div>
+        </div>
+        <article class="inst reveal" style="--d:180ms"><div><b>Clínica Demo</b><p>demo.xmedical · privada · activa</p></div><span class="badge ok">Activa</span></article>
+        <article class="inst reveal" style="--d:220ms"><div><b>Hospital Norte</b><p>norte.xmedical · pública · activa</p></div><span class="badge ok">Activa</span></article>
+        <article class="inst reveal" style="--d:260ms"><div><b>Centro Valle</b><p>valle.xmedical · privada · pausa</p></div><span class="badge wait">Pausada</span></article>
+      </section>
+
+      <section class="screen" data-profile="superadmin" data-screen="respaldos" data-kicker="Plataforma" data-title="Respaldos">
+        <div class="head"><div><p class="kicker">Ciclo de vida</p><h1>Un respaldo <em>por institución.</em></h1></div><p class="lead">Exportar o restaurar no mezcla tenants. El prototipo solo muestra el gesto.</p></div>
+        <div class="split">
+          <form class="card pad form">
+            <h2>Exportar Clínica Demo</h2>
+            <label class="field"><span>Alcance</span><select><option>Institución completa</option><option>Solo catálogos</option></select></label>
+            <label class="field"><span>Nota</span><input value="Cierre de octubre" readonly></label>
+            <div class="form-actions"><button class="solid" type="submit">Preparar respaldo</button></div>
+          </form>
+          <div class="card pad">
+            <h2>Últimos archivos</h2>
+            <div class="log" style="margin-top:8px">
+              <div><time>26 oct · 06:10</time><span>demo · completo</span><span class="badge ok">Listo</span></div>
+              <div><time>25 oct · 06:10</time><span>norte · completo</span><span class="badge ok">Listo</span></div>
+              <div><time>24 oct · 18:40</time><span>valle · catálogos</span><span class="badge info">Parcial</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="superadmin" data-screen="auditoria" data-kicker="Plataforma" data-title="Auditoría">
+        <div class="head"><div><p class="kicker">Rastro</p><h1>Quién tocó <em>qué tenant.</em></h1></div><p class="lead">La bitácora de plataforma distingue institución, actor y acción. Aquí no hay filtros reales.</p></div>
+        <div class="card">
+          <div class="log">
+            <div><time>09:14</time><span>Ana Ruiz exportó Clínica Demo</span><span class="badge info">Respaldo</span></div>
+            <div><time>08:02</time><span>Luis Ortega activó el proveedor de IA</span><span class="badge violet">IA</span></div>
+            <div><time>Ayer</time><span>Alta de Hospital Norte</span><span class="badge ok">Tenant</span></div>
+            <div><time>Ayer</time><span>Pausa de Centro Valle</span><span class="badge wait">Tenant</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="admin" data-screen="administracion" data-kicker="Administración" data-title="Tablero">
+        <div class="head reveal"><div><p class="kicker">Clínica Demo</p><h1>La operación, <em>sin abrir una historia.</em></h1></div><p class="lead">Citas, ausencias y carga de la semana. Las barras crecen una sola vez al entrar.</p></div>
+        <div class="hero reveal" style="--d:70ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="admin"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="admin"><img alt="" hidden><span data-fallback>LO</span></div><div><strong>Luis Ortega</strong><span>Administrador de Clínica Demo</span></div></div>
+            <p class="lead">Lee la clínica. No abre la consulta ni modifica una nota clínica.</p>
+          </div>
+        </div>
+        <div class="kpis reveal" style="--d:120ms">
+          <div class="kpi"><b data-count="86">86</b><span>Citas de la semana</span></div>
+          <div class="kpi"><b data-count="7">7</b><span>Ausencias</span></div>
+          <div class="kpi"><b data-count="18">18</b><span>En espera hoy</span></div>
+        </div>
+        <div class="card reveal" style="--d:160ms">
+          <div class="card-h"><h2>Citas por día</h2><span class="kicker">Octubre</span></div>
+          <div class="bars" aria-hidden="true"><span style="--h:46%;--i:0"></span><span style="--h:62%;--i:1"></span><span style="--h:80%;--i:2"></span><span style="--h:70%;--i:3"></span><span style="--h:94%;--i:4"></span><span style="--h:38%;--i:5"></span></div>
+          <div class="bar-labels"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span></div>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="admin" data-screen="auditoria" data-kicker="Sistema" data-title="Auditoría">
+        <div class="head"><div><p class="kicker">Clínica Demo</p><h1>El rastro <em>de esta casa.</em></h1></div><p class="lead">Altas, cambios de cita y accesos. El filtro de fechas queda quieto: es una maqueta.</p></div>
+        <div class="card">
+          <div class="card-h"><h2>Hoy</h2><span class="badge info">12 eventos</span></div>
+          <div class="log">
+            <div><time>10:22</time><span>Carmen Díaz creó una cita flexible</span><span class="badge ok">Citas</span></div>
+            <div><time>09:48</time><span>Rosa Méndez registró signos</span><span class="badge ok">Preclínica</span></div>
+            <div><time>09:05</time><span>Elena Vargas abrió una consulta</span><span class="badge info">Consulta</span></div>
+            <div><time>08:40</time><span>Luis Ortega revisó este tablero</span><span class="badge violet">Acceso</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="admin" data-screen="ia" data-kicker="Sistema" data-title="Configuración IA">
+        <div class="head"><div><p class="kicker">Apoyo a la decisión</p><h1>El modelo se elige, <em>no se improvisa.</em></h1></div><p class="lead">Proveedor, modelo y una prueba de conexión. Guardar muestra el aviso de prototipo.</p></div>
+        <form class="split">
+          <div class="card pad form">
+            <label class="field"><span>Proveedor</span><select><option>Ollama local</option><option>Otro proveedor</option></select></label>
+            <label class="field"><span>Modelo</span><input value="llama3.1:8b" readonly></label>
+            <label class="field"><span>Uso</span><input value="Sugerencia de diagnóstico en el paso 6" readonly></label>
+            <div class="form-actions"><button class="ghost" type="submit">Probar</button><button class="solid" type="submit">Guardar</button></div>
+          </div>
+          <div class="card pad stack">
+            <p class="kicker">Estado</p>
+            <h2>Listo para sugerir</h2>
+            <p class="lead">La sugerencia aparece dentro de la consulta. No reemplaza el criterio de quien atiende.</p>
+            <span class="badge ok">Conexión de muestra</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="recepcion" data-screen="inicio" data-kicker="Recepción" data-title="Agenda de hoy">
+        <div class="head reveal"><div><p class="kicker">Hoy · 26 oct</p><h1>La sala de espera, <em>en orden.</em></h1></div><p class="lead">Cuatro personas esperan. El marco de llegada usa un haz solo en esta pantalla.</p></div>
+        <div class="hero reveal" style="--d:60ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="recepcion"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="recepcionista"><img alt="" hidden><span data-fallback>CD</span></div><div><strong>Carmen Díaz</strong><span>Recepción · Clínica Demo</span></div></div>
+            <div class="qr-wrap">
+              <div class="qr" aria-hidden="true"><span class="beam"></span></div>
+              <div><p class="kicker">Llegada</p><p>María José López · 10:30 · token de un uso</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="hilo reveal" data-hilo="recepcion" style="--d:100ms"></div>
+        <div class="kpis reveal" style="--d:120ms">
+          <div class="kpi"><b data-count="18">18</b><span>Citas de hoy</span></div>
+          <div class="kpi"><b data-count="4">4</b><span><i class="pulse"></i>En espera</span></div>
+          <div class="kpi"><b data-count="11">11</b><span>Ya llegaron</span></div>
+        </div>
+        <div class="card reveal" style="--d:170ms">
+          <div class="card-h"><h2>Próximas</h2><button class="linkish" type="button" data-go="citas">Agendar</button></div>
+          <table>
+            <thead><tr><th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>10:30</td><td><span class="ini">ML</span>María José López</td><td><span class="badge wait"><i class="pulse"></i>Espera</span></td><td class="right"><button class="linkish" type="button" data-go="pacientes">Ficha</button></td></tr>
+              <tr><td>10:50</td><td><span class="ini">CA</span>Carlos Andrade</td><td><span class="badge info">Agendada</span></td><td class="right"><button class="linkish" type="button">Llegada</button></td></tr>
+              <tr><td>11:10</td><td><span class="ini">EV</span>Elena Vásquez</td><td><span class="badge ok">En consulta</span></td><td class="right"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="recepcion" data-screen="pacientes" data-kicker="Recepción" data-title="Pacientes">
+        <div class="head"><div><p class="kicker">Ficha única</p><h1>Una persona, <em>un hilo.</em></h1></div><p class="lead">La búsqueda es visual. En la lista solo hay iniciales, no el avatar del rol.</p></div>
+        <form class="card pad" style="margin-bottom:14px">
+          <label class="field"><span>Buscar</span><input placeholder="Nombre, documento o teléfono" value="López"></label>
+        </form>
+        <div class="card">
+          <table>
+            <thead><tr><th>Paciente</th><th>Documento</th><th>Edad</th><th>Última cita</th></tr></thead>
+            <tbody>
+              <tr><td><span class="ini">ML</span>María José López</td><td>0801-1990-12345</td><td>38</td><td>Hoy · 10:30</td></tr>
+              <tr><td><span class="ini">LM</span>Lucía Méndez</td><td>0801-1985-33421</td><td>41</td><td>12 oct</td></tr>
+              <tr><td><span class="ini">PR</span>Pedro Ramos</td><td>0801-1959-10293</td><td>67</td><td>02 oct</td></tr>
+              <tr><td><span class="ini">CA</span>Carlos Andrade</td><td>0801-1972-77810</td><td>54</td><td>Hoy · 10:50</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="recepcion" data-screen="citas" data-kicker="Recepción" data-title="Nueva cita">
+        <div class="head"><div><p class="kicker">Agenda</p><h1>Turno específico <em>o flexible.</em></h1></div><p class="lead">Una ficha corta. Enviar no crea la cita: el prototipo avisa y se queda aquí.</p></div>
+        <form class="card pad form" style="max-width:720px">
+          <div class="form-row">
+            <label class="field"><span>Paciente</span><input value="María José López"></label>
+            <label class="field"><span>Profesional</span><select><option>Elena Vargas · Medicina general</option><option>Martín Salas · Cardiología</option></select></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Fecha</span><input value="2026-10-27"></label>
+            <label class="field"><span>Hora</span><input value="09:00"></label>
+          </div>
+          <label class="field"><span>Tipo</span><select><option>Específico</option><option>Flexible</option></select></label>
+          <div class="form-actions"><button class="ghost" type="button" data-go="inicio">Volver</button><button class="solid" type="submit">Agendar</button></div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="enfermeria" data-screen="inicio" data-kicker="Enfermería" data-title="Cola de preclínica">
+        <div class="head reveal"><div><p class="kicker">Antes de la consulta</p><h1>Signos primero, <em>consulta después.</em></h1></div><p class="lead">El trazo se dibuja una vez. El formulario de la toma, en la siguiente pantalla, queda quieto.</p></div>
+        <div class="hero reveal" style="--d:70ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="enfermeria"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="enfermera"><img alt="" hidden><span data-fallback>RM</span></div><div><strong>Rosa Méndez</strong><span>Enfermería · turno de la mañana</span></div></div>
+            <svg class="ecg" viewBox="0 0 320 64" aria-hidden="true"><path d="M0 36 H40 L52 36 L64 14 L78 52 L92 28 H140 L152 36 L168 8 L184 56 L198 32 H320"/></svg>
+          </div>
+        </div>
+        <div class="hilo reveal" data-hilo="enfermeria" style="--d:110ms"></div>
+        <div class="kpis reveal" style="--d:130ms">
+          <div class="kpi"><b data-count="6">6</b><span>En cola</span></div>
+          <div class="kpi"><b data-count="2">2</b><span><i class="pulse"></i>Alerta</span></div>
+          <div class="kpi"><b data-count="9">9</b><span>Tomas hechas</span></div>
+        </div>
+        <div class="card reveal" style="--d:180ms">
+          <table>
+            <thead><tr><th>Hora</th><th>Paciente</th><th>Triaje</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>10:20</td><td><span class="ini">PR</span>Pedro Ramos</td><td><span class="badge wait">Prioridad</span></td><td class="right"><button class="linkish" type="button" data-go="triaje">Ver alerta</button></td></tr>
+              <tr><td>10:30</td><td><span class="ini">ML</span>María José López</td><td><span class="badge ok">Estable</span></td><td class="right"><button class="linkish" type="button" data-go="preclinica">Registrar</button></td></tr>
+              <tr><td>10:50</td><td><span class="ini">CA</span>Carlos Andrade</td><td><span class="badge info">Pendiente</span></td><td class="right"><button class="linkish" type="button" data-go="preclinica">Registrar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="enfermeria" data-screen="preclinica" data-kicker="Enfermería" data-title="Registro de signos">
+        <div class="head"><div><p class="kicker">María José López · 10:30</p><h1>La toma, <em>sin ruido.</em></h1></div><p class="lead">Campos quietos. El IMC ya está calculado en la maqueta. No hay barrido ni ECG aquí.</p></div>
+        <form class="card pad form" style="max-width:760px">
+          <div class="form-row">
+            <label class="field"><span>Presión arterial</span><input value="118 / 76"></label>
+            <label class="field"><span>Frecuencia cardíaca</span><input value="74"></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Temperatura</span><input value="36.6 °C"></label>
+            <label class="field"><span>Saturación</span><input value="98 %"></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Peso y talla</span><input value="64 kg · 1.62 m"></label>
+            <label class="field"><span>IMC</span><input value="24.4 · rango esperado" readonly></label>
+          </div>
+          <div class="form-actions"><button class="solid" type="submit">Guardar toma</button></div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="enfermeria" data-screen="triaje" data-kicker="Enfermería" data-title="Alerta de triaje">
+        <div class="head"><div><p class="kicker">Pedro Ramos · 67 años</p><h1>Pasa antes <em>por la presión.</em></h1></div><p class="lead">Una alerta visible, el resto de la cola sigue en tabla. El punto coral marca lo que no puede esperar.</p></div>
+        <div class="alert"><strong>PA 168/98.</strong> Prioridad sobre las citas estables de esta hora. Avisar a medicina general antes de seguir la cola.</div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Nivel</th><th>Paciente</th><th>Motivo</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge wait"><i class="pulse"></i>Alto</span></td><td>Pedro Ramos</td><td>Presión por encima del umbral</td></tr>
+              <tr><td><span class="badge info">Medio</span></td><td>Lucía Méndez</td><td>Fiebre leve, sin otros signos</td></tr>
+              <tr><td><span class="badge ok">Bajo</span></td><td>María José López</td><td>Control programado</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="medico" data-screen="inicio" data-kicker="Medicina general" data-title="Agenda del día">
+        <div class="head reveal"><div><p class="kicker">Elena Vargas</p><h1>Atender es <em>seguir el hilo.</em></h1></div><p class="lead">La agenda abre la consulta. El wizard vive en la segunda pantalla de este perfil.</p></div>
+        <div class="hero reveal" style="--d:70ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="medico"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="medico"><img alt="" hidden><span data-fallback>EV</span></div><div><strong>Elena Vargas</strong><span>Medicina general · consultorio 2</span></div></div>
+            <button class="solid" type="button" data-go="consulta">Atender a María José</button>
+          </div>
+        </div>
+        <div class="hilo reveal" data-hilo="medico" style="--d:110ms"></div>
+        <div class="kpis reveal" style="--d:120ms">
+          <div class="kpi"><b data-count="12">12</b><span>Pacientes hoy</span></div>
+          <div class="kpi"><b data-count="3">3</b><span><i class="pulse"></i>En espera</span></div>
+          <div class="kpi"><b data-count="5">5</b><span>Ya atendidos</span></div>
+        </div>
+        <div class="card reveal" style="--d:170ms">
+          <table>
+            <thead><tr><th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>10:30</td><td><span class="ini">ML</span>María José López</td><td><span class="badge wait">Lista</span></td><td class="right"><button class="solid" type="button" data-go="consulta" style="padding:6px 12px">Atender</button></td></tr>
+              <tr><td>11:00</td><td><span class="ini">CA</span>Carlos Andrade</td><td><span class="badge info">Preclínica</span></td><td class="right"><button class="ghost" type="button" data-go="historia" style="padding:6px 12px">Historia</button></td></tr>
+              <tr><td>11:30</td><td><span class="ini">LM</span>Lucía Méndez</td><td><span class="badge ok">Atendida</span></td><td class="right"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="medico" data-screen="consulta" data-kicker="Consulta" data-title="Motivo de consulta">
+        <div class="head"><div><p class="kicker">Paso 2 de 8 · María José López</p><h1>El motivo, <em>con el paso a la vista.</em></h1></div><p class="save"><i></i>Autoguardado activo</p></div>
+        <div class="progress" aria-hidden="true"><span style="--w:25%"></span></div>
+        <div class="wizard" aria-label="Pasos de la consulta">
+          <div class="step done"><b>01</b>Preclínica</div>
+          <div class="step on"><b>02</b>Motivo</div>
+          <div class="step"><b>03</b>Anamnesis</div>
+          <div class="step"><b>04</b>Examen</div>
+          <div class="step"><b>05</b>Variables</div>
+          <div class="step"><b>06</b>Diagnóstico</div>
+          <div class="step"><b>07</b>Plan</div>
+          <div class="step"><b>08</b>Resumen</div>
+        </div>
+        <form class="card pad form">
+          <label class="field"><span>Motivo de consulta</span><textarea>Control de presión y cefalea ocasional desde hace dos semanas. Niega dolor torácico.</textarea></label>
+          <div class="form-actions"><button class="ghost" type="button" data-go="inicio">Anterior</button><button class="solid" type="submit">Continuar</button></div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="medico" data-screen="historia" data-kicker="Historia clínica" data-title="María José López">
+        <div class="head"><div><p class="kicker">38 años · medicina general</p><h1>El mismo hilo, <em>varias visitas.</em></h1></div><p class="lead">Tres encuentros de muestra. Exportar no genera archivo.</p></div>
+        <div class="chips" style="margin-bottom:14px"><span class="chip">Alergia: penicilina</span><span class="chip">Grupo O+</span><button class="chip" type="submit">Exportar PDF</button></div>
+        <div class="card pad timeline">
+          <article class="tl"><time>26 oct 2026</time><div><strong>Consulta en curso</strong><p>Motivo abierto. Preclínica estable, PA 118/76.</p></div></article>
+          <article class="tl"><time>12 ago 2026</time><div><strong>Control</strong><p>Alta sin medicación nueva. Próxima cita en tres meses.</p></div></article>
+          <article class="tl"><time>03 feb 2026</time><div><strong>Primera visita</strong><p>Apertura de ficha en Clínica Demo.</p></div></article>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="especialista" data-screen="referencias" data-kicker="Cardiología" data-title="Bandeja">
+        <div class="head reveal"><div><p class="kicker">Segundo nivel</p><h1>Lo que llega <em>desde el primero.</em></h1></div><p class="lead">Aceptar, rechazar o agendar. La contrarreferencia cierra el círculo en la tercera pantalla.</p></div>
+        <div class="hero reveal" style="--d:70ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="especialista"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="especialista"><img alt="" hidden><span data-fallback>MS</span></div><div><strong>Martín Salas</strong><span>Cardiología · Clínica Demo</span></div></div>
+            <p class="lead">Dos referencias nuevas. Una ya tiene hora.</p>
+          </div>
+        </div>
+        <div class="hilo reveal" data-hilo="especialista" style="--d:110ms"></div>
+        <div class="card reveal" style="--d:140ms">
+          <table>
+            <thead><tr><th>Paciente</th><th>Origen</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><span class="ini">PR</span>Pedro Ramos</td><td>Medicina general</td><td><span class="badge wait">Nueva</span></td><td class="right"><button class="solid" type="button" data-go="agenda" style="padding:6px 12px">Agendar</button></td></tr>
+              <tr><td><span class="ini">LM</span>Lucía Méndez</td><td>Medicina general</td><td><span class="badge info">Aceptada</span></td><td class="right"><button class="ghost" type="button" data-go="contrarreferencia" style="padding:6px 12px">Responder</button></td></tr>
+              <tr><td><span class="ini">CA</span>Carlos Andrade</td><td>Medicina general</td><td><span class="badge ok">Con cita</span></td><td class="right"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="especialista" data-screen="agenda" data-kicker="Cardiología" data-title="Agenda">
+        <div class="head"><div><p class="kicker">Esta semana</p><h1>La hora del segundo <em>nivel.</em></h1></div><p class="lead">Pedro Ramos entra el jueves. El hueco de las 15:00 sigue libre en la maqueta.</p></div>
+        <div class="kpis">
+          <div class="kpi"><b data-count="4">4</b><span>Referencias abiertas</span></div>
+          <div class="kpi"><b data-count="6">6</b><span>Citas de la semana</span></div>
+          <div class="kpi"><b data-count="1">1</b><span>Hueco hoy</span></div>
+        </div>
+        <form class="card pad form">
+          <div class="form-row">
+            <label class="field"><span>Paciente</span><input value="Pedro Ramos" readonly></label>
+            <label class="field"><span>Motivo de referencia</span><input value="PA persistente y disnea de esfuerzo" readonly></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Día</span><select><option>Jueves 29 oct · 15:00</option><option>Viernes 30 oct · 09:30</option></select></label>
+            <label class="field"><span>Consultorio</span><input value="Cardiología 1" readonly></label>
+          </div>
+          <div class="form-actions"><button class="solid" type="submit">Confirmar hora</button></div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="especialista" data-screen="contrarreferencia" data-kicker="Cardiología" data-title="Contrarreferencia">
+        <div class="head"><div><p class="kicker">Lucía Méndez · de vuelta al primer nivel</p><h1>Devolver el caso <em>con una nota.</em></h1></div><p class="lead">Lectura de lo que cardiología regresa a medicina general. Enviar no cierra el caso real.</p></div>
+        <form class="card pad form" style="max-width:760px">
+          <label class="field"><span>Hallazgo</span><textarea readonly>Electrocardiograma sin cambios agudos. Se ajusta el plan y se sugiere control en medicina general en 30 días.</textarea></label>
+          <label class="field"><span>Conducta para el primer nivel</span><textarea readonly>Continuar tratamiento actual. Volver a referir si reaparece dolor torácico o disnea en reposo.</textarea></label>
+          <div class="form-actions"><button class="ghost" type="button" data-go="referencias">Bandeja</button><button class="solid" type="submit">Enviar contrarreferencia</button></div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="paciente" data-screen="inicio" data-kicker="Portal" data-title="Tu próxima cita">
+        <div class="head reveal"><div><p class="kicker">Hola, María José</p><h1>Hoy tienes hora <em>a las 10:30.</em></h1></div><p class="lead">El portal es más breve que el escritorio clínico. La misma voz visual, menos módulos.</p></div>
+        <div class="hero reveal" style="--d:70ms">
+          <div class="scene" aria-hidden="true"><svg class="iso" data-iso="paciente"></svg></div>
+          <div class="scene-copy">
+            <div class="person-row"><div class="avatar lg" data-file="paciente"><img alt="" hidden><span data-fallback>ML</span></div><div><strong>María José López</strong><span>Clínica Demo · medicina general</span></div></div>
+            <button class="solid" type="button" data-go="citas">Avisar que llegué</button>
+          </div>
+        </div>
+        <div class="hilo reveal" data-hilo="paciente" style="--d:110ms"></div>
+        <div class="kpis reveal" style="--d:140ms">
+          <div class="kpi"><b>10:30</b><span>Elena Vargas</span></div>
+          <div class="kpi"><b data-count="2">2</b><span>Citas próximas</span></div>
+          <div class="kpi"><b data-count="3">3</b><span>Visitas en la historia</span></div>
+        </div>
+      </section>
+
+      <section class="screen" data-profile="paciente" data-screen="citas" data-kicker="Portal" data-title="Mis citas">
+        <div class="head"><div><p class="kicker">Agenda personal</p><h1>Lo que viene <em>y lo que ya fue.</em></h1></div><p class="lead">Llegada, cancelación y una solicitud. Los botones no mueven la cita real.</p></div>
+        <div class="card" style="margin-bottom:14px">
+          <table>
+            <thead><tr><th>Cuándo</th><th>Con quién</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Hoy · 10:30</td><td>Elena Vargas</td><td><span class="badge wait">Confirmada</span></td><td class="right"><button class="solid" type="submit" style="padding:6px 12px">Llegué</button></td></tr>
+              <tr><td>29 oct · 15:00</td><td>Martín Salas</td><td><span class="badge info">Referida</span></td><td class="right"><button class="ghost" type="submit" style="padding:6px 12px">Cancelar</button></td></tr>
+              <tr><td>12 ago</td><td>Elena Vargas</td><td><span class="badge ok">Atendida</span></td><td class="right"><button class="linkish" type="button" data-go="historia">Ver nota</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <form class="card pad form">
+          <h2>Solicitar otra cita</h2>
+          <div class="form-row">
+            <label class="field"><span>Motivo</span><input value="Control de presión"></label>
+            <label class="field"><span>Preferencia</span><select><option>Mañana</option><option>Tarde</option></select></label>
+          </div>
+          <div class="form-actions"><button class="solid" type="submit">Enviar solicitud</button></div>
+        </form>
+      </section>
+
+      <section class="screen" data-profile="paciente" data-screen="historia" data-kicker="Portal" data-title="Mi historia">
+        <div class="head"><div><p class="kicker">Solo lo tuyo</p><h1>La historia que <em>puedes llevarte.</em></h1></div><p class="lead">Resumen legible y dos formatos de exportación de muestra.</p></div>
+        <div class="chips" style="margin-bottom:14px"><button class="chip" type="submit">Descargar PDF</button><button class="chip" type="submit">Descargar JSON</button></div>
+        <div class="card pad timeline">
+          <article class="tl"><time>Hoy</time><div><strong>Cita de control</strong><p>Medicina general. Aún no hay nota de cierre.</p></div></article>
+          <article class="tl"><time>12 ago 2026</time><div><strong>Control</strong><p>Alta. Se pidió volver si la cefalea aumentaba.</p></div></article>
+          <article class="tl"><time>03 feb 2026</time><div><strong>Apertura de ficha</strong><p>Primera visita en Clínica Demo.</p></div></article>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="map" id="map" hidden>
+  <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="map-title">
+    <div class="map-head">
+      <h2 id="map-title">Cambiar de perfil</h2>
+      <button class="ghost icon-btn" type="button" data-close-map aria-label="Cerrar"><svg class="icon"><use href="#i-close"></use></svg></button>
+    </div>
+    <div class="map-grid" id="map-grid"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="../assets/js/iso.js"></script>
+<script src="assets/js/proto.js"></script>
+</body>
+</html>

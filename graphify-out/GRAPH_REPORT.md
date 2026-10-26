@@ -1,16 +1,16 @@
-# Graph Report - xmedical  (2026-07-20)
+# Graph Report - xmedical  (2026-10-26)
 
 ## Corpus Check
-- 282 files · ~117,997 words
+- 298 files · ~193,152 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2287 nodes · 4058 edges · 189 communities (133 shown, 56 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 398 edges (avg confidence: 0.56)
+- 2562 nodes · 4774 edges · 205 communities (148 shown, 57 thin omitted)
+- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 443 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a4982d63`
+- Built from commit: `e62335a1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -96,6 +96,7 @@
 - OpenAPITests
 - Checklist de seguridad — XMedical
 - generate_report.sh
+- test_referencias.py
 - RBACStrictTests
 - DocumentoOCRLog
 - Documentación XMedical
@@ -161,66 +162,80 @@
 - setup_venv.sh
 - start_xmedical.sh
 - xmedical
+- ocr_views.py
+- Informe de verificación — XMedical
+- Carpeta de evidencia — XMedical
+- _post_chat_completion
+- XMedical · Atlas del sistema
+- 3. TIPOS DE PRUEBAS
+- can_manage_pacientes
+- riesgo_cronico.py
+- Prototipo navegable · aspecto Atlas
+- 0003_remove_tema_vital.py
+- DashboardServicesTests
+- RoleRoutingTests
+- EpidemiologiaViewsTests
+- IaPredictivaConfig
 
 ## God Nodes (most connected - your core abstractions)
-1. `Cita` - 71 edges
-2. `auth_client()` - 56 edges
-3. `Institucion` - 52 edges
-4. `Paciente` - 50 edges
-5. `Profesional` - 46 edges
-6. `current_institucion()` - 43 edges
-7. `Consulta` - 39 edges
-8. `Especialidad` - 27 edges
-9. `Preclinica` - 27 edges
-10. `QRService` - 25 edges
+1. `Cita` - 73 edges
+2. `auth_client()` - 59 edges
+3. `Institucion` - 55 edges
+4. `Paciente` - 52 edges
+5. `Profesional` - 48 edges
+6. `current_institucion()` - 48 edges
+7. `Consulta` - 40 edges
+8. `AIConfigurationError` - 29 edges
+9. `Preclinica` - 28 edges
+10. `Especialidad` - 27 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `test_cita_form_valida_horario()` --calls--> `CitaForm`  [EXTRACTED]
-  tests/test_fase1.py → apps/citas/forms.py
-- `test_asignar_primer_turno_sin_disponibilidad()` --indirect_call--> `SinTurnosDisponiblesError`  [INFERRED]
-  tests/test_citas_flexible.py → apps/citas/services.py
-- `test_asignar_primer_turno_crea_cita_flexible()` --calls--> `FlexibleAgendamientoService`  [EXTRACTED]
-  tests/test_citas_flexible.py → apps/citas/services.py
-- `Meta` --uses--> `Consulta`  [INFERRED]
-  apps/consulta/forms.py → apps/consulta/models.py
 - `test_ai_client_not_available_without_keys()` --indirect_call--> `AIConfigurationError`  [INFERRED]
   tests/test_ai_services.py → apps/core/ai_services.py
+- `test_ollama_provider_requires_model()` --indirect_call--> `AIConfigurationError`  [INFERRED]
+  tests/test_ai_services.py → apps/core/ai_services.py
+- `test_openai_provider_requires_api_key()` --indirect_call--> `AIConfigurationError`  [INFERRED]
+  tests/test_ai_services.py → apps/core/ai_services.py
+- `WizardOllamaIntegrationTests` --uses--> `AIConfigurationError`  [INFERRED]
+  tests/test_wizard_ia_fase3.py → apps/core/ai_services.py
+- `WizardOllamaIntegrationTests` --uses--> `AIClient`  [INFERRED]
+  tests/test_wizard_ia_fase3.py → apps/core/ai_services.py
 
 ## Import Cycles
 - 1-file cycle: `xmedical/celery.py -> xmedical/celery.py`
 
-## Communities (189 total, 56 thin omitted)
+## Communities (205 total, 57 thin omitted)
 
 ### Community 0 - "AIConfigurationError"
-Cohesion: 0.05
-Nodes (45): _enriquecer_con_cie10(), _parse_sugerencias_json(), Sugiere diagnosticos usando solo motivo, anamnesis y examen fisico., sugerir_diagnosticos(), TestCase, WizardAutosaveTests, WizardIASuggestionTests, AIClient (+37 more)
+Cohesion: 0.12
+Nodes (17): AIConfigurationError, Falta configuracion o credenciales para el proveedor IA., OCRResult, _parse_ai_json(), parse_document_text(), _parse_documento(), _parse_fecha(), Exception (+9 more)
 
 ### Community 1 - "time"
-Cohesion: 0.06
-Nodes (37): FlexibleAgendamientoService, Exception, No hay turnos libres en el rango solicitado., SinTurnosDisponiblesError, DashboardServicesTests, TestCase, paciente_required(), PacienteRequiredMixin (+29 more)
+Cohesion: 0.05
+Nodes (55): CitaFlexibleForm, CitaForm, FlexibleAgendamientoService, Exception, No hay turnos libres en el rango solicitado., SinTurnosDisponiblesError, add_months(), build_month() (+47 more)
 
 ### Community 2 - "views.py"
 Cohesion: 0.08
-Nodes (31): AnamnesisForm, DiagnosticoForm, ExamenFisicoForm, Meta, MotivoForm, PlanForm, cie10_search(), ConsultaWizardView (+23 more)
+Nodes (32): AnamnesisForm, DiagnosticoForm, ExamenFisicoForm, Meta, MotivoForm, PlanForm, cie10_search(), ConsultaWizardView (+24 more)
 
 ### Community 3 - "UserPreference"
-Cohesion: 0.08
+Cohesion: 0.07
 Nodes (27): LogoutSerializer, XMedicalTokenObtainPairSerializer, LoginView, LogoutView, APIView, RefreshView, UserPreferenceAdmin, Meta (+19 more)
 
 ### Community 4 - "urls.py"
-Cohesion: 0.09
+Cohesion: 0.08
 Nodes (24): CitaSerializer, CitaUpdateSerializer, Meta, CitaViewSet, ConsultaCreateSerializer, ConsultaSerializer, Meta, ConsultaViewSet (+16 more)
 
 ### Community 5 - "ausentismo.py"
-Cohesion: 0.08
-Nodes (30): AlertaRiesgoCronicoAdmin, DemandaCitaAdmin, PrediccionAusentismoAdmin, get_predictiva_config(), nivel_desde_probabilidad(), AlertaRiesgoCronico, DemandaCita, PrediccionAusentismo (+22 more)
+Cohesion: 0.26
+Nodes (14): administracion_dashboard_data(), get_predictiva_config(), nivel_desde_probabilidad(), calcular_probabilidad_ausentismo(), guardar_prediccion_ausentismo(), predicciones_alerta(), reentrenar_ausentismo_institucion(), _tasa_cancelacion_institucion() (+6 more)
 
 ### Community 6 - "views.py"
-Cohesion: 0.09
-Nodes (24): user_has_role(), DocumentoIdentidadForm, Meta, PacienteForm, PacienteOCRReviewForm, PacientePublicForm, PacienteOCRReviewView, PacienteOCRUploadView (+16 more)
+Cohesion: 0.10
+Nodes (24): current_institucion(), DocumentoIdentidadForm, Meta, PacienteForm, PacienteOCRReviewForm, PacientePublicForm, PacienteOCRReviewView, PacienteOCRUploadView (+16 more)
 
 ### Community 7 - "views.py"
-Cohesion: 0.15
+Cohesion: 0.16
 Nodes (21): get_profesional(), ContrarreferenciaAdmin, ReferenciaAdmin, ContrarreferenciaForm, Meta, ReferenciaAgendarForm, ReferenciaForm, ReferenciaRespuestaForm (+13 more)
 
 ### Community 8 - "DOCUMENTO 7: SEGURIDAD"
@@ -229,14 +244,14 @@ Nodes (44): 10.1 Clasificación de incidentes, 10.2 Procedimiento de respuesta, 
 
 ### Community 9 - "models.py"
 Cohesion: 0.12
-Nodes (20): Pruebas API REST (API-01..API-06)., Meta, Pruebas funcionales de citas (FUN-C*)., Institucion, Meta, Utilidades compartidas para tests de XMedical., Pruebas funcionales de XMedical. Ejecutar: python manage.py test apps.core, Pruebas de seguridad (SEC-*). (+12 more)
+Nodes (14): Pruebas API REST (API-01..API-06)., Pruebas funcionales de autenticación (FUN-A*)., Pruebas funcionales de citas (FUN-C*)., DocumentoOCRLogAdmin, PacienteAdmin, DocumentoOCRLog, Meta, Paciente (+6 more)
 
 ### Community 10 - "QRService"
 Cohesion: 0.12
 Nodes (23): DocumentoQRAdmin, DocumentoQR, Exception, QRExpiradoError, QRNoEncontradoError, QRService, QRServiceError, QRYaUsadoError (+15 more)
 
 ### Community 11 - "services.py"
-Cohesion: 0.09
+Cohesion: 0.10
 Nodes (23): LogNotificacionAdmin, RecordatorioMedicamentoAdmin, LogNotificacion, RecordatorioMedicamento, cita_datetime(), _citas_candidatas(), citas_para_recordatorio(), enviar_recordatorio_cita() (+15 more)
 
 ### Community 12 - "DOCUMENTO 1: VISIÓN DEL PRODUCTO (ACTUALIZADO)"
@@ -272,8 +287,8 @@ Cohesion: 0.06
 Nodes (34): 10. ESTRATEGIA DE RETENCIÓN, 11. ANÁLISIS FODA (SWOT), 12. APROBACIÓN, 1. VISIÓN GENERAL, 2. BUSINESS MODEL CANVAS, 3. PROPUESTA DE VALOR POR SEGMENTO (DETALLADA), 4.1 Tamaño de mercado, 4.2 Competencia (+26 more)
 
 ### Community 20 - "TenantMiddleware"
-Cohesion: 0.08
-Nodes (12): XMedicalJWTAuthentication, reset_current_request(), set_current_request(), set_institucion_rls(), TenantMiddleware, AuthTests, ClinicalRouteTests, FixtureLoadedTests (+4 more)
+Cohesion: 0.14
+Nodes (8): XMedicalJWTAuthentication, reset_current_request(), set_current_request(), set_institucion_rls(), TenantMiddleware, CoreFunctionalTests, TenantMiddlewareTests, JWTAuthentication
 
 ### Community 21 - "DOCUMENTO 11: PLAN DE DESPLIEGUE"
 Cohesion: 0.06
@@ -284,20 +299,20 @@ Cohesion: 0.06
 Nodes (31): 10. DIAGRAMA DE SECUENCIA: CONSULTA MÉDICA, 11. MONITOREO Y OBSERVABILIDAD, 12. APROBACIÓN, 1.0 Estado de implementación (julio 2026), 1.1 Diagrama de arquitectura de alto nivel, 1. VISIÓN GENERAL DE LA ARQUITECTURA, 2. DECISIONES ARQUITECTÓNICAS CLAVE, 3.1 Capa de Presentación (Frontend) (+23 more)
 
 ### Community 23 - "tenant_transfer.py"
-Cohesion: 0.13
-Nodes (20): _clear_tenant_data(), collect_tenant_objects(), _collect_users(), _convert_field_value(), _deserialize_record(), export_tenant_package(), import_tenant_package(), _mute_predictive_signals() (+12 more)
+Cohesion: 0.28
+Nodes (8): AlertaRiesgoCronicoAdmin, DemandaCitaAdmin, PrediccionAusentismoAdmin, AlertaRiesgoCronico, DemandaCita, Meta, PrediccionAusentismo, Pruebas de modelos predictivos (Fase 3).
 
 ### Community 24 - "Documento de Requerimientos Técnicos (TRD)"
 Cohesion: 0.07
 Nodes (29): 10. Manejo de errores, 11. Registro de actividad, 12.1 Estrategia para FFmpeg, 12. Empaquetado y distribución, 1. Objetivo técnico, 2. Arquitectura propuesta, 3. Tecnologías propuestas, 4.10 ImageManager / ImageService (v0.2 medios) (+21 more)
 
 ### Community 25 - "DOCUMENTO 10: PLAN DE PRUEBAS"
-Cohesion: 0.07
-Nodes (30): 10. MAPA DE CASOS IMPLEMENTADOS, 11. APROBACIÓN, 1. VISIÓN GENERAL, 2. ESTRATEGIA DE PRUEBAS, 3.1 Pruebas Unitarias, 3.2 Pruebas de Integración, 3.3 Pruebas de API, 3.4 Pruebas de UI (End-to-End) (+22 more)
+Cohesion: 0.10
+Nodes (21): 10. MAPA DE CASOS IMPLEMENTADOS, 11. APROBACIÓN, 1. VISIÓN GENERAL, 2. ESTRATEGIA DE PRUEBAS, 4. HERRAMIENTAS DE PRUEBAS, 5. AMBIENTES DE PRUEBAS, 6.1 Por tipo de prueba, 6.2 Por severidad de bugs (+13 more)
 
 ### Community 26 - "current_institucion"
-Cohesion: 0.17
-Nodes (18): CitaFlexibleForm, CitaForm, add_months(), build_month(), build_week(), cancelar_cita(), CitaCreateView, CitaFlexibleCreateView (+10 more)
+Cohesion: 0.19
+Nodes (5): institution_filter_context(), Return institutions visible for list screens, with multi-select for superadmins., selected_instituciones(), hilo_del_dia(), Ocupación de la clínica. Cada cita activa cae en una estación; Medir repite la s
 
 ### Community 27 - "DOCUMENTO 9: INTEGRACIONES"
 Cohesion: 0.07
@@ -308,8 +323,8 @@ Cohesion: 0.07
 Nodes (27): 1. Objetivo, 2. Entidades principales, 3.1 Tabla `PROJECT`, 3.2 Tabla `SCENE`, 3.3 Tabla `AUDIO_ASSET`, 3.4 Tabla `VIDEO_ASSET`, 3.5 Tabla `PROVIDER_CONFIG`, 3.6 Tabla `EXPORT` (+19 more)
 
 ### Community 29 - "backup_utils.py"
-Cohesion: 0.16
-Nodes (15): create_global_backup(), create_institution_backup(), _mirror_to_remote(), restore_fixture(), rotate_old_backups(), run_scheduled_backups(), timestamp(), backup_database() (+7 more)
+Cohesion: 0.15
+Nodes (14): create_global_backup(), _mirror_to_remote(), restore_fixture(), rotate_old_backups(), run_scheduled_backups(), timestamp(), backup_database(), limpiar_logs() (+6 more)
 
 ### Community 30 - "3. TABLAS COMPLETAS"
 Cohesion: 0.07
@@ -320,12 +335,12 @@ Cohesion: 0.08
 Nodes (25): 10. Requerimientos no funcionales, 11. Reglas de negocio, 12. Criterios de aceptación del MVP (redefinido 0.1b), 1. Introducción, 2. Objetivo general, 3. Objetivos específicos, 4. Problema que se desea resolver, 5. Usuarios objetivo (+17 more)
 
 ### Community 32 - "Profesional"
-Cohesion: 0.20
-Nodes (12): TurnoDisponible, BackupLogAdmin, EspecialidadAdmin, HorarioAdmin, InstitucionAdmin, LogAuditoriaAdmin, ProfesionalAdmin, BackupLog (+4 more)
+Cohesion: 0.15
+Nodes (16): BackupLogAdmin, EspecialidadAdmin, HorarioAdmin, InstitucionAdmin, LogAuditoriaAdmin, ProfesionalAdmin, BackupLog, Especialidad (+8 more)
 
 ### Community 33 - "TestCase"
-Cohesion: 0.08
-Nodes (12): AuthBypassTests, ClickjackingTests, CookieSecurityTests, CSRFTests, IDORTests, TestCase, RateLimitTests, RBACTests (+4 more)
+Cohesion: 0.09
+Nodes (11): AuthBypassTests, ClickjackingTests, CookieSecurityTests, CSRFTests, IDORTests, TestCase, RateLimitTests, RBACTests (+3 more)
 
 ### Community 34 - "DOCUMENTO 15: RECEPCIÓN VIRTUAL OMNICANAL"
 Cohesion: 0.08
@@ -340,8 +355,8 @@ Cohesion: 0.08
 Nodes (24): 10. Configuracion visual por usuario, 11. Superadmin, 12. Respaldos y restauraciones, 1. Instituciones, 2. Especialidades, 3. Profesionales y roles, 4. Pacientes, 5. Citas y agenda (+16 more)
 
 ### Community 37 - "auth_client"
-Cohesion: 0.13
-Nodes (6): auth_client(), CoreFunctionalTests, SmokeHttpTests, DashboardViewsTests, EpidemiologiaViewsTests, TestCase
+Cohesion: 0.12
+Nodes (7): auth_client(), RBACStrictTests, TenantIsolationTests, SmokeHttpTests, DashboardViewsTests, EpidemiologiaViewsTests, TestCase
 
 ### Community 38 - "DOCUMENTO 5: DIAGRAMAS DE FLUJO"
 Cohesion: 0.08
@@ -360,16 +375,16 @@ Cohesion: 0.28
 Nodes (19): Action-Branch(), Action-Commit(), Action-Diff(), Action-Fetch(), Action-Log(), Action-Pull(), Action-Push(), Action-Stash() (+11 more)
 
 ### Community 42 - "views.py"
-Cohesion: 0.17
-Nodes (11): EnfermeraRequiredMixin, institution_filter_context(), Return institutions visible for list screens, with multi-select for superadmins., selected_instituciones(), PreclinicaForm, get_scoped_cita(), PreclinicaListView, PreclinicaRegistroView (+3 more)
+Cohesion: 0.19
+Nodes (29): bankVitals(), bed(), bench(), board(), box(), chair(), clinicRoomConsult(), clinicRoomLabs() (+21 more)
 
 ### Community 43 - "permissions.py"
-Cohesion: 0.23
-Nodes (12): AdminRequiredMixin, AccessMixin, RBAC centralizado por rol de profesional (SEC-P01)., role_required(), RoleRequiredMixin, AdministracionDashboardView, EnfermeriaDashboardView, EpidemiologiaDashboardView (+4 more)
+Cohesion: 0.15
+Nodes (3): TestCase, WizardAutosaveTests, WizardIASuggestionTests
 
 ### Community 44 - "views.py"
-Cohesion: 0.19
-Nodes (13): export_tenant_json(), log_tenant_operation(), AuditoriaListView, DashboardView, home(), ListView, LoginRequiredMixin, TemplateView (+5 more)
+Cohesion: 0.14
+Nodes (16): _enriquecer_con_cie10(), ia_diagnostico_disponible(), _parse_sugerencias_json(), IA lista para sugerencias en el wizard (config + proveedor + feature)., Sugiere diagnosticos usando motivo, anamnesis y examen fisico.      Returns:, sugerir_diagnosticos(), diagnostico_ia_habilitado(), True si la institución tiene IA activa y la feature de diagnóstico sugerido. (+8 more)
 
 ### Community 45 - "DOCUMENTO 13: APP MÓVIL Y API REST"
 Cohesion: 0.10
@@ -377,7 +392,7 @@ Nodes (19): 10. PLAN DE IMPLEMENTACIÓN, 11. REFERENCIAS, 1. OBJETIVO, 2. ESTADO
 
 ### Community 46 - "test_fase1.py"
 Cohesion: 0.18
-Nodes (9): get_current_request(), _json_safe(), log_audit(), serialize_instance(), audit_delete(), audit_save(), capture_previous_values(), test_cita_form_valida_horario() (+1 more)
+Nodes (10): get_current_request(), _json_safe(), log_audit(), log_ia_usage(), Registra uso de IA sin almacenar prompts clínicos., serialize_instance(), audit_delete(), audit_save() (+2 more)
 
 ### Community 47 - "5. BACKEND Y ESQUEMA DE DATOS"
 Cohesion: 0.11
@@ -392,12 +407,12 @@ Cohesion: 0.12
 Nodes (16): 10. Registro de auditoría, 11. Escalabilidad, 12. Restricciones técnicas, 13. Requisitos no funcionales (resumen), 14. Referencias, 1. Tipo de aplicación, 2. Tecnologías propuestas, 3. Compatibilidad (panel web) (+8 more)
 
 ### Community 50 - "Consulta"
-Cohesion: 0.23
-Nodes (9): ConsultaAdmin, DiagnosticoAdmin, DiagnosticoInline, Consulta, Diagnostico, Meta, Pruebas del wizard de consulta (FUN-Q*)., Pruebas del dashboard epidemiologico (Fase 3). (+1 more)
+Cohesion: 0.09
+Nodes (21): CitaAdmin, Meta, Cita, Meta, TurnoDisponible, ConsultaAdmin, DiagnosticoAdmin, DiagnosticoInline (+13 more)
 
 ### Community 51 - "Informe de verificación operativa — XMedical"
-Cohesion: 0.12
-Nodes (16): 10. Cómo reproducir estas pruebas, 11. Plantilla para futuras revisiones, 1. Resumen ejecutivo, 2. Infraestructura, 3. Red y SSL, 4. Rutas públicas (sin autenticación), 5. Autenticación y roles, 6. Base de datos (+8 more)
+Cohesion: 0.09
+Nodes (21): 10. Cómo reproducir estas pruebas, 11. Plantilla para futuras revisiones, 1. Resumen ejecutivo, 2. Infraestructura, 3. Red y SSL, 4. Rutas públicas (sin autenticación), 5. Autenticación y roles, 6. Base de datos (+13 more)
 
 ### Community 52 - "1. PRD — DOCUMENTO DE REQUERIMIENTOS DEL PRODUCTO"
 Cohesion: 0.12
@@ -420,8 +435,8 @@ Cohesion: 0.13
 Nodes (14): 10. Capacitación y manuales, 11. Mantenimiento inicial, 12. Referencias, 1. Alcance de la primera versión (MVP), 2. Fases de desarrollo, 3. Módulos por implementar y dependencias, 4. Priorización, 5. Entregables por fase (+6 more)
 
 ### Community 57 - "Guía de Configuración - XMedical"
-Cohesion: 0.13
-Nodes (15): Checklist de preparación, Checklist final, Con Docker (recomendado), Guía de Configuración - XMedical, Inicio con Docker completo, Paso 1: Clonar y configurar entorno, Paso 2: Levantar PostgreSQL y Redis, Paso 3: Configurar entorno Python (+7 more)
+Cohesion: 0.12
+Nodes (16): Checklist de preparación, Checklist final, Con Docker (recomendado), Configuración IA local (Ollama) — planificado, Guía de Configuración - XMedical, Inicio con Docker completo, Paso 1: Clonar y configurar entorno, Paso 2: Levantar PostgreSQL y Redis (+8 more)
 
 ### Community 58 - "ConsultaWizardTests"
 Cohesion: 0.14
@@ -432,12 +447,12 @@ Cohesion: 0.30
 Nodes (7): _config_efectiva(), detectar_alertas_brote(), epidemiologia_dashboard_data(), get_epidemiologia_config(), resumen_diagnosticos_periodo(), tendencias_diagnosticos(), EpidemiologiaServicesTests
 
 ### Community 60 - "Prompts divididos para XMedical Fase 2"
-Cohesion: 0.15
-Nodes (12): Orden recomendado de ejecucion, Politica de APIs y modelos, Prompt 1 - Infraestructura IA y configuracion por institucion, Prompt 2 - Referencias y contrarreferencias, Prompt 3 - Agendamiento flexible, Prompt 4 - QR para recetas, examenes y check-in, Prompt 5 - Variables clinicas por especialidad, Prompt 6 - Vision IA para documentos (+4 more)
+Cohesion: 0.04
+Nodes (47): 10. COMPARATIVA: CLOUD vs. LOCAL, 11. REFERENCIAS, 1. OBJETIVO, 2. ESTADO ACTUAL vs. OBJETIVO, 3.1 Flujo de configuración (UI), 3. ARQUITECTURA, 4.1 Backend — `OllamaProvider`, 4.2 Variables de entorno (+39 more)
 
 ### Community 61 - "Preclinica"
-Cohesion: 0.26
-Nodes (5): Pruebas de autosave y sugerencias IA en wizard (Fase 2)., PreclinicaAdmin, Meta, Preclinica, Pruebas de variables clinicas por especialidad (Fase 2).
+Cohesion: 0.13
+Nodes (21): AIConfig, BaseAIProvider, build_provider(), get_ai_config(), _get_json(), OllamaProvider, OpenAIProvider, OpenRouterProvider (+13 more)
 
 ### Community 62 - "Guía rápida de uso (visión 0.1b)"
 Cohesion: 0.17
@@ -448,16 +463,16 @@ Cohesion: 0.17
 Nodes (11): 10. Incidencias abiertas, 1. Resumen ejecutivo, 2. Archivos de evidencia, 3. Infraestructura (INF-*), 4. SSL (SSL-*), 5. Humo HTTP (SMK-*), 6. Tests Django (extracto), 7. Deploy check (+3 more)
 
 ### Community 64 - "Cita"
-Cohesion: 0.22
-Nodes (5): CitaAdmin, Meta, Cita, Migration, Meta
+Cohesion: 0.23
+Nodes (17): Get-AceSet(), Get-Ancestors(), Get-HResultChain(), Get-IntegritySid(), Get-NormalizedPath(), Get-ObjectFacts(), Get-OwnDaclSddl(), Get-RepairRefusal() (+9 more)
 
 ### Community 65 - "locustfile.py"
 Cohesion: 0.22
 Nodes (5): HttpUser, AnonymousUser, MedicoUser, Escenarios de carga Locust (LOAD-*)., RecepcionUser
 
 ### Community 66 - "tests.py"
-Cohesion: 0.38
-Nodes (7): administracion_dashboard_data(), _citas_base(), enfermeria_dashboard_data(), especialista_dashboard_data(), Pruebas de dashboards avanzados (Fase 2)., predicciones_alerta(), Meta
+Cohesion: 0.14
+Nodes (11): DashboardServicesTests, HiloTests, TestCase, medico_con_horario(), test_buscar_disponibilidad_excluye_citas_ocupadas(), test_buscar_disponibilidad_respeta_jornada_manana(), test_cita_form_valida_horario(), cardiologo() (+3 more)
 
 ### Community 68 - "PreclinicaAlertasTests"
 Cohesion: 0.27
@@ -476,8 +491,8 @@ Cohesion: 0.31
 Nodes (3): _can_access(), _nav_item(), sidebar_nav()
 
 ### Community 74 - "decorators.py"
-Cohesion: 0.36
-Nodes (4): user_perfil_paciente(), user_profesional(), get_perfil_paciente(), _resolve_institucion()
+Cohesion: 0.28
+Nodes (18): bind(), buildChapterNav(), buildOverview(), buildQR(), closeOverview(), goTo(), init(), nextSlide() (+10 more)
 
 ### Community 75 - "Checklist UAT — XMedical"
 Cohesion: 0.25
@@ -488,24 +503,28 @@ Cohesion: 0.29
 Nodes (5): Configuración obligatoria (`.env`), Cursor Cloud specific instructions, Pruebas, Servicios y cómo levantarlos, Servidor de desarrollo
 
 ### Community 77 - "Informes de verificación"
-Cohesion: 0.29
-Nodes (5): Carpeta de evidencia (revisar todo aquí), Cron sugerido (servidor), Informes de verificación, Resumen del día, Secciones del informe
+Cohesion: 0.23
+Nodes (10): EnfermeraRequiredMixin, alertas_activas_paciente(), Meta, PreclinicaForm, get_scoped_cita(), PreclinicaListView, PreclinicaRegistroView, ListView (+2 more)
 
 ### Community 79 - "Checklist de seguridad — XMedical"
 Cohesion: 0.33
 Nodes (6): Acceso y roles, Checklist de seguridad — XMedical, Configuración y secretos, Datos e infraestructura, Escaneos automatizados, Transporte y headers
 
-### Community 83 - "DocumentoOCRLog"
-Cohesion: 0.60
-Nodes (3): DocumentoOCRLogAdmin, PacienteAdmin, DocumentoOCRLog
+### Community 81 - "test_referencias.py"
+Cohesion: 0.24
+Nodes (13): AccessMixin, RBAC centralizado por rol de profesional (SEC-P01)., role_required(), RoleRequiredMixin, user_has_role(), AdministracionDashboardView, EnfermeriaDashboardView, EpidemiologiaDashboardView (+5 more)
+
+### Community 82 - "RBACStrictTests"
+Cohesion: 0.20
+Nodes (9): AIClient, build_cloud_fallback_provider(), Any, Proveedor cloud de respaldo cuando Ollama falla (OpenRouter > OpenAI)., Cliente unificado para llamadas IA con configuracion global o por institucion., Ejecuta complete(); si Ollama falla y fallback_cloud, usa proveedor cloud., test_ai_client_not_available_without_keys(), test_ai_client_uses_institution_model() (+1 more)
 
 ### Community 84 - "Documentación XMedical"
 Cohesion: 0.40
 Nodes (5): Documentación XMedical, Documentos de producto, Estado de implementación (2026-07), Guías operativas, Planificación por módulo
 
 ### Community 85 - "Solución de problemas"
-Cohesion: 0.40
-Nodes (5): Error de conexión a PostgreSQL, Error: "No module named django", Puerto 8000 ocupado, Recargar datos de prueba, Solución de problemas
+Cohesion: 0.21
+Nodes (4): AusentismoPredictivoTests, DashboardPredictivoIntegrationTests, DemandaPredictivaTests, TestCase
 
 ### Community 86 - "run_all_verifications.sh"
 Cohesion: 0.70
@@ -514,6 +533,10 @@ Nodes (4): log(), run_step(), run_all_verifications.sh script, XMEDICAL_EVIDENCE
 ### Community 87 - "verify_smoke.sh"
 Cohesion: 0.70
 Nodes (4): check_code(), check_redirect_login(), record(), verify_smoke.sh script
+
+### Community 98 - "IaPredictivaConfig"
+Cohesion: 0.20
+Nodes (7): Pruebas del wizard de consulta (FUN-Q*)., Pruebas de autosave y sugerencias IA en wizard (Fase 2)., Utilidades compartidas para tests de XMedical., PreclinicaAdmin, Preclinica, Pruebas funcionales y unitarias de preclínica (FUN-PR*)., Pruebas de variables clinicas por especialidad (Fase 2).
 
 ### Community 99 - "uv_lib.sh"
 Cohesion: 0.67
@@ -528,8 +551,8 @@ Cohesion: 0.83
 Nodes (3): headers(), record(), verify_security_headers.sh script
 
 ### Community 102 - "wizard.js"
-Cohesion: 0.83
-Nodes (3): autosave(), getCookie(), setIndicator()
+Cohesion: 0.19
+Nodes (16): current(), facesHtml(), fitHilo(), loadAvatar(), openMap(), renderHilo(), renderNav(), runCounts() (+8 more)
 
 ### Community 104 - "test_flujo_enfermera.py"
 Cohesion: 0.50
@@ -551,24 +574,72 @@ Nodes (3): Page, E2E-05: logout — sesión cerrada., test_e2e05_logout()
 Cohesion: 0.50
 Nodes (3): Page, E2E-04: superadmin — panel global., test_e2e04_superadmin_panel()
 
+### Community 189 - "ocr_views.py"
+Cohesion: 0.11
+Nodes (21): default_ai_settings(), _default_model_for_provider(), get_institution_ai_settings(), get_ollama_vision_client(), ocr_ia_habilitado(), ocr_ollama_configured(), Any, Configuración IA por institución (Institucion.configuracion['ai']). (+13 more)
+
+### Community 190 - "Informe de verificación — XMedical"
+Cohesion: 0.13
+Nodes (21): _clear_tenant_data(), collect_tenant_objects(), _collect_users(), _convert_field_value(), _deserialize_record(), export_tenant_package(), import_tenant_package(), _mute_predictive_signals() (+13 more)
+
+### Community 191 - "Carpeta de evidencia — XMedical"
+Cohesion: 0.22
+Nodes (14): create_institution_backup(), export_tenant_json(), log_tenant_operation(), AuditoriaListView, DashboardView, home(), ListView, LoginRequiredMixin (+6 more)
+
+### Community 192 - "_post_chat_completion"
+Cohesion: 0.28
+Nodes (5): _extract_message_content(), _extract_ollama_content(), _post_chat_completion(), _post_json(), Vision: POST /api/chat con imágenes base64 (LLaVA, moondream, etc.).
+
+### Community 193 - "XMedical · Atlas del sistema"
+Cohesion: 0.22
+Nodes (8): Abrir, Archivos, Controles, Estructura del deck, Modo captura / QA, Notas, Personalizar, XMedical · Atlas del sistema
+
+### Community 194 - "3. TIPOS DE PRUEBAS"
+Cohesion: 0.22
+Nodes (9): 3.1 Pruebas Unitarias, 3.2 Pruebas de Integración, 3.3 Pruebas de API, 3.4 Pruebas de UI (End-to-End), 3.5 Pruebas de Rendimiento / Carga, 3.6 Pruebas de Seguridad, 3.7 Pruebas de Aceptación (UAT), 3.8 Pruebas de Recuperación (Disaster Recovery) (+1 more)
+
+### Community 195 - "can_manage_pacientes"
+Cohesion: 0.29
+Nodes (8): AdminRequiredMixin, ConfiguracionIAModelosView, ConfiguracionIAProbarView, ConfiguracionIAView, _ollama_from_request_data(), LoginRequiredMixin, View, _resolve_institucion()
+
+### Community 196 - "riesgo_cronico.py"
+Cohesion: 0.27
+Nodes (7): evaluar_riesgo_diabetes(), evaluar_riesgo_hta(), evaluar_riesgos_cronicos(), _imc_reciente(), _texto_riesgo_familiar(), _ultimas_preclinicas(), RiesgoCronicoTests
+
+### Community 197 - "Prototipo navegable · aspecto Atlas"
+Cohesion: 0.40
+Nodes (4): Abrir, Avatares, Prototipo navegable · aspecto Atlas, Recorrer
+
+### Community 199 - "DashboardServicesTests"
+Cohesion: 0.40
+Nodes (5): Error de conexión a PostgreSQL, Error: "No module named django", Puerto 8000 ocupado, Recargar datos de prueba, Solución de problemas
+
+### Community 200 - "RoleRoutingTests"
+Cohesion: 0.12
+Nodes (5): AuthTests, ClinicalRouteTests, FixtureLoadedTests, TestCase, RoleRoutingTests
+
+### Community 201 - "EpidemiologiaViewsTests"
+Cohesion: 0.67
+Nodes (3): AIProviderError, Exception, Error base para integraciones IA.
+
 ## Knowledge Gaps
-- **841 isolated node(s):** `Meta`, `Meta`, `Meta`, `Meta`, `Migration` (+836 more)
+- **881 isolated node(s):** `Meta`, `Meta`, `Meta`, `Meta`, `Migration` (+876 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **56 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **57 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Cita` connect `Cita` to `Profesional`, `time`, `views.py`, `tests.py`, `urls.py`, `ausentismo.py`, `views.py`, `models.py`, `views.py`, `services.py`, `views.py`, `QRService`, `test_fase1.py`, `test_referencias.py`, `Consulta`, `tenant_transfer.py`, `current_institucion`, `Preclinica`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
-- **Why does `Paciente` connect `models.py` to `Cita`, `Profesional`, `views.py`, `tests.py`, `urls.py`, `views.py`, `QRService`, `views.py`, `test_fase1.py`, `test_referencias.py`, `Consulta`, `DocumentoOCRLog`, `tenant_transfer.py`, `Preclinica`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `current_institucion()` connect `current_institucion` to `time`, `views.py`, `UserPreference`, `views.py`, `views.py`, `views.py`, `decorators.py`, `views.py`, `QRService`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `Paciente` connect `models.py` to `Profesional`, `views.py`, `IaPredictivaConfig`, `urls.py`, `views.py`, `QRService`, `views.py`, `test_fase1.py`, `Consulta`, `tenant_transfer.py`, `Informe de verificación — XMedical`, `Carpeta de evidencia — XMedical`?**
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Why does `Cita` connect `Consulta` to `Profesional`, `time`, `IaPredictivaConfig`, `views.py`, `urls.py`, `ausentismo.py`, `views.py`, `models.py`, `QRService`, `services.py`, `views.py`, `Informes de verificación`, `test_fase1.py`, `tenant_transfer.py`, `Informe de verificación — XMedical`, `Carpeta de evidencia — XMedical`?**
+  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Why does `current_institucion()` connect `views.py` to `time`, `views.py`, `UserPreference`, `can_manage_pacientes`, `views.py`, `models.py`, `QRService`, `Informes de verificación`, `current_institucion`, `Carpeta de evidencia — XMedical`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `Cita` (e.g. with `CitaAdmin` and `CitaFlexibleForm`) actually correct?**
   _`Cita` has 15 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 10 inferred relationships involving `Institucion` (e.g. with `BackupLogAdmin` and `EspecialidadAdmin`) actually correct?**
-  _`Institucion` has 10 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 11 inferred relationships involving `Institucion` (e.g. with `BackupLogAdmin` and `EspecialidadAdmin`) actually correct?**
+  _`Institucion` has 11 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 12 inferred relationships involving `Paciente` (e.g. with `DocumentoOCRLogAdmin` and `PacienteAdmin`) actually correct?**
   _`Paciente` has 12 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 11 inferred relationships involving `Profesional` (e.g. with `BackupLogAdmin` and `EspecialidadAdmin`) actually correct?**

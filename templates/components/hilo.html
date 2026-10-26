@@ -1,0 +1,48 @@
+<section class="xm-hilo xm-card" x-data="hiloState()" data-personal="{% if hilo.personal %}1{% else %}0{% endif %}" aria-label="{{ hilo.kicker }}">
+    <p class="xm-hilo-kicker">{{ hilo.kicker }}</p>
+    <div class="xm-hilo-track">
+        {% for station in hilo.stations %}
+        <button type="button" class="xm-station{% if station.mine %} is-mine{% endif %}{% if station.done %} is-done{% endif %}" data-station="{{ station.id }}" {% if station.open %}data-default-open="1"{% endif %} :class="{ 'is-open': isOpen('{{ station.id }}') }" :aria-expanded="isOpen('{{ station.id }}')" @click="toggle('{{ station.id }}')">
+            <span class="xm-station-top">
+                {% if hilo.personal %}
+                <span class="xm-station-count">{{ forloop.counter }} / 5</span>
+                {% else %}
+                <span class="xm-hilo-ini" aria-hidden="true">{{ forloop.counter }}</span>
+                {% endif %}
+                <span>
+                    <span class="xm-station-name">{{ station.name }}</span>
+                    {% if not hilo.personal %}<span class="xm-station-count">{{ station.count }} ahora</span>{% endif %}
+                </span>
+            </span>
+        </button>
+        {% endfor %}
+    </div>
+    <div class="xm-hilo-panels">
+        {% for station in hilo.stations %}
+        <div class="xm-hilo-panel" style="--col: {{ forloop.counter }}" :class="{ 'is-open': isOpen('{{ station.id }}') }">
+            {% if hilo.personal %}
+                {% if station.avatar %}
+                <div class="xm-hilo-person">
+                    <span class="xm-hilo-ini" title="{{ station.avatar.nombre }}">{{ station.avatar.iniciales }}</span>
+                    <p>{{ station.line }}</p>
+                </div>
+                {% else %}
+                <p class="xm-hilo-caption">{{ station.line }}</p>
+                {% endif %}
+            {% else %}
+                <p class="xm-hilo-caption">{{ station.caption }}</p>
+                {% if station.people %}
+                <div class="xm-hilo-faces">
+                    {% for person in station.people %}
+                    <span class="xm-hilo-ini" title="{{ person.nombre }}">{{ person.iniciales }}</span>
+                    {% endfor %}
+                    {% if station.extra %}<span class="xm-hilo-more">+{{ station.extra }}</span>{% endif %}
+                </div>
+                {% else %}
+                <p class="xm-hilo-caption">Nadie en esta estación.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>

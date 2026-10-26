@@ -73,7 +73,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             return redirect("portal_dashboard")
         profesional = Profesional.objects.filter(usuario=request.user, activo=True).first()
         if profesional and profesional.tipo == "recepcionista":
-            return redirect("citas_agendar")
+            return redirect("dashboards_recepcion")
         if profesional and profesional.tipo == "enfermera":
             return redirect("dashboards_enfermeria")
         if profesional and profesional.tipo == "admin":
@@ -98,6 +98,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         if profesional and profesional.tipo == "medico":
             citas = citas.filter(profesional=profesional)
         context["profesional"] = profesional
+        if profesional and profesional.tipo == "medico":
+            from apps.dashboards.hilo import hilo_del_dia
+
+            instituciones, _ = selected_instituciones(request)
+            context["hilo"] = hilo_del_dia(instituciones, "medico")
         context["citas_hoy"] = citas.order_by("hora")
         context["pacientes_espera"] = citas.filter(estado__in=["pendiente", "confirmada", "en_espera"])
         context["atendidos"] = citas.filter(estado="atendida").count()

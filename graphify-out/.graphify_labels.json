@@ -187,5 +187,21 @@
   "185": "asgi.py",
   "186": "settings.py",
   "187": "urls.py",
-  "188": "wsgi.py"
+  "188": "wsgi.py",
+  "189": "ocr_views.py",
+  "190": "Informe de verificación — XMedical",
+  "191": "Carpeta de evidencia — XMedical",
+  "192": "_post_chat_completion",
+  "193": "XMedical · Atlas del sistema",
+  "194": "3. TIPOS DE PRUEBAS",
+  "195": "can_manage_pacientes",
+  "196": "riesgo_cronico.py",
+  "197": "Prototipo navegable · aspecto Atlas",
+  "198": "0003_remove_tema_vital.py",
+  "199": "DashboardServicesTests",
+  "200": "RoleRoutingTests",
+  "201": "EpidemiologiaViewsTests",
+  "202": "CoreFunctionalTests",
+  "203": "IaPredictivaConfig",
+  "204": "celery.py"
 }

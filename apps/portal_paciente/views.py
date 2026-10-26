@@ -11,6 +11,7 @@ from django.views import View
 from apps.citas.models import Cita
 from apps.citas.services import FlexibleAgendamientoService, SinTurnosDisponiblesError
 from apps.core.views import current_institucion
+from apps.dashboards.hilo import hilo_paciente
 
 from .decorators import PacienteRequiredMixin, PortalLoginRequiredMixin, get_perfil_paciente, paciente_required
 from .forms import PortalCitaFlexibleForm, PortalPasswordResetForm, PortalRegistroForm
@@ -91,7 +92,11 @@ class PortalDashboardView(PortalLoginRequiredMixin, PacienteRequiredMixin, View)
         return render(
             request,
             self.template_name,
-            {"perfil": perfil, "proximas": proximas},
+            {
+                "perfil": perfil,
+                "proximas": proximas,
+                "hilo": hilo_paciente(perfil.paciente, perfil.institucion),
+            },
         )
 
 

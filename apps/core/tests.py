@@ -77,7 +77,7 @@ class RoleRoutingTests(TestCase):
         client.login(username="recepcion.demo", password=PASSWORD)
         response = client.get("/dashboard/", **HOST)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/citas/", response.url)
+        self.assertIn("/dashboards/recepcion/", response.url)
 
     def test_enfermera_redirects_to_dashboard_enfermeria(self):
         client = Client(**HOST)
