@@ -1,5 +1,11 @@
 # syntax=docker/dockerfile:1
-FROM python:3.11-slim
+# CPython 3.11.18+ (parche compilado; build_cpython_patch.sh)
+FROM python:3.11.17-slim-bookworm AS infosec_python311
+COPY build_cpython_patch.sh /tmp/build_cpython_patch.sh
+RUN PYTHON_VERSION=3.11.18 sh /tmp/build_cpython_patch.sh && rm /tmp/build_cpython_patch.sh
+RUN python -m pip install --no-cache-dir --upgrade pip
+
+FROM infosec_python311
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
