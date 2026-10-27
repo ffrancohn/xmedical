@@ -8,11 +8,23 @@ Xmedical123!
 
 ## Acceso
 
-URL de login:
+URL de login (producción):
 
 ```text
 https://xmedical.cloud/auth/login/
 ```
+
+En **localhost** (`http://localhost:8000/auth/login/`):
+
+1. Usuario y contraseña de la tabla de abajo.
+2. En el desplegable **Institución**, elige **Clínica Demo** (obligatorio si no usas subdominio `demo.`).
+3. Contraseña exacta: `Xmedical123!` (mayúscula en X, signo `!` al final).
+
+**Superadmin:** `superadmin.demo` no necesita elegir institución.
+
+Si el formulario vuelve a login sin mensaje claro, revisa tu `.env`: con `DEBUG=False` en HTTP local hace falta `SECURE_SSL_REDIRECT=False` (ya corregido en settings) o usa `DEBUG=True`. Incluye `http://localhost:8000` en `CSRF_TRUSTED_ORIGINS`.
+
+Datos de prueba: `python manage.py loaddata fixtures/initial_data.json`
 
 ## Credenciales
 
