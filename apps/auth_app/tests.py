@@ -71,12 +71,13 @@ class AuthFunctionalTests(TestCase):
         client.login(username="medico.demo", password=PASSWORD)
         response = client.post(
             "/auth/preferencias/",
-            {"theme": "dark"},
+            {"theme": "dark", "interface_mode": "atlas"},
             **HOST,
         )
         self.assertEqual(response.status_code, 302)
         pref = UserPreference.objects.get(user__username="medico.demo")
         self.assertEqual(pref.theme, "dark")
+        self.assertEqual(pref.interface_mode, "atlas")
 
     def test_paciente_login_sin_institucion(self):
         institucion = Institucion.objects.get(pk=1)

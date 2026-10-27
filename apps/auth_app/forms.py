@@ -68,5 +68,8 @@ class ProfesionalRegistroForm(UserCreationForm):
 class UserPreferenceForm(forms.ModelForm):
     class Meta:
         model = UserPreference
-        fields = ["theme"]
-        labels = {"theme": "Tema visual"}
+        fields = ["theme", "interface_mode"]
+        labels = {
+            "theme": "Tema de colores",
+            "interface_mode": "Modo de interfaz",
+        }

@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Inicio recepción{% endblock %}
 {% block content %}
+{% if interface_mode == 'atlas' %}
+{% include 'components/atlas_hero.html' with hero_kicker="Hoy" hero_title="Recepción" hero_desc="Quién no ha llegado y quién ya está en sala." atlas_hero_actions_template="components/recepcion_hero_actions.html" %}
+{% else %}
 <div class="xm-page-header">
     <div>
         <p class="xm-page-header__subtitle">Hoy</p>
         <h1 class="xm-page-header__title">Recepción</h1>
         <p class="xm-page-header__desc">Quién no ha llegado y quién ya está en sala.</p>
-        <div class="xm-page-header__actions" style="margin-top: 0.75rem;">
-            <a href="{% url 'citas_agendar' %}" class="btn btn-primary btn-sm">Agendar</a>
-            <a href="{% url 'citas_lista' %}" class="btn btn-outline btn-sm">Ver agenda</a>
-        </div>
+        {% include 'components/recepcion_hero_actions.html' %}
     </div>
 </div>
+{% endif %}
 {% include 'components/hilo.html' %}
 {% endblock %}

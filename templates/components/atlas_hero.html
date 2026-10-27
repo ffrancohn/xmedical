@@ -1,0 +1,13 @@
+{% if interface_mode == 'atlas' and atlas_iso_scene %}
+<section class="xm-atlas-hero" aria-label="Vista isométrica de la clínica">
+    <div class="xm-atlas-scene" aria-hidden="true">
+        <svg class="iso" data-iso="{{ atlas_iso_scene }}" role="presentation"></svg>
+    </div>
+    <div class="xm-atlas-scene-copy">
+        {% if hero_kicker %}<p class="xm-page-header__subtitle">{{ hero_kicker }}</p>{% endif %}
+        {% if hero_title %}<h1 class="xm-page-header__title">{{ hero_title }}</h1>{% endif %}
+        {% if hero_desc %}<p class="xm-page-header__desc">{{ hero_desc }}</p>{% endif %}
+        {% if atlas_hero_actions_template %}{% include atlas_hero_actions_template %}{% endif %}
+    </div>
+</section>
+{% endif %}
