@@ -13,7 +13,7 @@
 | Multi-tenant (subdominio) | ✅ Implementado | `TenantMiddleware` |
 | API REST / JWT | ✅ Implementado | Ver [doc 13](13%20App%20movil%20y%20API%20REST.md) |
 | IA cloud (OpenAI/OpenRouter) | ⚠️ Parcial | `apps/core/ai_services.py` |
-| IA local (Ollama + UI) | ⚠️ Parcial | Fase 1: `OllamaProvider` — [doc 16](16%20Modelo%20Local%20IA%20(Ollama).md) |
+| IA local (Ollama + UI) | ✅ Implementado | Fases 2–4 — [doc 16](16%20Modelo%20Local%20IA%20(Ollama).md), flujo 6 en [doc 17](17%20Caracteristicas%20Pantallas%20y%20Flujo%206%20Diagnostico.md) |
 | App móvil | 🔮 Planificado | Repo separado, consume API |
 | Celery workers | ⚠️ Configurado | Docker compose, no en systemd prod. |
 | Microservicio IA (FastAPI) | 🔮 Fase 4 | Visión producto, no el prototipo eliminado |
@@ -42,17 +42,15 @@
 | 12 | [Sprint backlog](12%20Sprint%20backlog.md) | Backlog de desarrollo |
 | 13 | [App móvil y API REST](13%20App%20movil%20y%20API%20REST.md) | **Hoja de ruta móvil** |
 | 14 | [Roadmap Seguridad](14%20Roadmap%20Seguridad.md) | **Implementado vs planificado SEC** |
-<<<<<<< Updated upstream
 | 15 | [Recepción Virtual Omnicanal](15%20Recepcion%20Virtual%20Omnicanal.md) | **Borrador**: email, WhatsApp y voz con IA |
+| 16 | [Modelo Local IA (Ollama)](16%20Modelo%20Local%20IA%20(Ollama).md) | IA on-premise, config web, OCR |
+| 17 | [Características, pantallas y Flujo 6](17%20Caracteristicas%20Pantallas%20y%20Flujo%206%20Diagnostico.md) | Catálogo UI + paso Diagnóstico |
 
 ### Planificación por módulo
 
 | Módulo | Documentos |
 |--------|-----------|
 | [Recepción Virtual](recepcion-virtual/README.md) | PRD, Flujo, UI/UX, TRD, Backend/Esquema, Plan (6 documentos) |
-=======
-| 16 | [Modelo Local IA (Ollama)](16%20Modelo%20Local%20IA%20(Ollama).md) | **Plan LLM on-premise + UI (estilo Salud360)** |
->>>>>>> Stashed changes
 
 ## Guías operativas
 
