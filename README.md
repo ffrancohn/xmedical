@@ -154,6 +154,7 @@ uv run python manage.py test apps.core
 | [`docs/README.md`](docs/README.md) | Índice y estado de implementación |
 | [`docs/4 Documento Arquitectura de alto nivel.md`](docs/4%20Documento%20Arquitectura%20de%20alto%20nivel.md) | Arquitectura Django |
 | [`docs/13 App movil y API REST.md`](docs/13%20App%20movil%20y%20API%20REST.md) | Hoja de ruta app móvil |
+| [`docs/18 Interfaz Atlas Despliegue Produccion.md`](docs/18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) | **Vista isométrica (PR #22)** — migrate, producción y rollback |
 
 ## Roadmap
 
