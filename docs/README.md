@@ -8,6 +8,7 @@
 |------|--------|-------|
 | Backend Django 4.2 | ✅ Producción | Gunicorn + systemd |
 | Frontend web (plantillas) | ✅ Producción | https://xmedical.cloud |
+| Interfaz Atlas (isométrica) | ⚠️ PR #22 | Despliegue: [doc 18](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) |
 | PostgreSQL + Redis | ✅ Docker | Puertos 5432 / 6379 |
 | HTTPS | ✅ Let's Encrypt | Certificado auto-renovable |
 | Multi-tenant (subdominio) | ✅ Implementado | `TenantMiddleware` |
@@ -45,6 +46,7 @@
 | 15 | [Recepción Virtual Omnicanal](15%20Recepcion%20Virtual%20Omnicanal.md) | **Borrador**: email, WhatsApp y voz con IA |
 | 16 | [Modelo Local IA (Ollama)](16%20Modelo%20Local%20IA%20(Ollama).md) | IA on-premise, config web, OCR |
 | 17 | [Características, pantallas y Flujo 6](17%20Caracteristicas%20Pantallas%20y%20Flujo%206%20Diagnostico.md) | Catálogo UI + paso Diagnóstico |
+| 18 | [Interfaz Atlas — despliegue producción](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) | **PR #22**, migrate, collectstatic, rollback |
 
 ### Planificación por módulo
 

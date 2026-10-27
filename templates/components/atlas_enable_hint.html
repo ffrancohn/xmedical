@@ -1,4 +1,4 @@
-{% if interface_mode != 'atlas' %}
+{% if interface_mode|default:'classic' != 'atlas' %}
 <div class="alert alert-info shadow-sm mb-4 text-sm">
     <div>
         <p class="font-medium">Vista isométrica (Atlas)</p>

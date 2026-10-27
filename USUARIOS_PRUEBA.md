@@ -68,6 +68,8 @@ http://localhost:8000/admin/
 
 ### Recepcionista
 
+- **Vista isométrica Atlas:** menú lateral → **Preferencias** (o clic en tu nombre abajo) → `/auth/preferencias/` → modo **Atlas** → Guardar → inicio recepción `/dashboards/recepcion/`. Requiere desplegar el PR #22 y `python manage.py migrate`.
+
 - Ver pacientes.
 - Crear pacientes.
 - Agendar citas.
