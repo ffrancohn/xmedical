@@ -31,9 +31,19 @@
     color: #f2efe7;
 }
 
+.xm-atlas .xm-sidebar.bg-base-100 {
+    background: var(--xm-atlas-blueprint) !important;
+}
+
+.xm-atlas .xm-sidebar .border-base-300,
+.xm-atlas .xm-sidebar.border-r {
+    border-color: var(--xm-atlas-dark-line) !important;
+}
+
 .xm-atlas .xm-sidebar .xm-brand-text,
 .xm-atlas .xm-sidebar .text-sm,
-.xm-atlas .xm-sidebar .xm-nav-link {
+.xm-atlas .xm-sidebar .xm-nav-item,
+.xm-atlas .xm-sidebar .menu a {
     color: rgba(242, 239, 231, 0.88);
 }
 
@@ -42,10 +52,28 @@
     color: var(--xm-atlas-dark-muted) !important;
 }
 
-.xm-atlas .xm-sidebar .xm-nav-link:hover,
-.xm-atlas .xm-sidebar .xm-nav-link.active {
-    background: rgba(94, 234, 212, 0.12);
+.xm-atlas .xm-sidebar .xm-nav-item:hover,
+.xm-atlas .xm-sidebar .menu a:hover {
+    background-color: rgba(94, 234, 212, 0.08);
     color: var(--xm-atlas-cyan);
+}
+
+.xm-atlas .xm-sidebar .xm-nav-item--active {
+    background-color: rgba(94, 234, 212, 0.14);
+    color: var(--xm-atlas-cyan);
+    font-weight: 600;
+}
+
+.xm-atlas .xm-sidebar .xm-nav-item--active .xm-icon {
+    opacity: 1;
+}
+
+.xm-atlas .xm-sidebar a[href*="preferencias"]:hover {
+    background-color: rgba(94, 234, 212, 0.08) !important;
+}
+
+.xm-atlas .xm-sidebar .text-primary {
+    color: var(--xm-atlas-cyan) !important;
 }
 
 .xm-atlas .xm-topbar {
@@ -114,6 +142,54 @@
 
 .xm-atlas .xm-hilo {
     border-radius: var(--xm-atlas-radius);
+}
+
+/* Pantallas operativas (pacientes, citas, formularios) */
+.xm-atlas .xm-main .xm-page-header__desc {
+    color: var(--xm-atlas-ink-2);
+}
+
+.xm-atlas .xm-main .xm-table-wrap {
+    background: #fff;
+    border-color: var(--xm-atlas-line);
+}
+
+.xm-atlas .xm-main .table :is(th, td) {
+    color: var(--xm-atlas-ink);
+    border-color: var(--xm-atlas-line);
+}
+
+.xm-atlas .xm-main .input,
+.xm-atlas .xm-main .select,
+.xm-atlas .xm-main .textarea {
+    background: #fff;
+    color: var(--xm-atlas-ink);
+    border-color: var(--xm-atlas-line);
+}
+
+.xm-atlas .xm-main .btn-outline {
+    border-color: var(--xm-atlas-line-strong, rgba(11, 31, 38, 0.28));
+    color: var(--xm-atlas-ink);
+}
+
+.xm-atlas .xm-main .join .btn:not(.btn-primary) {
+    background: #fff;
+    color: var(--xm-atlas-ink);
+    border-color: var(--xm-atlas-line);
+}
+
+.xm-atlas .xm-topbar .btn-ghost,
+.xm-atlas .xm-topbar .font-semibold {
+    color: var(--xm-atlas-ink);
+}
+
+.xm-atlas .xm-atlas-scene--banner {
+    max-height: 200px;
+    margin-bottom: 1rem;
+}
+
+.xm-atlas .xm-atlas-scene--banner .iso {
+    height: 180px;
 }
 
 @media (max-width: 860px) {
