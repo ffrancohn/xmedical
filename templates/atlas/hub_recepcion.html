@@ -1,8 +1,8 @@
 {% load static %}
-{# Hub isométrico interactivo — recepción. Requiere atlas_modules, pacientes_explore, citas_explore #}
 <section class="xm-atlas-hub" data-atlas-hub data-atlas-initial-module="">
-    <p class="text-sm opacity-80 mb-2">Selecciona un módulo para explorar. Las acciones reales siguen abajo o en el panel.</p>
-    <div class="xm-atlas-hub__scene" role="group" aria-label="Módulos clínicos">
+    {% include 'atlas/hub_nav_recepcionista.html' %}
+    <div class="xm-atlas-hub__scene xm-atlas-hub__scene--recepcion" style="--xm-atlas-bg: url('{% static 'atlas-interactive/assets/v1/modulos/recepcion.webp' %}')">
+        <p class="text-sm opacity-90 mb-3 relative z-10">Selecciona un módulo. El mostrador concentra pacientes, agenda y la cola del día.</p>
         <div class="xm-atlas-hub__objects">
             {% for mod in atlas_modules %}
             <button type="button" class="xm-atlas-object" data-atlas-module="{{ mod.id }}"

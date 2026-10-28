@@ -10,6 +10,7 @@ from django.db.models import Count, Q
 from django.utils import timezone
 
 from apps.citas.models import Cita
+from apps.core.atlas_assets import estado_cita_icon
 from apps.core.models import Institucion
 from django.conf import settings
 
@@ -122,7 +123,18 @@ def citas_exploracion(instituciones) -> dict:
     base = Cita.objects.filter(institucion__in=instituciones).exclude(estado="cancelada")
     hoy_qs = base.filter(fecha=hoy)
     proximas = base.filter(fecha__gt=hoy, fecha__lte=hoy + timedelta(days=14))
-    por_estado = list(hoy_qs.values("estado").annotate(total=Count("id")).order_by("-total"))
+    por_estado = []
+    estado_labels = dict(Cita.ESTADO_CHOICES)
+    for row in hoy_qs.values("estado").annotate(total=Count("id")).order_by("-total"):
+        est = row["estado"]
+        por_estado.append(
+            {
+                "estado": est,
+                "total": row["total"],
+                "label": estado_labels.get(est, est),
+                "icon": estado_cita_icon(est),
+            }
+        )
 
     return {
         "hoy_total": hoy_qs.count(),

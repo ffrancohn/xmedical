@@ -18,6 +18,7 @@ from apps.core.permissions import (
     RoleRequiredMixin,
     role_required,
 )
+from apps.core.atlas_explore import citas_exploracion
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from .forms import CitaFlexibleForm, CitaForm
 from .models import Cita
@@ -63,6 +64,16 @@ class CitaListView(LoginRequiredMixin, RoleRequiredMixin, ListView):
         )
         context.update(institution_filter_context(self.request))
         context["institution_query"] = institutions_query_string(self.request)
+        pref = getattr(self.request.user, "preference", None)
+        use_atlas = (
+            pref
+            and pref.interface_mode == "atlas"
+            and not self.request.GET.get("classic")
+        )
+        if use_atlas:
+            instituciones, _ = selected_instituciones(self.request)
+            context["citas_explore"] = citas_exploracion(instituciones)
+            context["atlas_citas_hub"] = True
         return context
 
 

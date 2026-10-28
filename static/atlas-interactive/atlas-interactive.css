@@ -161,3 +161,73 @@
   font-size: 0.8rem;
   margin-top: 0.5rem;
 }
+
+.xm-atlas-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.35rem;
+  border-radius: 9999px;
+  background: hsl(var(--b2) / 0.85);
+  border: 1px solid hsl(var(--bc) / 0.1);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.xm-atlas-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.85;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.xm-atlas-nav__item:hover {
+  opacity: 1;
+  background: hsl(var(--b1) / 0.9);
+}
+
+.xm-atlas-nav__item.is-active {
+  opacity: 1;
+  background: hsl(var(--b1));
+  box-shadow: 0 1px 3px hsl(var(--bc) / 0.12);
+}
+
+.xm-atlas-nav__item img {
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.xm-atlas-hub__scene--recepcion::after {
+  content: "";
+  position: absolute;
+  right: -5%;
+  bottom: -10%;
+  width: min(42%, 14rem);
+  height: min(55%, 12rem);
+  background-image: var(--xm-atlas-bg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.xm-atlas-hub__scene--agenda {
+  background: linear-gradient(165deg, hsl(var(--b2)) 0%, hsl(var(--a) / 0.08) 100%);
+}
+
+.xm-atlas-action-panel {
+  scroll-margin-top: 5.5rem;
+}
+
+.xm-cita-estado-badge__icon {
+  object-fit: contain;
+}

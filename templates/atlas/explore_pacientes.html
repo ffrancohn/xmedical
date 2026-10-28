@@ -12,7 +12,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
             {% for g in explore.grupos %}
-            <a href="{% url 'pacientes_lista' %}?grupo={{ g.id }}" class="xm-atlas-grupo-card no-underline text-inherit block">
+            <a href="{% url 'pacientes_lista' %}?grupo={{ g.id }}#xm-atlas-acciones" class="xm-atlas-grupo-card no-underline text-inherit block">
                 <div class="font-semibold">{{ g.label }}</div>
                 <div class="text-2xl font-bold my-1">{{ g.count }}</div>
                 <div class="xm-atlas-avatar-grid" aria-hidden="true">
@@ -35,7 +35,7 @@
         </div>
 
         <div class="flex flex-wrap gap-2 mt-4">
-            <a href="{% url 'pacientes_lista' %}" class="btn btn-sm btn-outline">Buscar paciente</a>
+            <a href="{% url 'pacientes_lista' %}#xm-atlas-acciones" class="btn btn-sm btn-outline">Buscar paciente</a>
             <a href="{% url 'pacientes_nuevo' %}" class="btn btn-sm btn-primary">Nuevo paciente</a>
         </div>
         <p class="xm-atlas-fallback"><a href="{% url 'pacientes_lista' %}?classic=1" class="link">Abrir vista de tabla directa</a></p>

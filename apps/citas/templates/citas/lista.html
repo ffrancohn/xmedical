@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
+{% load xmedical_tags %}
 {% block title %}Agenda de citas{% endblock %}
 {% block content %}
+{% if atlas_citas_hub %}
+{% include 'atlas/explore_citas_page.html' %}
+{% elif interface_mode == 'atlas' %}
 {% include 'components/atlas_scene_banner.html' %}
+{% endif %}
+
+<section id="xm-atlas-acciones" class="xm-atlas-action-panel">
 <div class="xm-page-header">
     <div>
         <p class="xm-page-header__subtitle">Agenda</p>
@@ -51,7 +58,7 @@
                             <div class="text-sm opacity-70">{{ cita.profesional.nombre }}</div>
                             {% if is_superadmin_view %}<div class="text-xs opacity-60">{{ cita.institucion.nombre }}</div>{% endif %}
                         </div>
-                        <span class="badge badge-outline">{{ cita.get_estado_display }}</span>
+                        {% include 'atlas/cita_estado_badge.html' with estado_icon=cita.estado|estado_cita_icon label=cita.get_estado_display %}
                     </div>
                 {% empty %}
                     <p class="text-sm opacity-70 text-center py-8">No hay citas para este día.</p>
@@ -106,7 +113,7 @@
                     <td>{{ cita.paciente }}</td>
                     <td>{{ cita.profesional.nombre }}</td>
                     <td>
-                        <span class="badge badge-outline">{{ cita.get_estado_display }}</span>
+                        {% include 'atlas/cita_estado_badge.html' with estado_icon=cita.estado|estado_cita_icon label=cita.get_estado_display %}
                         {% if cita.prediccion_ausentismo and cita.prediccion_ausentismo.nivel == 'alto' %}
                         <span class="badge badge-warning ml-1" title="Riesgo de ausentismo">{{ cita.prediccion_ausentismo.probabilidad }}%</span>
                         {% endif %}
@@ -120,4 +127,5 @@
         </table>
     </div>
 {% endif %}
+</section>
 {% endblock %}

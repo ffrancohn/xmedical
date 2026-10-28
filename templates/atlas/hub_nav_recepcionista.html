@@ -1,0 +1,17 @@
+{% load static %}
+{% if show_atlas_recepcion_nav %}
+<nav class="xm-atlas-nav" aria-label="Módulos recepción">
+    <a href="{% url 'dashboards_recepcion' %}" class="xm-atlas-nav__item{% if atlas_nav_active == 'recepcion' %} is-active{% endif %}">
+        <img src="{% static 'atlas-interactive/assets/v1/modulos/recepcion.webp' %}" alt="" width="40" height="36" loading="lazy">
+        <span>Inicio</span>
+    </a>
+    <a href="{% url 'pacientes_lista' %}" class="xm-atlas-nav__item{% if atlas_nav_active == 'pacientes' %} is-active{% endif %}">
+        <img src="{% static 'atlas-interactive/assets/v1/modulos/pacientes_archivador_cerrado.webp' %}" alt="" width="36" height="44" loading="lazy">
+        <span>Pacientes</span>
+    </a>
+    <a href="{% url 'citas_lista' %}" class="xm-atlas-nav__item{% if atlas_nav_active == 'citas' %} is-active{% endif %}">
+        <img src="{% static 'atlas-interactive/assets/v1/modulos/citas_agenda_cerrada.webp' %}" alt="" width="40" height="42" loading="lazy">
+        <span>Citas</span>
+    </a>
+</nav>
+{% endif %}
