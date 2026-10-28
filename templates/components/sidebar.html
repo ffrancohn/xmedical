@@ -18,15 +18,16 @@
 
     {% if user.is_authenticated %}
     <div class="p-4 border-t border-base-300">
-        <div class="flex items-center gap-3">
+        <a href="{% url 'preferencias_visuales' %}" class="flex items-center gap-3 rounded-lg p-1 -m-1 hover:bg-base-200 transition no-underline text-inherit" title="Tema y vista Atlas isométrica">
             <div class="xm-avatar">{{ user.get_full_name|default:user.username|initials }}</div>
-            <div class="min-w-0">
+            <div class="min-w-0 flex-1">
                 <p class="text-sm font-semibold truncate">{{ user.get_full_name|default:user.username }}</p>
                 {% if profesional %}
                 <p class="text-xs opacity-60 capitalize">{{ profesional.get_tipo_display }}</p>
                 {% endif %}
+                <p class="text-xs text-primary mt-0.5">Preferencias · vista Atlas</p>
             </div>
-        </div>
+        </a>
     </div>
     {% endif %}
 </aside>

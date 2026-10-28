@@ -57,8 +57,15 @@ def sidebar_nav(context):
             sections.append({"title": "Portal del paciente", "items": portal})
     else:
         principal = []
+        inicio_url = "dashboard"
+        if profesional and profesional.tipo == "recepcionista":
+            inicio_url = "dashboards_recepcion"
+        elif profesional and profesional.tipo == "enfermera":
+            inicio_url = "dashboards_enfermeria"
+        elif profesional and profesional.tipo == "admin":
+            inicio_url = "dashboards_administracion"
         for item in [
-            ("Inicio", "dashboard", "home", None),
+            ("Inicio", inicio_url, "home", None),
             ("Pacientes", "pacientes_lista", "users", {"recepcionista", "admin", "medico"}),
             ("Citas", "citas_lista", "calendar", {"recepcionista", "admin", "medico"}),
             ("Preclínica", "preclinica_lista", "heart", {"enfermera", "admin"}),

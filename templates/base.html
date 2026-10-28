@@ -9,11 +9,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.css" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
+    {% if interface_mode == 'atlas' %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+    <link href="/static/css/atlas.css" rel="stylesheet">
+    <script defer src="/static/js/iso.js"></script>
+    {% endif %}
     <script defer src="/static/js/hilo.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="xm-body {% block body_class %}{% endblock %}">
+<body class="xm-body {% if interface_mode == 'atlas' %}xm-atlas{% endif %} {% block body_class %}{% endblock %}">
 {% block layout %}
 <div class="drawer lg:drawer-open" x-data="{ sidebarOpen: false }">
     <input id="xm-sidebar-toggle" type="checkbox" class="drawer-toggle" x-model="sidebarOpen">
@@ -26,7 +33,7 @@
 
             {% block breadcrumbs %}{% endblock %}
 
-            <div class="xm-page">
+            <div class="xm-page{% if interface_mode == 'atlas' %} xm-atlas-page{% endif %}">
                 {% block page_header %}{% endblock %}
                 {% block content %}{% endblock %}
             </div>

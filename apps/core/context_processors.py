@@ -34,8 +34,19 @@ def institucion(request):
 
 def visual_preferences(request):
     theme = "garden"
+    interface_mode = "classic"
     if request.user.is_authenticated:
         preference = getattr(request.user, "preference", None)
         if preference:
             theme = preference.theme
-    return {"visual_theme": theme}
+            interface_mode = preference.interface_mode
+    atlas_iso_scene = None
+    if interface_mode == "atlas" and request.user.is_authenticated:
+        from apps.core.atlas_ui import resolve_atlas_iso_scene
+
+        atlas_iso_scene = resolve_atlas_iso_scene(request)
+    return {
+        "visual_theme": theme,
+        "interface_mode": interface_mode,
+        "atlas_iso_scene": atlas_iso_scene,
+    }

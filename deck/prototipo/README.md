@@ -14,6 +14,10 @@ Luego abre `http://localhost:8080/prototipo/`.
 
 También puedes abrir `deck/prototipo/index.html` con doble clic. Si el navegador bloquea las escenas o las fuentes, usa el servidor de arriba.
 
+## Integración en Django (modo Atlas)
+
+En la app productiva, **Preferencias visuales** (`/auth/preferencias/`) incluye el modo **Atlas**: sidebar oscuro, CSS del prototipo y escenas SVG vía `static/js/iso.js` (copiado desde `deck/assets/js/iso.js`). Los dashboards clínicos muestran la escena isométrica según el rol.
+
 ## Recorrer
 
 En la portada se elige uno de los siete perfiles. Dentro, el menú lateral y las flechas cambian de pantalla. `G` abre el mapa de perfiles. `Esc` vuelve a la portada. `Home` también.

@@ -6,7 +6,7 @@
         <div>
             <p class="xm-page-header__subtitle">Personalización</p>
             <h1 class="xm-page-header__title">Configuración visual</h1>
-            <p class="xm-page-header__desc">Elige la combinación de colores para la interfaz.</p>
+            <p class="xm-page-header__desc">Tema de colores y modo Atlas (prototipo isométrico).</p>
         </div>
     </div>
 
@@ -14,7 +14,8 @@
         <div class="p-6">
             <form method="post" class="xm-form space-y-6">
                 {% csrf_token %}
-                <fieldset>
+                {% include 'components/preferencias_interface_mode.html' %}
+                <fieldset class="mt-8">
                     <legend class="font-semibold mb-4">Tema de colores</legend>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         {% for value, label in form.theme.field.choices %}

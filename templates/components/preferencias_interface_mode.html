@@ -1,0 +1,20 @@
+<fieldset>
+    <legend class="font-semibold mb-3">Modo de interfaz</legend>
+    <p class="text-sm opacity-70 mb-4">Atlas reutiliza el prototipo isométrico de <code>deck/prototipo</code>: sidebar oscuro, escena SVG y hilo del día.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {% for value, label in form.interface_mode.field.choices %}
+        <label class="cursor-pointer">
+            <input type="radio" name="interface_mode" value="{{ value }}" class="peer sr-only"
+                {% if form.interface_mode.value == value or not form.interface_mode.value and value == 'classic' %}checked{% endif %}>
+            <div class="rounded-xl p-4 border-2 border-base-300 bg-base-200 transition-all peer-checked:border-primary peer-checked:ring-2 peer-checked:ring-primary/30">
+                <span class="font-medium">{{ label }}</span>
+                {% if value == 'atlas' %}
+                <p class="text-xs opacity-60 mt-2">Escena isométrica por rol en inicios y pantallas clave.</p>
+                {% else %}
+                <p class="text-xs opacity-60 mt-2">Interfaz actual con DaisyUI (predeterminado).</p>
+                {% endif %}
+            </div>
+        </label>
+        {% endfor %}
+    </div>
+</fieldset>
