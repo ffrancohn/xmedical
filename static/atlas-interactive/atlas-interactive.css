@@ -1,0 +1,147 @@
+/* Atlas interactivo — Objeto → Exploración → Acción */
+
+.xm-atlas-hub {
+  margin-bottom: 1.5rem;
+}
+
+.xm-atlas-hub__scene {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid hsl(var(--bc) / 0.12);
+  background: linear-gradient(165deg, hsl(var(--b2)) 0%, hsl(var(--b3)) 100%);
+  min-height: 14rem;
+  padding: 1.25rem;
+  overflow: hidden;
+}
+
+.xm-atlas-hub__scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, hsl(var(--p) / 0.08), transparent 55%);
+  pointer-events: none;
+}
+
+.xm-atlas-hub__objects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.xm-atlas-object {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.85rem;
+  border: 2px solid transparent;
+  background: hsl(var(--b1) / 0.65);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  text-align: center;
+  color: inherit;
+  font: inherit;
+}
+
+.xm-atlas-object:hover {
+  border-color: hsl(var(--p) / 0.45);
+  transform: translateY(-2px);
+}
+
+.xm-atlas-object:focus-visible {
+  outline: 3px solid hsl(var(--p));
+  outline-offset: 2px;
+}
+
+.xm-atlas-object.is-active {
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 1px hsl(var(--p) / 0.3);
+}
+
+.xm-atlas-object__visual {
+  width: 4.5rem;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border-radius: 0.75rem;
+  background: hsl(var(--p) / 0.12);
+}
+
+.xm-atlas-object__visual--archivador { background: linear-gradient(135deg, #4a5568, #718096); }
+.xm-atlas-object__visual--agenda { background: linear-gradient(135deg, #2c5282, #4299e1); }
+.xm-atlas-object__visual--mostrador { background: linear-gradient(135deg, #285e61, #38b2ac); }
+
+.xm-atlas-object__label {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.xm-atlas-object__desc {
+  font-size: 0.7rem;
+  opacity: 0.75;
+  line-height: 1.3;
+}
+
+.xm-atlas-explore {
+  margin-top: 1rem;
+  scroll-margin-top: 5rem;
+}
+
+.xm-atlas-explore[hidden] {
+  display: none !important;
+}
+
+.xm-atlas-explore__panel {
+  animation: xm-atlas-fade-in 0.25s ease;
+}
+
+@keyframes xm-atlas-fade-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xm-atlas-explore__panel { animation: none; }
+  .xm-atlas-object { transition: none; }
+}
+
+.xm-atlas-avatar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+}
+
+.xm-atlas-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: hsl(var(--bc) / 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.xm-atlas-grupo-card {
+  border: 1px solid hsl(var(--bc) / 0.12);
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  background: hsl(var(--b1));
+}
+
+.xm-atlas-grupo-card:hover {
+  border-color: hsl(var(--p) / 0.35);
+}
+
+.xm-atlas-fallback {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}

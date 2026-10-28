@@ -1,0 +1,35 @@
+<div class="xm-card">
+    <div class="card-body">
+        <h2 class="card-title">Archivador — exploración</h2>
+        <p class="text-sm opacity-70">Grupos por edad (configurables por institución). Avatares genéricos; no identifican pacientes reales.</p>
+        <p class="text-sm mt-1"><strong>{{ explore.total }}</strong> pacientes activos{% if explore.sin_edad %} · {{ explore.sin_edad }} sin fecha de nacimiento{% endif %}</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+            {% for g in explore.grupos %}
+            <a href="{% url 'pacientes_lista' %}?grupo={{ g.id }}" class="xm-atlas-grupo-card no-underline text-inherit block">
+                <div class="font-semibold">{{ g.label }}</div>
+                <div class="text-2xl font-bold my-1">{{ g.count }}</div>
+                <div class="xm-atlas-avatar-grid" aria-hidden="true">
+                    {% for i in "12345678"|make_list %}
+                    {% if forloop.counter <= g.avatar_variants %}
+                    <span class="xm-atlas-avatar" title="Avatar genérico">·</span>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% if g.sexo %}
+                <p class="text-xs opacity-70 mt-1">
+                    {% for key, val in g.sexo.items %}{{ key }}: {{ val }}{% if not forloop.last %} · {% endif %}{% endfor %}
+                </p>
+                {% endif %}
+                <span class="link link-primary text-sm">Ver listado →</span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-4">
+            <a href="{% url 'pacientes_lista' %}" class="btn btn-sm btn-outline">Buscar paciente</a>
+            <a href="{% url 'pacientes_nuevo' %}" class="btn btn-sm btn-primary">Nuevo paciente</a>
+        </div>
+        <p class="xm-atlas-fallback"><a href="{% url 'pacientes_lista' %}?classic=1" class="link">Abrir vista de tabla directa</a></p>
+    </div>
+</div>

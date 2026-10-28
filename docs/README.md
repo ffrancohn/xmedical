@@ -51,6 +51,7 @@
 | 19 | [Gitflow XMedical](19%20Gitflow%20XMedical.md) | `master`, `develop`, feature/release/hotfix |
 | 20 | [Archivo: idea original «Agente Médico»](20%20Archivo%20Idea%20Original%20Agente%20Medico.md) | Registro histórico del repo `agentemedico` (eliminado) |
 | 21 | [Arquitectura visual pantallas](21%20Arquitectura%20Visual%20Pantallas.md) | Matriz `url_name` → representación; Atlas vs classic; skill visual-design-architect |
+| 22 | [Interfaz isométrica interactiva](22%20Interfaz%20Isometrica%20Interactiva.md) | Hub Objeto→Exploración→Acción; carpetas `designs/` y `static/atlas-interactive/` |
 
 ### Planificación por módulo
 

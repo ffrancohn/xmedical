@@ -1,0 +1,29 @@
+{# Hub isométrico interactivo — recepción. Requiere atlas_modules, pacientes_explore, citas_explore #}
+<section class="xm-atlas-hub" data-atlas-hub data-atlas-initial-module="">
+    <p class="text-sm opacity-80 mb-2">Selecciona un módulo para explorar. Las acciones reales siguen abajo o en el panel.</p>
+    <div class="xm-atlas-hub__scene" role="group" aria-label="Módulos clínicos">
+        <div class="xm-atlas-hub__objects">
+            {% for mod in atlas_modules %}
+            <button type="button" class="xm-atlas-object" data-atlas-module="{{ mod.id }}"
+                aria-controls="xm-atlas-explore">
+                <span class="xm-atlas-object__visual xm-atlas-object__visual--{{ mod.metaphor }}" aria-hidden="true">{{ mod.icon }}</span>
+                <span class="xm-atlas-object__label">{{ mod.label }}</span>
+                <span class="xm-atlas-object__desc">{{ mod.description }}</span>
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="xm-atlas-explore" class="xm-atlas-explore" hidden>
+        {% if pacientes_explore %}
+        <div class="xm-atlas-explore__panel" data-atlas-panel="pacientes" hidden>
+            {% include 'atlas/explore_pacientes.html' with explore=pacientes_explore %}
+        </div>
+        {% endif %}
+        {% if citas_explore %}
+        <div class="xm-atlas-explore__panel" data-atlas-panel="citas" hidden>
+            {% include 'atlas/explore_citas.html' with explore=citas_explore %}
+        </div>
+        {% endif %}
+    </div>
+</section>

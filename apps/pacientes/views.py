@@ -8,6 +8,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from apps.core.permissions import CAN_VIEW_HISTORIA, CAN_VIEW_PACIENTES, CAN_EDIT_PACIENTES, role_required, user_has_role
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
+from apps.core.atlas_explore import birth_date_range_for_bucket, get_age_buckets, pacientes_exploracion
 from .forms import PacienteForm, PacientePublicForm
 from .models import Paciente
 
@@ -44,11 +45,33 @@ class PacienteListView(LoginRequiredMixin, ListView):
                 | Q(telefono__icontains=q)
                 | Q(telefono_fijo__icontains=q)
             )
+        grupo = self.request.GET.get("grupo")
+        if grupo and grupo != "sin_edad":
+            instituciones, _ = selected_instituciones(self.request)
+            inst = instituciones[0] if len(instituciones) == 1 else None
+            buckets = get_age_buckets(inst)
+            min_b, max_b = birth_date_range_for_bucket(grupo, buckets)
+            if min_b and max_b:
+                qs = qs.filter(fecha_nacimiento__gte=min_b, fecha_nacimiento__lte=max_b)
+        elif grupo == "sin_edad":
+            qs = qs.filter(fecha_nacimiento__isnull=True)
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(institution_filter_context(self.request))
+        context["grupo_activo"] = self.request.GET.get("grupo", "")
+        pref = getattr(self.request.user, "preference", None)
+        use_atlas = (
+            pref
+            and pref.interface_mode == "atlas"
+            and not self.request.GET.get("classic")
+        )
+        if use_atlas:
+            instituciones, _ = selected_instituciones(self.request)
+            inst = instituciones[0] if len(instituciones) == 1 else None
+            context["pacientes_explore"] = pacientes_exploracion(instituciones, inst)
+            context["atlas_pacientes_hub"] = True
         return context
 
 

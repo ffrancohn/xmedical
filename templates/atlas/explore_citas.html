@@ -1,0 +1,28 @@
+<div class="xm-card">
+    <div class="card-body">
+        <h2 class="card-title">Agenda — exploración</h2>
+        <p class="text-sm opacity-70">Resumen del backend; confirmar citas siempre en el formulario oficial.</p>
+        <div class="grid grid-cols-2 gap-3 mt-3">
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Citas hoy</p>
+                <p class="text-2xl font-bold">{{ explore.hoy_total }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Próximas 14 días</p>
+                <p class="text-2xl font-bold">{{ explore.proximas_total }}</p>
+            </div>
+        </div>
+        {% if explore.por_estado_hoy %}
+        <ul class="text-sm mt-3 space-y-1">
+            {% for row in explore.por_estado_hoy %}
+            <li><span class="badge badge-ghost badge-sm">{{ row.estado }}</span> {{ row.total }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="flex flex-wrap gap-2 mt-4">
+            <a href="{% url 'citas_lista' %}?fecha={{ explore.fecha|date:'Y-m-d' }}" class="btn btn-sm btn-outline">Citas de hoy</a>
+            <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-outline">Todas las citas</a>
+            <a href="{% url 'citas_agendar' %}" class="btn btn-sm btn-primary">Agendar cita</a>
+        </div>
+    </div>
+</div>

@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.css" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
     {% if interface_mode == 'atlas' %}
+    {% if atlas_interactive %}<link href="/static/atlas-interactive/atlas-interactive.css" rel="stylesheet">{% endif %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
@@ -50,6 +51,7 @@
 {% block extra_js %}{% endblock %}
 {% if interface_mode == 'atlas' %}
 <script defer src="/static/js/iso.js"></script>
+{% if atlas_interactive %}<script defer src="/static/atlas-interactive/atlas-interactive.js"></script>{% endif %}
 {% endif %}
 </body>
 </html>

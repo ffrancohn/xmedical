@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas interactivo — demo</title>
+  <link href="../../static/atlas-interactive/atlas-interactive.css" rel="stylesheet">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 56rem; margin: 0 auto; padding: 1.5rem; background: #0f172a; color: #e2e8f0; }
+    .xm-card { background: #1e293b; border-radius: 1rem; padding: 1rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Atlas interactivo (prototipo)</h1>
+  <p>Datos ficticios. Misma estructura que el hub en recepción Django.</p>
+
+  <section class="xm-atlas-hub" data-atlas-hub>
+    <div class="xm-atlas-hub__scene">
+      <div class="xm-atlas-hub__objects">
+        <button type="button" class="xm-atlas-object" data-atlas-module="pacientes">
+          <span class="xm-atlas-object__visual xm-atlas-object__visual--archivador">📁</span>
+          <span class="xm-atlas-object__label">Pacientes</span>
+        </button>
+        <button type="button" class="xm-atlas-object" data-atlas-module="citas">
+          <span class="xm-atlas-object__visual xm-atlas-object__visual--agenda">📅</span>
+          <span class="xm-atlas-object__label">Citas</span>
+        </button>
+      </div>
+    </div>
+    <div id="xm-atlas-explore" class="xm-atlas-explore" hidden>
+      <div class="xm-card xm-atlas-explore__panel" data-atlas-panel="pacientes" hidden>
+        <h2>Exploración — Pacientes (demo)</h2>
+        <p>5 grupos de edad · avatares genéricos</p>
+      </div>
+      <div class="xm-card xm-atlas-explore__panel" data-atlas-panel="citas" hidden>
+        <h2>Exploración — Citas (demo)</h2>
+        <p>12 citas hoy · 34 próximas</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="../../static/atlas-interactive/atlas-interactive.js"></script>
+</body>
+</html>
