@@ -8,7 +8,7 @@
 |------|--------|-------|
 | Backend Django 4.2 | ✅ Producción | Gunicorn + systemd |
 | Frontend web (plantillas) | ✅ Producción | https://xmedical.cloud |
-| Interfaz Atlas (isométrica) | ⚠️ PR #22 | Despliegue: [doc 18](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) |
+| Interfaz Atlas (isométrica) | ✅ En `master` | [doc 18](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md); skills en [`.cursor/README.md`](../.cursor/README.md) |
 | PostgreSQL + Redis | ✅ Docker | Puertos 5432 / 6379 |
 | HTTPS | ✅ Let's Encrypt | Certificado auto-renovable |
 | Multi-tenant (subdominio) | ✅ Implementado | `TenantMiddleware` |
@@ -60,6 +60,8 @@
 
 | Documento | Descripción |
 |---|---|
+| [`.cursor/README.md`](../.cursor/README.md) | **Skills Cursor** (visual / isométrico / deck) + enlace a Atlas |
+| [`../AGENTS.md`](../AGENTS.md) | Instrucciones para agentes (cloud, Atlas, skills) |
 | [`../README.md`](../README.md) | Instalación y uso |
 | [`../GUIA_CONFIGURACION.md`](../GUIA_CONFIGURACION.md) | Configuración local y producción |
 | [`../USUARIOS_PRUEBA.md`](../USUARIOS_PRUEBA.md) | Credenciales demo |

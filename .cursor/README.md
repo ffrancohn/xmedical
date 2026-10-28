@@ -1,33 +1,60 @@
-# Visual Experience Skills para Cursor
+# Cursor — reglas y skills (XMedical)
 
-Paquete de cuatro skills personalizadas para seleccionar visualizaciones, crear decks HTML navegables, construir interfaces isométricas SVG y auditar calidad UX/UI.
+Configuración del agente en este repositorio: **reglas**, **skills** de experiencia visual y scripts de validación.
 
-## Instalación en un proyecto
-Copiar la carpeta `.cursor/skills/` de este paquete en la raíz de tu repositorio (fusionar, sin borrar las skills existentes). Cursor detecta las skills automáticamente por sus archivos `SKILL.md`.
+## Skills del proyecto (`.cursor/skills/`)
 
-## Instalación global
-Copiar cada carpeta de `.cursor/skills/` a `~/.cursor/skills/` (no reemplazar tus skills existentes).
+| Skill | Cuándo usarla |
+|-------|----------------|
+| [visual-design-architect](skills/visual-design-architect/SKILL.md) | Elegir tipo de visualización (isometría, grafo, tablas, timeline) **antes** de implementar. |
+| [interactive-deck-studio](skills/interactive-deck-studio/SKILL.md) | Decks HTML navegables; alinea con `deck/` y presentaciones del producto. |
+| [isometric-interface-builder](skills/isometric-interface-builder/SKILL.md) | Mapas isométricos SVG + panel de detalle; alinea con **modo Atlas**, `deck/prototipo/` y `static/js/iso.js`. |
+| [visual-quality-auditor](skills/visual-quality-auditor/SKILL.md) | Auditar UX, accesibilidad, responsive y correcciones tras cambios visuales. |
 
-## Uso en Cursor Agent
-- `Diseña una visualización para riesgos tecnológicos y justifica si debe ser isométrica. Usa visual-design-architect.`
-- `Crea un deck narrativo interactivo sobre una historia con tres decisiones. Usa interactive-deck-studio.`
-- `Construye un mapa isométrico clicable de una clínica con panel lateral. Usa isometric-interface-builder.`
-- `Audita la UX, rendimiento y accesibilidad del deck existente usando visual-quality-auditor y corrige los fallos.`
+Cursor carga cada skill por su `SKILL.md` (frontmatter `name` + `description`). Puedes invocarlas en el chat, por ejemplo:
 
-Cursor puede decidir cargar las skills según su descripción. Puedes mencionarlas explícitamente si quieres asegurar la selección.
+- *«Extiende la interfaz Atlas de recepción; usa **isometric-interface-builder** y audita con **visual-quality-auditor**.»*
+- *«¿Debe ser isométrico el dashboard de citas? Usa **visual-design-architect**.»*
+- *«Mejora el deck en `deck/` con **interactive-deck-studio**.»*
 
-## Demostraciones listas para abrir
-- `.cursor/skills/interactive-deck-studio/assets/minimal-deck/index.html`
-- `.cursor/skills/isometric-interface-builder/assets/isometric-demo/index.html`
+### Demos en el navegador (sin npm)
 
-Se pueden abrir directamente en el navegador. No requieren npm ni librerías externas.
+- `skills/interactive-deck-studio/assets/minimal-deck/index.html`
+- `skills/isometric-interface-builder/assets/isometric-demo/index.html`
 
-## Arquitectura y alcance
-Las skills son instrucciones para agentes, no plugins ejecutables ni motores de render autónomos. Los ejemplos HTML son demostraciones independientes. Para usar estas técnicas en React, Vue, Flutter o React Native, el agente debe integrarlas en la arquitectura específica; en Flutter/React Native no se debe asumir que DOM/HTML corre como componente nativo.
+### Validación
 
-## Validación
-El archivo `.cursor/scripts/validate_package.py` revisa existencia de carpetas, metadatos mínimos, nombres y recursos. Ejecutar desde la raíz del repo: `python3 .cursor/scripts/validate_package.py`. No sustituye pruebas visuales en navegador ni una validación oficial completa de Agent Skills.
+Desde la raíz del repo:
 
-## Estándar de referencia
-https://cursor.com/docs/skills
-https://agentskills.io/specification
+```bash
+python3 .cursor/scripts/validate_package.py
+```
+
+Comprueba las cuatro skills, frontmatter y rutas. No sustituye prueba manual en navegador.
+
+## Reglas (`.cursor/rules/`)
+
+| Regla | Alcance |
+|-------|---------|
+| [graphify.mdc](rules/graphify.mdc) | Grafo de código: usar `graphify query` cuando la CLI esté instalada; ver `graphify-out/GRAPH_REPORT.md`. |
+
+## Atlas isométrico en la app Django
+
+- Modo usuario: **Preferencias** → **Atlas** (`UserPreference.interface_mode`).
+- Código: `static/js/iso.js`, `static/css/atlas.css`, `apps/core/atlas_ui.py`.
+- Prototipo estático: `deck/prototipo/`.
+- Despliegue: [docs/18 Interfaz Atlas Despliegue Produccion.md](../docs/18%20Interfaz%20Atlas%20Despliegue%20Produccion.md).
+
+Para nuevas pantallas isométricas en Django, combinar **isometric-interface-builder** (diseño) con el motor existente `iso.js` (no reescribir desde cero salvo necesidad).
+
+## Instalación en otro clone
+
+Las skills ya viven en `.cursor/skills/` en git; basta con clonar el repo. Para copiar solo skills a otro proyecto, fusiona esa carpeta sin borrar skills ajenas.
+
+Instalación global opcional: copiar cada carpeta de `skills/` a `~/.cursor/skills/`.
+
+## Referencias
+
+- [Cursor Skills](https://cursor.com/docs/skills)
+- [Agent Skills specification](https://agentskills.io/specification)
+- [AGENTS.md](../AGENTS.md) — entorno cloud y cuándo leer cada skill
