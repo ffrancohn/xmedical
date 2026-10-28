@@ -6,7 +6,7 @@
 
 **Contenido y estructura de datos:** Alertas de brote (tabla), totales 30 días, configuración ventana/umbral, tendencias por mes (datos agregados).
 
-**Representación principal y alternativa:** Primaria = **stat cards + tablas** (`dashboards/epidemiologia.html`). Complemento futuro = **gráficos de barras/líneas** (SVG o CSS). **Sin capa Atlas / isometría.**
+**Representación principal y alternativa:** Primaria = **stat cards + tablas** (`dashboards/epidemiologia.html`). Complemento = **gráfico SVG de líneas** (`components/epidemiologia_trend_chart.html`) + barras CSS en top 30 días. **Sin capa Atlas / isometría.**
 
 **Por qué no usar otras representaciones:** Datos cuantitativos y exportables; isometría no mejora comparación de casos; heatmap opcional secundario.
 
@@ -25,4 +25,4 @@
 **Criterios de aceptación verificables:**
 - Modo Atlas no inserta banner isométrico en esta ruta.
 - KPIs y alertas legibles en móvil.
-- Roadmap: gráfico tendencia documentado en doc 21 como pendiente.
+- Gráfico SVG visible cuando hay series; tabla mensual en «Ver datos tabulares».

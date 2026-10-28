@@ -1,7 +1,7 @@
 """Pruebas del dashboard epidemiologico (Fase 3)."""
 from datetime import time, timedelta
 
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 
 from apps.citas.models import Cita
@@ -11,9 +11,29 @@ from apps.core.test_utils import HOST, auth_client
 from apps.dashboards.epidemiologia import (
     detectar_alertas_brote,
     epidemiologia_dashboard_data,
+    tendencias_chart_geometry,
     tendencias_diagnosticos,
 )
 from apps.pacientes.models import Paciente
+
+
+class EpidemiologiaChartGeometryTests(SimpleTestCase):
+    def test_sin_datos_devuelve_none(self):
+        self.assertIsNone(tendencias_chart_geometry({"meses": [], "series": [], "max_valor": 1}))
+
+    def test_genera_polilinea(self):
+        chart = tendencias_chart_geometry(
+            {
+                "meses": ["2026-01", "2026-02"],
+                "series": [
+                    {"codigo_cie10": "J06.9", "nombre": "Gripe", "puntos": [1, 3], "total": 4},
+                ],
+                "max_valor": 3,
+            }
+        )
+        self.assertIsNotNone(chart)
+        self.assertIn("1.0", chart["series"][0]["polyline"])
+        self.assertEqual(len(chart["series"][0]["dots"]), 2)
 
 
 class EpidemiologiaServicesTests(TestCase):
@@ -83,6 +103,15 @@ class EpidemiologiaViewsTests(TestCase):
         response = client.get("/dashboards/epidemiologia/", **HOST)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Dashboard epidemiologico")
+
+    def test_dashboard_muestra_grafico_tendencias_con_datos(self):
+        helper = EpidemiologiaServicesTests(methodName="test_detecta_brote_con_cinco_casos")
+        helper.setUp()
+        for dias in range(3):
+            helper._consulta_con_diagnostico(dias)
+        client = auth_client("admin.demo")
+        response = client.get("/dashboards/epidemiologia/", **HOST)
+        self.assertContains(response, "xm-epi-trend-chart")
 
     def test_recepcionista_no_accede(self):
         client = auth_client("recepcion.demo")

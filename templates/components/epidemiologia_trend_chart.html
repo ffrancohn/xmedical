@@ -1,0 +1,38 @@
+{% if tendencias_chart %}
+<figure class="xm-epi-trend-chart" role="group" aria-labelledby="epi-trend-chart-title">
+    <figcaption id="epi-trend-chart-title" class="sr-only">
+        Gráfico de líneas: casos mensuales por código CIE-10 (top {{ tendencias_chart.series|length }}).
+    </figcaption>
+    <svg class="xm-epi-trend-chart__svg" viewBox="0 0 {{ tendencias_chart.width }} {{ tendencias_chart.height }}"
+        width="100%" height="auto" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        {% for tick in tendencias_chart.y_ticks %}
+        <line x1="{{ tendencias_chart.pad_l }}" y1="{{ tick.y }}" x2="{{ tendencias_chart.x2 }}" y2="{{ tick.y }}"
+            class="xm-epi-trend-chart__grid"/>
+        <text x="{{ tendencias_chart.pad_l|add:'-8' }}" y="{{ tick.y }}" dy="0.35em" text-anchor="end"
+            class="xm-epi-trend-chart__tick">{{ tick.label }}</text>
+        {% endfor %}
+        <line x1="{{ tendencias_chart.pad_l }}" y1="{{ tendencias_chart.baseline_y }}"
+            x2="{{ tendencias_chart.x2 }}" y2="{{ tendencias_chart.baseline_y }}"
+            class="xm-epi-trend-chart__axis"/>
+        {% for label in tendencias_chart.x_labels %}
+        <text x="{{ label.x }}" y="{{ tendencias_chart.baseline_y }}" dy="1.4em" text-anchor="middle"
+            class="xm-epi-trend-chart__tick">{{ label.label }}</text>
+        {% endfor %}
+        {% for serie in tendencias_chart.series %}
+        <polyline points="{{ serie.polyline }}" fill="none" stroke="{{ serie.color }}" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round"/>
+        {% for dot in serie.dots %}
+        <circle cx="{{ dot.cx }}" cy="{{ dot.cy }}" r="3" fill="{{ serie.color }}"/>
+        {% endfor %}
+        {% endfor %}
+    </svg>
+    <ul class="xm-epi-trend-chart__legend" aria-hidden="true">
+        {% for serie in tendencias_chart.series %}
+        <li>
+            <span class="xm-epi-trend-chart__swatch" style="background: {{ serie.color }}"></span>
+            <span>{{ serie.codigo_cie10 }} — {{ serie.nombre|truncatechars:36 }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</figure>
+{% endif %}

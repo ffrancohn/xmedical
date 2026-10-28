@@ -226,6 +226,7 @@ def historia_clinica(request, paciente_id):
         Consulta.objects.select_related("cita")
         .prefetch_related("diagnosticos", "valores_variables__variable")
         .filter(cita__paciente=paciente)
+        .order_by("-creado_en")
     )
     if institucion:
         consultas = consultas.filter(institucion=institucion)

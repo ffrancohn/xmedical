@@ -1,0 +1,43 @@
+{# Requiere: consultas (queryset ordenado, más reciente primero) #}
+<ol class="xm-clinical-timeline" aria-label="Línea de tiempo de consultas">
+{% for consulta in consultas %}
+    <li class="xm-clinical-timeline__item" id="consulta-{{ consulta.pk }}">
+        <div class="xm-clinical-timeline__marker" aria-hidden="true"></div>
+        <time class="xm-clinical-timeline__time" datetime="{{ consulta.creado_en|date:'c' }}">
+            {{ consulta.creado_en|date:"d/m/Y" }}
+            <span class="xm-clinical-timeline__time-sub">{{ consulta.creado_en|time:"H:i" }}</span>
+        </time>
+        <article class="xm-card xm-clinical-timeline__card">
+            <div class="card-body">
+                <h2 class="card-title text-lg">
+                    {% if consulta.cita %}Cita {{ consulta.cita.fecha|date:"d/m/Y" }}{% else %}Consulta{% endif %}
+                </h2>
+                {% if consulta.motivo_consulta %}
+                <p><strong>Motivo:</strong> {{ consulta.motivo_consulta }}</p>
+                {% endif %}
+                {% if consulta.plan_terapeutico %}
+                <p><strong>Plan:</strong> {{ consulta.plan_terapeutico }}</p>
+                {% endif %}
+                {% if consulta.valores_variables.all %}
+                <div class="text-sm opacity-80 mt-2">
+                    {% for valor in consulta.valores_variables.all %}
+                    <p><strong>{{ valor.variable.nombre }}:</strong> {{ valor.valor_mostrar }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if consulta.diagnosticos.all %}
+                <div class="mt-2 flex flex-wrap gap-1">
+                    {% for dx in consulta.diagnosticos.all %}
+                    <span class="badge badge-primary">{{ dx.codigo_cie10 }} {{ dx.nombre }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </article>
+    </li>
+{% empty %}
+    <li class="xm-clinical-timeline__empty">
+        <div class="alert">Este paciente aún no tiene consultas registradas.</div>
+    </li>
+{% endfor %}
+</ol>

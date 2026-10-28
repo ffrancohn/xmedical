@@ -629,3 +629,92 @@ textarea { min-height: 9rem; }
     .xm-hilo-panels { display: block; }
     .xm-hilo-panel.is-open { grid-column: auto; margin-top: 0.5rem; }
 }
+
+/* Epidemiología — gráfico SVG de tendencias */
+.xm-epi-trend-chart { margin-top: 0.5rem; }
+.xm-epi-trend-chart__svg { display: block; max-width: 100%; }
+.xm-epi-trend-chart__grid { stroke: hsl(var(--bc) / 0.12); stroke-width: 1; }
+.xm-epi-trend-chart__axis { stroke: hsl(var(--bc) / 0.35); stroke-width: 1; }
+.xm-epi-trend-chart__tick {
+    fill: hsl(var(--bc) / 0.65);
+    font-size: 10px;
+    font-family: system-ui, sans-serif;
+}
+.xm-epi-trend-chart__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.75rem;
+}
+.xm-epi-trend-chart__legend li { display: flex; align-items: center; gap: 0.35rem; }
+.xm-epi-trend-chart__swatch {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* Historia clínica — timeline vertical */
+.xm-clinical-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 0.25rem;
+    position: relative;
+}
+.xm-clinical-timeline::before {
+    content: "";
+    position: absolute;
+    left: 5.5rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: hsl(var(--bc) / 0.15);
+}
+.xm-clinical-timeline__item {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.75rem 1.25rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+.xm-clinical-timeline__marker {
+    position: absolute;
+    left: calc(5.5rem - 5px);
+    top: 0.65rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: hsl(var(--p));
+    border: 2px solid hsl(var(--b1));
+    z-index: 1;
+}
+.xm-clinical-timeline__time {
+    grid-column: 1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: right;
+    padding-top: 0.35rem;
+    color: hsl(var(--bc) / 0.85);
+}
+.xm-clinical-timeline__time-sub {
+    display: block;
+    font-weight: 400;
+    font-size: 0.72rem;
+    opacity: 0.7;
+}
+.xm-clinical-timeline__card { grid-column: 2; }
+.xm-clinical-timeline__empty { list-style: none; }
+
+@media (max-width: 640px) {
+    .xm-clinical-timeline::before { left: 0.4rem; }
+    .xm-clinical-timeline__item {
+        grid-template-columns: 1fr;
+        padding-left: 1.25rem;
+    }
+    .xm-clinical-timeline__marker { left: -2px; top: 0.5rem; }
+    .xm-clinical-timeline__time { text-align: left; grid-column: 1; }
+    .xm-clinical-timeline__card { grid-column: 1; }
+}

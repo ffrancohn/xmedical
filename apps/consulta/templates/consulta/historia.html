@@ -1,27 +1,13 @@
 {% extends 'base.html' %}
+{% block title %}Historia clínica{% endblock %}
 {% block content %}
 {% include 'components/atlas_scene_banner.html' %}
-<h1 class="text-2xl font-bold mb-1">Historia clinica</h1>
-<p class="mb-4">{{ paciente.nombre }} {{ paciente.apellido }} - {{ paciente.documento }}</p>
-<div class="space-y-4">
-{% for consulta in consultas %}
-    <div class="xm-card">
-        <div class="card-body">
-            <h2 class="card-title">{{ consulta.creado_en|date:"d/m/Y H:i" }}</h2>
-            <p><strong>Motivo:</strong> {{ consulta.motivo_consulta }}</p>
-            <p><strong>Plan:</strong> {{ consulta.plan_terapeutico }}</p>
-            {% if consulta.valores_variables.all %}
-            <div class="text-sm opacity-80">
-                {% for valor in consulta.valores_variables.all %}
-                    <p><strong>{{ valor.variable.nombre }}:</strong> {{ valor.valor_mostrar }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            <div>{% for dx in consulta.diagnosticos.all %}<span class="badge badge-primary">{{ dx.codigo_cie10 }} {{ dx.nombre }}</span>{% endfor %}</div>
-        </div>
+<div class="xm-page-header mb-4">
+    <div>
+        <p class="xm-page-header__subtitle">Expediente</p>
+        <h1 class="xm-page-header__title">Historia clínica</h1>
+        <p class="xm-page-header__desc">{{ paciente.nombre }} {{ paciente.apellido }} · {{ paciente.documento }}</p>
     </div>
-{% empty %}
-    <div class="alert">Este paciente aun no tiene consultas registradas.</div>
-{% endfor %}
 </div>
+{% include 'components/clinical_timeline.html' with consultas=consultas %}
 {% endblock %}

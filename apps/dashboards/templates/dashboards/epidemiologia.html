@@ -83,7 +83,10 @@
         <div class="card-body">
             <h2 class="card-title">Tendencia mensual por enfermedad</h2>
             {% if tendencias.series %}
-            <div class="overflow-x-auto">
+            {% include 'components/epidemiologia_trend_chart.html' with tendencias_chart=tendencias_chart %}
+            <details class="mt-4">
+                <summary class="cursor-pointer text-sm font-medium link link-primary">Ver datos tabulares</summary>
+            <div class="overflow-x-auto mt-2">
                 <table class="table table-sm">
                     <thead>
                         <tr>
@@ -111,6 +114,7 @@
                     </tbody>
                 </table>
             </div>
+            </details>
             {% else %}
             <div class="alert">Sin datos suficientes para tendencias.</div>
             {% endif %}

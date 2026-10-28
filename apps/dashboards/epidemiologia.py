@@ -130,6 +130,71 @@ def resumen_diagnosticos_periodo(instituciones, dias=30):
     )
 
 
+CHART_COLORS = (
+    "#2563eb",
+    "#0891b2",
+    "#059669",
+    "#d97706",
+    "#dc2626",
+    "#7c3aed",
+    "#db2777",
+    "#4b5563",
+)
+
+
+def tendencias_chart_geometry(tendencias, width=520, height=220):
+    """Coordenadas SVG para líneas de tendencia (sin JS)."""
+    meses = tendencias.get("meses") or []
+    series = tendencias.get("series") or []
+    if not meses or not series:
+        return None
+
+    n = len(meses)
+    max_v = max(int(tendencias.get("max_valor") or 1), 1)
+    pad_l, pad_r, pad_t, pad_b = 40, 16, 18, 32
+    plot_w = width - pad_l - pad_r
+    plot_h = height - pad_t - pad_b
+
+    def x_at(i):
+        if n == 1:
+            return pad_l + plot_w / 2
+        return pad_l + (i / (n - 1)) * plot_w
+
+    def y_at(value):
+        return pad_t + plot_h - (value / max_v) * plot_h
+
+    series_out = []
+    for idx, serie in enumerate(series):
+        puntos = serie.get("puntos") or []
+        coords = [(x_at(i), y_at(v)) for i, v in enumerate(puntos)]
+        series_out.append(
+            {
+                "codigo_cie10": serie["codigo_cie10"],
+                "nombre": serie["nombre"],
+                "color": CHART_COLORS[idx % len(CHART_COLORS)],
+                "polyline": " ".join(f"{cx:.1f},{cy:.1f}" for cx, cy in coords),
+                "dots": [{"cx": cx, "cy": cy} for cx, cy in coords],
+            }
+        )
+
+    x_labels = [{"x": x_at(i), "label": f"{mes[5:7]}/{mes[2:4]}"} for i, mes in enumerate(meses)]
+    y_ticks = sorted({0, max_v // 2, max_v} if max_v > 1 else {0, max_v})
+
+    return {
+        "width": width,
+        "height": height,
+        "pad_l": pad_l,
+        "pad_r": pad_r,
+        "pad_t": pad_t,
+        "plot_h": plot_h,
+        "x2": width - pad_r,
+        "series": series_out,
+        "x_labels": x_labels,
+        "y_ticks": [{"y": y_at(v), "label": v} for v in y_ticks],
+        "baseline_y": pad_t + plot_h,
+    }
+
+
 def epidemiologia_dashboard_data(instituciones, fecha=None):
     fecha = fecha or timezone.localdate()
     config = _config_efectiva(instituciones)
@@ -144,6 +209,7 @@ def epidemiologia_dashboard_data(instituciones, fecha=None):
         "alertas_brote": brotes,
         "total_brotes": len(brotes),
         "tendencias": tendencias,
+        "tendencias_chart": tendencias_chart_geometry(tendencias),
         "top_diagnosticos_mes": top_mes,
         "top_diagnosticos_max": max_top,
         "total_diagnosticos_mes": sum(item["total"] for item in top_mes),

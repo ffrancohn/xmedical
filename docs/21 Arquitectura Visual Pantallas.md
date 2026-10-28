@@ -181,8 +181,8 @@ Escala 1–5 en pertinencia de **isometría como complemento Atlas** (no como pr
 | Hecho | Matriz por `url_name`; briefs piloto en `docs/visual-briefs/` |
 | Hecho | Banner Atlas en preclínica y wizard consulta (complemento aprobado) |
 | Hecho | Epidemiología explícitamente **sin** capa Atlas |
-| Pendiente | Gráficos de tendencia en epidemiología (barras/líneas, SVG o CSS) |
-| Pendiente | Timeline en `historia_clinica` (complemento, no isometría) |
+| Hecho | Gráficos de tendencia en epidemiología (SVG + tabla en `<details>`) |
+| Hecho | Timeline en `historia_clinica` (`components/clinical_timeline.html`) |
 | Pendiente | Áreas clicables en SVG (`isometric-interface-builder`) solo si hay tarea de navegación espacial |
 
 ---

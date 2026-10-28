@@ -132,6 +132,7 @@ class ConsultaWizardTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["paciente"].pk, paciente.pk)
+        self.assertContains(response, "xm-clinical-timeline")
 
 
 class CIE10SearchTests(TestCase):
