@@ -1,30 +1,18 @@
 {% extends 'base.html' %}
+{% block title %}Escanear documento{% endblock %}
+{% block body_class %}{% if atlas_stage %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
+{% if atlas_stage %}
+{% include 'atlas/stage_begin.html' %}
+{% include 'pacientes/partials/ocr_subir_body.html' %}
+{% include 'atlas/stage_end.html' %}
+{% else %}
 <div class="max-w-xl mx-auto xm-card">
     <div class="card-body">
         <h1 class="card-title">Escanear documento de identidad</h1>
-        <p class="opacity-70">Suba una foto de cedula o pasaporte para extraer nombre, documento y fecha de nacimiento.</p>
-        {% if proveedores %}
-            <p class="text-sm">OCR disponible: {{ proveedores|join:", " }}</p>
-        {% elif not ocr_habilitado %}
-            <div class="alert alert-warning">OCR desactivado para esta institución (Configuración IA).</div>
-        {% else %}
-            <div class="alert alert-warning">OCR automático no configurado. Configure Ollama + modelo visión en Configuración IA, o ingrese datos manualmente.</div>
-        {% endif %}
-        <form method="post" enctype="multipart/form-data" class="space-y-4">
-            {% csrf_token %}
-            <div class="form-control">
-                {{ form.documento_imagen.label_tag }}
-                <input type="file" name="documento_imagen" accept="image/*" class="file-input file-input-bordered w-full" required>
-                {% if form.documento_imagen.errors %}
-                    <span class="text-error text-sm">{{ form.documento_imagen.errors|join:", " }}</span>
-                {% endif %}
-            </div>
-            <div class="flex gap-2">
-                <button class="btn btn-primary">Procesar documento</button>
-                <a href="{% url 'pacientes_nuevo' %}" class="btn btn-ghost">Ingreso manual</a>
-            </div>
-        </form>
+        <p class="opacity-70">Suba una foto de cédula o pasaporte para extraer nombre, documento y fecha de nacimiento.</p>
+        {% include 'pacientes/partials/ocr_subir_body.html' %}
     </div>
 </div>
+{% endif %}
 {% endblock %}

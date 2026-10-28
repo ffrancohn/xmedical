@@ -1,0 +1,16 @@
+{% load xmedical_tags %}
+{% if proveedores %}
+<p class="text-sm mb-3">OCR disponible: {{ proveedores|join:", " }}</p>
+{% elif not ocr_habilitado %}
+<div class="alert alert-warning">OCR desactivado para esta institución (Configuración IA).</div>
+{% else %}
+<div class="alert alert-warning">OCR automático no configurado. Configure Ollama + modelo visión en Configuración IA, o ingrese datos manualmente.</div>
+{% endif %}
+<form method="post" enctype="multipart/form-data" class="xm-form xm-atlas-form space-y-4">
+    {% csrf_token %}
+    {% form_field form.documento_imagen help_text="Formato imagen (JPG/PNG). Buena luz y sin reflejos." %}
+    <div class="flex flex-wrap gap-2">
+        <button type="submit" class="btn btn-primary">Procesar documento</button>
+        <a href="{% url 'pacientes_nuevo' %}" class="btn btn-ghost">Ingreso manual</a>
+    </div>
+</form>

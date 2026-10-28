@@ -1,8 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views import View
 
+from apps.core.atlas_layout import atlas_stage_context
 from apps.core.audit import log_ia_usage
 from apps.core.views import current_institucion
 
@@ -10,6 +12,39 @@ from .forms import DocumentoIdentidadForm, PacienteOCRReviewForm
 from .models import DocumentoOCRLog
 from .services.vision_service import VisionService, VisionServiceError
 from .views import can_manage_pacientes
+
+
+def _ocr_upload_context(request, form, servicio, **extra):
+    ctx = {
+        "form": form,
+        "proveedores": servicio.provider_labels(),
+        "ocr_habilitado": bool(servicio.available_providers()),
+        **extra,
+    }
+    ctx.update(
+        atlas_stage_context(
+            request,
+            "pacientes",
+            title="Escanear documento",
+            lead="Suba una foto clara de cédula o pasaporte. Revise los datos antes de registrar al paciente.",
+            back_url=reverse("pacientes_nuevo"),
+        )
+    )
+    return ctx
+
+
+def _ocr_review_context(request, form, data):
+    ctx = {"form": form, "ocr_meta": data}
+    ctx.update(
+        atlas_stage_context(
+            request,
+            "pacientes",
+            title="Revisar datos del documento",
+            lead="Corrija lo que no coincida; luego continúe al registro del paciente.",
+            back_url=reverse("pacientes_ocr_subir"),
+        )
+    )
+    return ctx
 
 
 class PacienteOCRUploadView(LoginRequiredMixin, View):
@@ -24,30 +59,16 @@ class PacienteOCRUploadView(LoginRequiredMixin, View):
     def get(self, request):
         institucion = current_institucion(request)
         servicio = VisionService(institucion)
-        return render(
-            request,
-            self.template_name,
-            {
-                "form": DocumentoIdentidadForm(),
-                "proveedores": servicio.provider_labels(),
-                "ocr_habilitado": bool(servicio.available_providers()),
-            },
-        )
+        ctx = _ocr_upload_context(request, DocumentoIdentidadForm(), servicio)
+        return render(request, self.template_name, ctx)
 
     def post(self, request):
         institucion = current_institucion(request)
         servicio = VisionService(institucion)
         form = DocumentoIdentidadForm(request.POST, request.FILES)
         if not form.is_valid():
-            return render(
-                request,
-                self.template_name,
-                {
-                    "form": form,
-                    "proveedores": servicio.provider_labels(),
-                    "ocr_habilitado": bool(servicio.available_providers()),
-                },
-            )
+            ctx = _ocr_upload_context(request, form, servicio)
+            return render(request, self.template_name, ctx)
 
         archivo = form.cleaned_data["documento_imagen"]
         try:
@@ -56,15 +77,8 @@ class PacienteOCRUploadView(LoginRequiredMixin, View):
             resultado = servicio.extract_from_image(contenido, archivo.content_type or "image/jpeg")
         except VisionServiceError as exc:
             messages.error(request, str(exc))
-            return render(
-                request,
-                self.template_name,
-                {
-                    "form": form,
-                    "proveedores": servicio.provider_labels(),
-                    "ocr_habilitado": bool(servicio.available_providers()),
-                },
-            )
+            ctx = _ocr_upload_context(request, form, servicio)
+            return render(request, self.template_name, ctx)
 
         if institucion and not resultado.manual_fallback:
             DocumentoOCRLog.objects.create(
@@ -124,13 +138,13 @@ class PacienteOCRReviewView(LoginRequiredMixin, View):
             messages.error(request, "No hay datos OCR para revisar.")
             return redirect("pacientes_ocr_subir")
         form = PacienteOCRReviewForm(initial=data)
-        return render(request, self.template_name, {"form": form, "ocr_meta": data})
+        return render(request, self.template_name, _ocr_review_context(request, form, data))
 
     def post(self, request):
         data = self._session_data(request)
         form = PacienteOCRReviewForm(request.POST)
         if not form.is_valid():
-            return render(request, self.template_name, {"form": form, "ocr_meta": data})
+            return render(request, self.template_name, _ocr_review_context(request, form, data))
 
         request.session["ocr_paciente_data"] = {
             **form.cleaned_data,

@@ -1,0 +1,27 @@
+{% load xmedical_tags %}
+{% if sin_turnos %}
+<div class="alert alert-warning mb-4">No se encontraron turnos libres con esos criterios. Prueba otro rango o jornada.</div>
+{% endif %}
+<form method="post" class="xm-form xm-atlas-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-error text-sm">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% form_field form.paciente %}
+        {% form_field form.especialidad %}
+        {% form_field form.profesional help_text="Opcional: limita la búsqueda a un médico concreto." %}
+        {% form_field form.fecha_inicio %}
+        {% form_field form.fecha_fin %}
+        {% form_field form.jornada %}
+    </div>
+    <div class="flex flex-wrap gap-2 pt-4">
+        <button type="submit" class="btn btn-primary">Buscar y asignar turno</button>
+        <a href="{% url 'citas_agendar' %}" class="btn btn-ghost">Agendamiento específico</a>
+        {% if atlas_stage_back_url %}
+        <a href="{{ atlas_stage_back_url }}" class="btn btn-ghost">Cancelar</a>
+        {% else %}
+        <a href="{% url 'citas_lista' %}" class="btn btn-ghost">Cancelar</a>
+        {% endif %}
+    </div>
+</form>

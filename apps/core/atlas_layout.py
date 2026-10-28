@@ -13,6 +13,10 @@ STAGE_MODULES: dict[str, dict[str, str]] = {
         "icon": "atlas-interactive/assets/v1/modulos/citas_agenda_abierta.webp",
         "back_label": "Volver a la agenda",
     },
+    "historia": {
+        "icon": "atlas-interactive/assets/v1/modulos/historia_carpeta_abierta.webp",
+        "back_label": "Volver al expediente",
+    },
 }
 
 
@@ -41,6 +45,8 @@ def atlas_stage_context(
             back_url = reverse("pacientes_lista") + "?ver=datos"
         elif module_id == "citas":
             back_url = reverse("citas_lista") + "?ver=agenda"
+        elif module_id == "historia":
+            back_url = reverse("pacientes_lista") + "?ver=datos"
         else:
             back_url = reverse("dashboards_recepcion")
     return {

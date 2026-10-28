@@ -43,6 +43,7 @@ Si falta, se usan defaults en `atlas_explore.DEFAULT_AGE_BUCKETS`.
 - **Pacientes** (`pacientes_lista`): solo archivador hasta `?ver=datos` (búsqueda, grupo); `?classic=1` omite hub.
 - **Citas** (`citas_lista`): solo agenda isométrica hasta `?ver=agenda`; `?classic=1` vista clásica completa.
 - **Formularios recepción** (nuevo/editar paciente, agendar cita, ficha): cabecera isométrica + **panel de formulario legible** (`atlas/stage_begin.html`); enlace **Vista clásica** con `?classic=1`.
+- **OCR** (`pacientes_ocr_subir`, `pacientes_ocr_revisar`) y **historia clínica** (`consulta/historia`): mismo stage; icono carpeta/historia en HCE.
 
 ## Próximos pasos
 

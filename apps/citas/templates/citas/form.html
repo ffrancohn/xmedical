@@ -1,30 +1,16 @@
 {% extends 'base.html' %}
-{% load xmedical_tags %}
 {% block title %}Agendar cita{% endblock %}
 {% block body_class %}{% if atlas_stage %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
 {% if atlas_stage %}
 {% include 'atlas/stage_begin.html' %}
-<form method="post" class="xm-form xm-atlas-form space-y-4">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="flex flex-wrap gap-2 pt-2">
-        <button type="submit" class="btn btn-primary">Confirmar cita</button>
-        <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-ghost">Agendamiento flexible</a>
-        <a href="{{ atlas_stage_back_url }}" class="btn btn-ghost">Cancelar</a>
-    </div>
-</form>
+{% include 'citas/partials/form_especifico_fields.html' %}
 {% include 'atlas/stage_end.html' %}
 {% else %}
 <div class="max-w-2xl mx-auto xm-card">
     <div class="card-body">
-        <h1 class="card-title">Agendar cita especifica</h1>
-        <form method="post" class="space-y-3">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="btn btn-primary">Agendar</button>
-            <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-ghost">Usar agendamiento flexible</a>
-        </form>
+        <h1 class="card-title">Agendar cita específica</h1>
+        {% include 'citas/partials/form_especifico_fields.html' %}
     </div>
 </div>
 {% endif %}
