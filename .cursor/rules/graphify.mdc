@@ -5,7 +5,7 @@ alwaysApply: true
 
 This project has a graphify knowledge graph at graphify-out/.
 
-**MANDATORY: Before using Read, Grep, Glob, or Bash to explore the codebase, you MUST run graphify first:**
+**When the `graphify` CLI is installed**, prefer it before broad Read/Grep/Glob exploration:
 - `graphify query "<question>"` — scoped subgraph for any codebase or architecture question
 - `graphify path "<A>" "<B>"` — dependency path between two symbols
 - `graphify explain "<concept>"` — all nodes related to a concept
