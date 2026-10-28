@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
+{% block title %}Cita confirmada{% endblock %}
+{% block body_class %}{% if atlas_stage %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
+{% if atlas_stage %}
+{% include 'atlas/stage_begin.html' %}
+<div class="alert alert-success text-sm mb-4">Turno asignado correctamente.</div>
+<dl class="xm-atlas-dl xm-atlas-dl--stack">
+    <dt>Paciente</dt><dd>{{ cita.paciente }}</dd>
+    <dt>Médico</dt><dd>{{ cita.profesional.nombre }}</dd>
+    <dt>Especialidad</dt><dd>{{ cita.profesional.especialidad.nombre }}</dd>
+    <dt>Fecha</dt><dd>{{ cita.fecha }}</dd>
+    <dt>Hora</dt><dd>{{ cita.hora|time:"H:i" }}</dd>
+    <dt>Estado</dt><dd>{{ cita.get_estado_display }}</dd>
+</dl>
+<div class="flex flex-wrap gap-2 mt-6">
+    <a href="{% url 'citas_lista' %}?ver=agenda" class="btn btn-primary">Ver agenda</a>
+    <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-ghost">Agendar otra</a>
+</div>
+{% include 'atlas/stage_end.html' %}
+{% else %}
 <div class="max-w-xl mx-auto xm-card">
     <div class="card-body">
         <h1 class="card-title text-success">Turno asignado</h1>
@@ -19,4 +38,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

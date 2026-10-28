@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from django.views.generic import ListView
@@ -18,6 +19,8 @@ from apps.core.permissions import (
     RoleRequiredMixin,
     role_required,
 )
+from apps.core.atlas_explore import citas_exploracion
+from apps.core.atlas_layout import atlas_stage_context, atlas_stage_enabled
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from .forms import CitaFlexibleForm, CitaForm
 from .models import Cita
@@ -63,14 +66,45 @@ class CitaListView(LoginRequiredMixin, RoleRequiredMixin, ListView):
         )
         context.update(institution_filter_context(self.request))
         context["institution_query"] = institutions_query_string(self.request)
+        pref = getattr(self.request.user, "preference", None)
+        use_atlas = (
+            pref
+            and pref.interface_mode == "atlas"
+            and not self.request.GET.get("classic")
+        )
+        if use_atlas:
+            instituciones, _ = selected_instituciones(self.request)
+            context["citas_explore"] = citas_exploracion(instituciones)
+            context["atlas_citas_hub"] = True
+            context["atlas_citas_agenda"] = self.request.GET.get("ver") == "agenda"
         return context
+
+
+def _citas_page_context(request, title, lead, **extra):
+    context = dict(extra)
+    context.update(
+        atlas_stage_context(
+            request,
+            "citas",
+            title=title,
+            lead=lead,
+        )
+    )
+    return context
 
 
 class CitaCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
     template_name = "citas/form.html"
 
     def get(self, request):
-        return render(request, self.template_name, {"form": CitaForm(institucion=current_institucion(request))})
+        form = CitaForm(institucion=current_institucion(request))
+        ctx = _citas_page_context(
+            request,
+            "Agendar cita",
+            "Elija paciente, profesional, fecha y hora. Revise antes de confirmar.",
+            form=form,
+        )
+        return render(request, self.template_name, ctx)
 
     def post(self, request):
         institucion = current_institucion(request)
@@ -81,8 +115,16 @@ class CitaCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
             cita.tipo_agendamiento = "especifico"
             cita.save()
             messages.success(request, "Cita agendada correctamente.")
+            if atlas_stage_enabled(request):
+                return redirect(reverse("citas_lista") + "?ver=agenda")
             return redirect("citas_lista")
-        return render(request, self.template_name, {"form": form})
+        ctx = _citas_page_context(
+            request,
+            "Agendar cita",
+            "Corrija los campos marcados y vuelva a intentar.",
+            form=form,
+        )
+        return render(request, self.template_name, ctx)
 
 
 class CitaFlexibleCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
@@ -91,7 +133,13 @@ class CitaFlexibleCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
 
     def get(self, request):
         institucion = current_institucion(request)
-        return render(request, self.template_name, {"form": CitaFlexibleForm(institucion=institucion)})
+        ctx = _citas_page_context(
+            request,
+            "Agendamiento flexible",
+            "Indique rango de fechas y jornada; el sistema propone el primer turno libre.",
+            form=CitaFlexibleForm(institucion=institucion),
+        )
+        return render(request, self.template_name, ctx)
 
     def post(self, request):
         institucion = current_institucion(request)
@@ -100,7 +148,8 @@ class CitaFlexibleCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
             return redirect("citas_lista")
         form = CitaFlexibleForm(request.POST, institucion=institucion)
         if not form.is_valid():
-            return render(request, self.template_name, {"form": form})
+            ctx = _citas_page_context(request, "Agendamiento flexible", "Revise los datos del formulario.", form=form)
+            return render(request, self.template_name, ctx)
 
         service = FlexibleAgendamientoService(institucion)
         try:
@@ -114,10 +163,24 @@ class CitaFlexibleCreateView(LoginRequiredMixin, RecepcionRequiredMixin, View):
             )
         except SinTurnosDisponiblesError as exc:
             messages.error(request, str(exc))
-            return render(request, self.template_name, {"form": form, "sin_turnos": True})
+            ctx = _citas_page_context(
+                request,
+                "Agendamiento flexible",
+                "No hubo turnos; pruebe otro rango o jornada.",
+                form=form,
+                sin_turnos=True,
+            )
+            return render(request, self.template_name, ctx)
 
         messages.success(request, "Cita flexible asignada automaticamente.")
-        return render(request, self.resultado_template, {"cita": cita, "form": form})
+        ctx = _citas_page_context(
+            request,
+            "Cita confirmada",
+            "Resumen del turno asignado. Puede volver a la agenda o agendar otra.",
+            cita=cita,
+            form=form,
+        )
+        return render(request, self.resultado_template, ctx)
 
 
 @login_required

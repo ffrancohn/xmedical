@@ -3,9 +3,11 @@
     <div class="card-body">
         <div class="flex flex-wrap items-start gap-4 mb-2">
             <img src="{% static 'atlas-interactive/assets/v1/modulos/citas_agenda_abierta.webp' %}" alt="" width="100" height="110" loading="lazy" class="xm-atlas-module-hero">
-            <h2 class="card-title m-0">Agenda — exploración</h2>
+            <div>
+                <h2 class="card-title m-0">Agenda — exploración</h2>
+                <p class="text-sm opacity-70">Resumen del backend; confirmar citas siempre en el formulario oficial.</p>
+            </div>
         </div>
-        <p class="text-sm opacity-70">Resumen del backend; confirmar citas siempre en el formulario oficial.</p>
         <div class="grid grid-cols-2 gap-3 mt-3">
             <div class="xm-stat-card xm-card p-3">
                 <p class="text-xs opacity-70">Citas hoy</p>
@@ -17,16 +19,23 @@
             </div>
         </div>
         {% if explore.por_estado_hoy %}
-        <ul class="text-sm mt-3 space-y-1">
+        <ul class="text-sm mt-3 space-y-2">
             {% for row in explore.por_estado_hoy %}
-            <li><span class="badge badge-ghost badge-sm">{{ row.estado }}</span> {{ row.total }}</li>
+            <li class="flex items-center gap-2">
+                {% if row.icon %}
+                <img src="{% static row.icon %}" alt="" width="22" height="22" loading="lazy">
+                {% endif %}
+                <span>{{ row.label|default:row.estado }}</span>
+                <span class="badge badge-ghost badge-sm">{{ row.total }}</span>
+            </li>
             {% endfor %}
         </ul>
         {% endif %}
         <div class="flex flex-wrap gap-2 mt-4">
-            <a href="{% url 'citas_lista' %}?fecha={{ explore.fecha|date:'Y-m-d' }}" class="btn btn-sm btn-outline">Citas de hoy</a>
-            <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-outline">Todas las citas</a>
+            <a href="{% url 'citas_lista' %}?ver=agenda&fecha={{ explore.fecha|date:'Y-m-d' }}&vista=dia#xm-atlas-acciones" class="btn btn-sm btn-outline">Citas de hoy</a>
+            <a href="{% url 'citas_lista' %}?ver=agenda&vista=mes#xm-atlas-acciones" class="btn btn-sm btn-outline">Calendario mes</a>
             <a href="{% url 'citas_agendar' %}" class="btn btn-sm btn-primary">Agendar cita</a>
         </div>
+        <p class="xm-atlas-fallback mt-2"><a href="{% url 'citas_lista' %}?classic=1" class="link">Abrir agenda en vista clásica</a></p>
     </div>
 </div>

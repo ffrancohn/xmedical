@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-{% load xmedical_tags %}
 {% block title %}Paciente{% endblock %}
+{% block body_class %}{% if atlas_stage %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
+{% if atlas_stage %}
+{% include 'atlas/stage_begin.html' %}
+{% include 'pacientes/partials/form_fields.html' %}
+{% include 'atlas/stage_end.html' %}
+{% else %}
 <div class="max-w-3xl mx-auto">
     <div class="xm-page-header">
         <div>
@@ -9,50 +14,11 @@
             <h1 class="xm-page-header__title">Paciente</h1>
         </div>
     </div>
-
     <div class="xm-card">
         <div class="p-6 lg:p-8">
-            <div class="alert alert-info text-sm mb-6">
-                <span>Puede escanear un documento para autocompletar datos.</span>
-                <a href="{% url 'pacientes_ocr_subir' %}" class="btn btn-sm btn-outline">Escanear cédula/pasaporte</a>
-            </div>
-            <form method="post" class="xm-form">
-                {% csrf_token %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% form_field form.documento %}
-                    {% form_field form.fecha_nacimiento %}
-                    {% form_field form.nombre %}
-                    {% form_field form.apellido %}
-                    {% form_field form.sexo %}
-                    {% form_field form.activo %}
-                </div>
-                <div class="divider">Contacto</div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {% form_field form.telefono %}
-                    {% form_field form.telefono_fijo %}
-                    {% form_field form.email %}
-                </div>
-                <div class="divider">Dirección</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% form_field form.ciudad %}
-                    {% form_field form.departamento %}
-                </div>
-                {% form_field form.direccion %}
-                <div class="divider">Emergencia y notas</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% form_field form.contacto_emergencia_nombre %}
-                    {% form_field form.contacto_emergencia_telefono %}
-                </div>
-                {% form_field form.observaciones %}
-                {% if form.errors %}
-                <div class="alert alert-error text-sm">{{ form.errors }}</div>
-                {% endif %}
-                <div class="flex gap-2 pt-4">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="{% url 'pacientes_lista' %}" class="btn btn-ghost">Cancelar</a>
-                </div>
-            </form>
+            {% include 'pacientes/partials/form_fields.html' %}
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

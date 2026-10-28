@@ -1,0 +1,23 @@
+{% load xmedical_tags %}
+{% if ocr_meta.manual_fallback %}
+<div class="alert alert-warning">No se pudo extraer automáticamente. Complete los campos manualmente.</div>
+{% else %}
+<p class="text-sm opacity-80 mb-3">Proveedor: {{ ocr_meta.proveedor }} · Confianza: {{ ocr_meta.confianza|floatformat:2 }}</p>
+{% endif %}
+<form method="post" class="xm-form xm-atlas-form">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% form_field form.documento %}
+        {% form_field form.fecha_nacimiento %}
+        {% form_field form.nombre %}
+        {% form_field form.apellido %}
+        {% form_field form.sexo %}
+    </div>
+    {% if form.errors %}
+    <div class="alert alert-error text-sm mt-3">{{ form.errors }}</div>
+    {% endif %}
+    <div class="flex flex-wrap gap-2 pt-4">
+        <button type="submit" class="btn btn-primary">Confirmar y continuar</button>
+        <a href="{% url 'pacientes_ocr_subir' %}" class="btn btn-ghost">Volver a subir</a>
+    </div>
+</form>

@@ -1,0 +1,83 @@
+{% load xmedical_tags %}
+<div class="xm-atlas-desk-panel__head">
+    <h2 class="xm-atlas-desk-panel__title">Agenda · {{ vista|title }} · {{ selected_date }}</h2>
+    <div class="flex flex-wrap gap-2">
+        <a href="{% url 'citas_agendar' %}" class="btn btn-primary btn-sm">Agendar</a>
+        <a href="{% url 'citas_lista' %}?classic=1" class="btn btn-ghost btn-sm">Vista clásica</a>
+    </div>
+</div>
+
+<div class="flex flex-wrap gap-2 mb-4">
+    <a href="{% url 'citas_lista' %}?ver=agenda&vista=lista&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'lista' %}btn-primary{% else %}btn-outline{% endif %}">Lista</a>
+    <a href="{% url 'citas_lista' %}?ver=agenda&vista=dia&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'dia' %}btn-primary{% else %}btn-outline{% endif %}">Día</a>
+    <a href="{% url 'citas_lista' %}?ver=agenda&vista=semana&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'semana' %}btn-primary{% else %}btn-outline{% endif %}">Semana</a>
+    <a href="{% url 'citas_lista' %}?ver=agenda&vista=mes&fecha={{ selected_date|date:'Y-m-d' }}{{ institution_query }}" class="btn btn-sm {% if vista == 'mes' %}btn-primary{% else %}btn-outline{% endif %}">Mes</a>
+</div>
+
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+    <div class="join">
+        <a class="btn join-item btn-sm" href="{% url 'citas_lista' %}?ver=agenda&vista={{ vista }}&fecha={{ prev_date|date:'Y-m-d' }}{{ institution_query }}">←</a>
+        <a class="btn join-item btn-sm btn-primary" href="{% url 'citas_lista' %}?ver=agenda&vista={{ vista }}&fecha={{ today|date:'Y-m-d' }}{{ institution_query }}">Hoy</a>
+        <a class="btn join-item btn-sm" href="{% url 'citas_lista' %}?ver=agenda&vista={{ vista }}&fecha={{ next_date|date:'Y-m-d' }}{{ institution_query }}">→</a>
+    </div>
+    <form class="flex gap-2">
+        <input type="hidden" name="ver" value="agenda">
+        <input type="hidden" name="vista" value="{{ vista }}">
+        <input type="date" name="fecha" value="{{ selected_date|date:'Y-m-d' }}" class="input input-bordered input-sm">
+        <button type="submit" class="btn btn-sm">Ir</button>
+    </form>
+</div>
+
+{% include 'partials/institution_filter.html' %}
+
+{% if vista == 'dia' %}
+    <div class="space-y-2">
+        {% for cita in citas_dia %}
+            <div class="xm-atlas-agenda-row">
+                <span class="xm-atlas-agenda-row__time">{{ cita.hora|time:"H:i" }}</span>
+                <span class="flex-1">
+                    <span class="font-medium">{{ cita.paciente }}</span>
+                    <span class="text-xs opacity-70 block">{{ cita.profesional.nombre }}</span>
+                </span>
+                {% include 'atlas/cita_estado_badge.html' with estado_icon=cita.estado|estado_cita_icon label=cita.get_estado_display %}
+            </div>
+        {% empty %}
+            <p class="text-sm opacity-70 text-center py-6">No hay citas este día.</p>
+        {% endfor %}
+    </div>
+{% elif vista == 'semana' %}
+    <div class="grid grid-cols-1 md:grid-cols-7 gap-2">
+        {% for day in semana %}
+            <div class="xm-atlas-mini-cal p-2">
+                <p class="font-bold text-xs mb-1">{{ day.date|date:"D d/m" }}</p>
+                {% for cita in day.citas %}
+                    <p class="text-xs">{{ cita.hora|time:"H:i" }} {{ cita.paciente|truncatechars:12 }}</p>
+                {% empty %}
+                    <p class="text-xs opacity-40">—</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% elif vista == 'mes' %}
+    {% include 'citas/partials/calendario_mes.html' with month=mes %}
+{% else %}
+    <div class="xm-table-wrap xm-atlas-desk-panel__table">
+        <table class="table table-sm">
+            <thead><tr>{% if is_superadmin_view %}<th>Clínica</th>{% endif %}<th>Fecha</th><th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+            {% for cita in citas %}
+                <tr>
+                    {% if is_superadmin_view %}<td>{{ cita.institucion.nombre }}</td>{% endif %}
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora|time:"H:i" }}</td>
+                    <td>{{ cita.paciente }}</td>
+                    <td>{% include 'atlas/cita_estado_badge.html' with estado_icon=cita.estado|estado_cita_icon label=cita.get_estado_display %}</td>
+                    <td><a href="{% url 'citas_cancelar' cita.id %}" class="btn btn-xs btn-outline">Cancelar</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6" class="text-center py-6 opacity-70">No hay citas.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

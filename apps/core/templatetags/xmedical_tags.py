@@ -3,6 +3,8 @@ from django.template.loader import render_to_string
 from django.urls import NoReverseMatch, reverse
 from django.utils.safestring import mark_safe
 
+from apps.core.atlas_assets import estado_cita_icon as atlas_estado_cita_icon
+
 register = template.Library()
 
 
@@ -176,6 +178,12 @@ def breadcrumbs(items):
 @register.inclusion_tag("components/form_field.html")
 def form_field(field, help_text=""):
     return {"field": field, "help_text": help_text}
+
+
+@register.filter
+def estado_cita_icon(value):
+    """Ruta static del icono Atlas para un estado de cita."""
+    return atlas_estado_cita_icon(value)
 
 
 @register.filter

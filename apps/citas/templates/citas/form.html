@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
+{% block title %}Agendar cita{% endblock %}
+{% block body_class %}{% if atlas_stage %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
+{% if atlas_stage %}
+{% include 'atlas/stage_begin.html' %}
+{% include 'citas/partials/form_especifico_fields.html' %}
+{% include 'atlas/stage_end.html' %}
+{% else %}
 <div class="max-w-2xl mx-auto xm-card">
     <div class="card-body">
-        <h1 class="card-title">Agendar cita especifica</h1>
-        <form method="post" class="space-y-3">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="btn btn-primary">Agendar</button>
-            <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-ghost">Usar agendamiento flexible</a>
-        </form>
+        <h1 class="card-title">Agendar cita específica</h1>
+        {% include 'citas/partials/form_especifico_fields.html' %}
     </div>
 </div>
+{% endif %}
 {% endblock %}

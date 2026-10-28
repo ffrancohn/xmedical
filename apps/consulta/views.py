@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -12,6 +13,7 @@ from apps.core.ai_institution_config import ai_provider_badge
 from apps.core.ai_services import AIConfigurationError, AIRequestError
 from apps.core.audit import log_ia_usage
 from apps.core.permissions import CAN_CONSULTA, CAN_VIEW_HISTORIA, MedicoRequiredMixin, role_required
+from apps.core.atlas_layout import atlas_stage_context
 from apps.core.views import current_institucion
 from apps.pacientes.models import Paciente
 from apps.variables_clinicas.forms import build_variables_form, guardar_valores_variables
@@ -230,4 +232,14 @@ def historia_clinica(request, paciente_id):
     )
     if institucion:
         consultas = consultas.filter(institucion=institucion)
-    return render(request, "consulta/historia.html", {"paciente": paciente, "consultas": consultas})
+    context = {"paciente": paciente, "consultas": consultas}
+    context.update(
+        atlas_stage_context(
+            request,
+            "historia",
+            title="Historia clínica",
+            lead=f"{paciente.nombre} {paciente.apellido} · documento {paciente.documento}",
+            back_url=reverse("pacientes_detalle", kwargs={"pk": paciente.pk}),
+        )
+    )
+    return render(request, "consulta/historia.html", context)

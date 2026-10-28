@@ -1,0 +1,25 @@
+{% load xmedical_tags %}
+<form method="post" class="xm-form xm-atlas-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-error text-sm">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% form_field form.paciente %}
+        {% form_field form.especialidad %}
+        {% form_field form.profesional %}
+        {% form_field form.fecha %}
+        {% form_field form.hora %}
+        {% form_field form.estado %}
+    </div>
+    <p class="text-xs opacity-70 mt-2">El sistema valida horario del médico y evita choques con otras citas activas.</p>
+    <div class="flex flex-wrap gap-2 pt-4">
+        <button type="submit" class="btn btn-primary">Confirmar cita</button>
+        <a href="{% url 'citas_agendar_flexible' %}" class="btn btn-ghost">Agendamiento flexible</a>
+        {% if atlas_stage_back_url %}
+        <a href="{{ atlas_stage_back_url }}" class="btn btn-ghost">Cancelar</a>
+        {% else %}
+        <a href="{% url 'citas_lista' %}" class="btn btn-ghost">Cancelar</a>
+        {% endif %}
+    </div>
+</form>

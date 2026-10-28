@@ -46,9 +46,31 @@ def visual_preferences(request):
 
         atlas_iso_scene = resolve_atlas_iso_scene(request)
     atlas_interactive = interface_mode == "atlas" and request.user.is_authenticated
+    atlas_nav_active = None
+    show_atlas_recepcion_nav = False
+    if atlas_interactive:
+        profesional = get_profesional(request.user)
+        is_recepcion = bool(
+            profesional and profesional.tipo == "recepcionista"
+        ) or request.user.is_superuser
+        match = getattr(request, "resolver_match", None)
+        url_name = getattr(match, "url_name", None) or ""
+        _nav_urls = {
+            "dashboards_recepcion": "recepcion",
+            "pacientes_lista": "pacientes",
+            "pacientes_nuevo": "pacientes",
+            "citas_lista": "citas",
+            "citas_agendar": "citas",
+            "citas_agendar_flexible": "citas",
+        }
+        if is_recepcion and url_name in _nav_urls:
+            show_atlas_recepcion_nav = True
+            atlas_nav_active = _nav_urls[url_name]
     return {
         "visual_theme": theme,
         "interface_mode": interface_mode,
         "atlas_iso_scene": atlas_iso_scene,
         "atlas_interactive": atlas_interactive,
+        "show_atlas_recepcion_nav": show_atlas_recepcion_nav,
+        "atlas_nav_active": atlas_nav_active,
     }

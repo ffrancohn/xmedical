@@ -1,11 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Inicio recepción{% endblock %}
+{% block body_class %}{% if interface_mode == 'atlas' and atlas_hub %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
 {% include 'components/atlas_enable_hint.html' %}
 {% if interface_mode == 'atlas' and atlas_hub %}
-{% include 'atlas/hub_recepcion.html' %}
+<div class="xm-atlas-viewport">
+    {% include 'atlas/hub_recepcion.html' %}
+    <aside class="xm-atlas-desk-panel xm-atlas-desk-panel--hilo" data-atlas-hilo id="xm-atlas-acciones" aria-label="Atención del día">
+        {% include 'components/hilo.html' %}
+    </aside>
+</div>
 {% elif interface_mode == 'atlas' %}
 {% include 'components/atlas_hero.html' with hero_kicker="Hoy" hero_title="Recepción" hero_desc="Quién no ha llegado y quién ya está en sala." atlas_hero_actions_template="components/recepcion_hero_actions.html" %}
+{% include 'components/hilo.html' %}
 {% else %}
 <div class="xm-page-header">
     <div>
@@ -15,6 +22,6 @@
         {% include 'components/recepcion_hero_actions.html' %}
     </div>
 </div>
-{% endif %}
 {% include 'components/hilo.html' %}
+{% endif %}
 {% endblock %}

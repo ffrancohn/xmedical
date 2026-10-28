@@ -1,0 +1,19 @@
+{% load static %}
+<div class="xm-atlas-viewport xm-atlas-viewport--stage">
+    <header class="xm-atlas-stage-head">
+        <div class="xm-atlas-stage-head__visual" aria-hidden="true">
+            <img src="{% static atlas_stage_icon %}" alt="" width="72" height="72" loading="lazy" class="xm-atlas-stage-head__img">
+        </div>
+        <div class="xm-atlas-stage-head__copy">
+            <h1 class="xm-atlas-stage-head__title">{{ atlas_stage_title }}</h1>
+            {% if atlas_stage_lead %}
+            <p class="xm-atlas-stage-head__lead">{{ atlas_stage_lead }}</p>
+            {% endif %}
+            <p class="xm-atlas-stage-head__hint">Mismos datos y permisos que la vista clásica; el entorno es isométrico para orientarte.</p>
+        </div>
+        <div class="xm-atlas-stage-head__actions">
+            <a href="{{ atlas_stage_back_url }}" class="btn btn-sm btn-outline">{{ atlas_stage_back_label }}</a>
+            <a href="{{ request.path }}?classic=1{% if request.GET.urlencode %}&amp;{{ request.GET.urlencode }}{% endif %}" class="btn btn-sm btn-ghost">Vista clásica</a>
+        </div>
+    </header>
+    <aside class="xm-atlas-desk-panel xm-atlas-desk-panel--form" aria-label="{{ atlas_stage_title }}">
