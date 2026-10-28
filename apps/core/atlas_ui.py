@@ -14,6 +14,13 @@ _ROUTE_SCENES: dict[str, str] = {
     "configuracion_ia": "admin",
     "preferencias_visuales": "clinic",
     "portal_dashboard": "paciente",
+    "pacientes_lista": "recepcion",
+    "pacientes_nuevo": "recepcion",
+    "pacientes_detalle": "recepcion",
+    "pacientes_editar": "recepcion",
+    "citas_lista": "recepcion",
+    "citas_agendar": "recepcion",
+    "citas_agendar_flexible": "recepcion",
 }
 
 _ROLE_SCENES: dict[str, str] = {
@@ -64,7 +71,7 @@ def resolve_atlas_iso_scene(request) -> str | None:
         if role and role in _ROLE_SCENES:
             return _ROLE_SCENES[role]
         from apps.portal_paciente.decorators import get_perfil_paciente
-        from apps.core.decorators import current_institucion
+        from apps.core.views import current_institucion
 
         if get_perfil_paciente(user, current_institucion(request)):
             return "paciente"

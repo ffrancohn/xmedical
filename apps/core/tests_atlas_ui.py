@@ -10,8 +10,14 @@ class ResolveAtlasIsoSceneTests(SimpleTestCase):
         request.user = type("U", (), {"is_authenticated": False})()
         self.assertEqual(resolve_atlas_iso_scene(request), "recepcion")
 
-    def test_default_clinic(self):
+    def test_ruta_pacientes_recepcion(self):
         request = RequestFactory().get("/pacientes/")
         request.resolver_match = type("M", (), {"url_name": "pacientes_lista"})()
         request.user = type("U", (), {"is_authenticated": False})()
-        self.assertEqual(resolve_atlas_iso_scene(request), "clinic")
+        self.assertEqual(resolve_atlas_iso_scene(request), "recepcion")
+
+    def test_ruta_citas_recepcion(self):
+        request = RequestFactory().get("/citas/")
+        request.resolver_match = type("M", (), {"url_name": "citas_lista"})()
+        request.user = type("U", (), {"is_authenticated": False})()
+        self.assertEqual(resolve_atlas_iso_scene(request), "recepcion")
