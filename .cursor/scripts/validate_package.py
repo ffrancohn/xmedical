@@ -1,6 +1,6 @@
 from pathlib import Path
 import re
-root=Path(__file__).resolve().parents[1]/'.cursor'/'skills'
+root = Path(__file__).resolve().parent.parent / "skills"
 expected=['visual-design-architect','interactive-deck-studio','isometric-interface-builder','visual-quality-auditor']
 errors=[]
 for name in expected:

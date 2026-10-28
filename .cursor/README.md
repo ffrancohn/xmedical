@@ -26,7 +26,7 @@ Se pueden abrir directamente en el navegador. No requieren npm ni librerías ext
 Las skills son instrucciones para agentes, no plugins ejecutables ni motores de render autónomos. Los ejemplos HTML son demostraciones independientes. Para usar estas técnicas en React, Vue, Flutter o React Native, el agente debe integrarlas en la arquitectura específica; en Flutter/React Native no se debe asumir que DOM/HTML corre como componente nativo.
 
 ## Validación
-El archivo `scripts/validate_package.py` revisa existencia de carpetas, metadatos mínimos, nombres y recursos. No sustituye pruebas visuales en navegador ni una validación oficial completa de Agent Skills.
+El archivo `.cursor/scripts/validate_package.py` revisa existencia de carpetas, metadatos mínimos, nombres y recursos. Ejecutar desde la raíz del repo: `python3 .cursor/scripts/validate_package.py`. No sustituye pruebas visuales en navegador ni una validación oficial completa de Agent Skills.
 
 ## Estándar de referencia
 https://cursor.com/docs/skills
