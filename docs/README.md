@@ -9,6 +9,7 @@
 | Backend Django 4.2 | ✅ Producción | Gunicorn + systemd |
 | Frontend web (plantillas) | ✅ Producción | https://xmedical.cloud |
 | Interfaz Atlas (isométrica) | ✅ En `master` | [doc 18](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md); skills en [`.cursor/README.md`](../.cursor/README.md) |
+| Arquitectura visual pantallas | ✅ Documentado | [doc 21](21%20Arquitectura%20Visual%20Pantallas.md), briefs en [`visual-briefs/`](visual-briefs/) |
 | PostgreSQL + Redis | ✅ Docker | Puertos 5432 / 6379 |
 | HTTPS | ✅ Let's Encrypt | Certificado auto-renovable |
 | Multi-tenant (subdominio) | ✅ Implementado | `TenantMiddleware` |
@@ -49,6 +50,7 @@
 | 18 | [Interfaz Atlas — despliegue producción](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) | **PR #22**, migrate, collectstatic, rollback |
 | 19 | [Gitflow XMedical](19%20Gitflow%20XMedical.md) | `master`, `develop`, feature/release/hotfix |
 | 20 | [Archivo: idea original «Agente Médico»](20%20Archivo%20Idea%20Original%20Agente%20Medico.md) | Registro histórico del repo `agentemedico` (eliminado) |
+| 21 | [Arquitectura visual pantallas](21%20Arquitectura%20Visual%20Pantallas.md) | Matriz `url_name` → representación; Atlas vs classic; skill visual-design-architect |
 
 ### Planificación por módulo
 

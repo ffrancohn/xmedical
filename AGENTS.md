@@ -43,6 +43,8 @@ Leer el `SKILL.md` correspondiente **antes** de diseñar o refactorizar UI visua
 
 Índice y ejemplos de prompts: `.cursor/README.md`. Validación: `python3 .cursor/scripts/validate_package.py`.
 
+**Pantalla nueva o rediseño UI:** (1) Consultar la matriz en `docs/21 Arquitectura Visual Pantallas.md` (añadir fila si falta). (2) Invocar **`visual-design-architect`** para comparar representaciones y, si aplica, rellenar un brief en `docs/visual-briefs/` a partir de `.cursor/skills/visual-design-architect/assets/visual-brief.template.md`. (3) Implementar la **primaria** (tabla, formulario, wizard, hilo) en templates Django; usar **`isometric-interface-builder`** solo si el brief aprueba complemento Atlas (`atlas_scene_banner` / `atlas_hero`) y actualizar `apps/core/atlas_ui.py`. (4) Cerrar con **`visual-quality-auditor`** si se modificó Atlas o CSS global.
+
 ### Graphify (opcional)
 
 Regla `.cursor/rules/graphify.mdc`: explorar dependencias con `graphify query` **si la CLI está instalada** en el entorno. Artefactos locales en `graphify-out/` (caché ignorada en git); regenerar con `graphify update .` tras cambios amplios.

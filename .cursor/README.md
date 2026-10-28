@@ -44,6 +44,7 @@ Comprueba las cuatro skills, frontmatter y rutas. No sustituye prueba manual en 
 - Código: `static/js/iso.js`, `static/css/atlas.css`, `apps/core/atlas_ui.py`.
 - Prototipo estático: `deck/prototipo/`.
 - Despliegue: [docs/18 Interfaz Atlas Despliegue Produccion.md](../docs/18%20Interfaz%20Atlas%20Despliegue%20Produccion.md).
+- Matriz pantallas (visual-design-architect): [docs/21 Arquitectura Visual Pantallas.md](../docs/21%20Arquitectura%20Visual%20Pantallas.md).
 
 Para nuevas pantallas isométricas en Django, combinar **isometric-interface-builder** (diseño) con el motor existente `iso.js` (no reescribir desde cero salvo necesidad).
 

@@ -21,6 +21,10 @@ _ROUTE_SCENES: dict[str, str] = {
     "citas_lista": "recepcion",
     "citas_agendar": "recepcion",
     "citas_agendar_flexible": "recepcion",
+    "preclinica_lista": "enfermeria",
+    "preclinica_registro": "enfermeria",
+    "consulta_wizard": "medico",
+    "historia_clinica": "medico",
 }
 
 _ROLE_SCENES: dict[str, str] = {

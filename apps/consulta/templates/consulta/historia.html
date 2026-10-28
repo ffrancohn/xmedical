@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% include 'components/atlas_scene_banner.html' %}
 <h1 class="text-2xl font-bold mb-1">Historia clinica</h1>
 <p class="mb-4">{{ paciente.nombre }} {{ paciente.apellido }} - {{ paciente.documento }}</p>
 <div class="space-y-4">
