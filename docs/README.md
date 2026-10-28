@@ -48,6 +48,7 @@
 | 17 | [Características, pantallas y Flujo 6](17%20Caracteristicas%20Pantallas%20y%20Flujo%206%20Diagnostico.md) | Catálogo UI + paso Diagnóstico |
 | 18 | [Interfaz Atlas — despliegue producción](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) | **PR #22**, migrate, collectstatic, rollback |
 | 19 | [Gitflow XMedical](19%20Gitflow%20XMedical.md) | `master`, `develop`, feature/release/hotfix |
+| 20 | [Archivo: idea original «Agente Médico»](20%20Archivo%20Idea%20Original%20Agente%20Medico.md) | Registro histórico del repo `agentemedico` (eliminado) |
 
 ### Planificación por módulo
 
