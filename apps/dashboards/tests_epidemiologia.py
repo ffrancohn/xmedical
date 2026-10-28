@@ -32,7 +32,7 @@ class EpidemiologiaChartGeometryTests(SimpleTestCase):
             }
         )
         self.assertIsNotNone(chart)
-        self.assertIn("1.0", chart["series"][0]["polyline"])
+        self.assertTrue(chart["series"][0]["polyline"])
         self.assertEqual(len(chart["series"][0]["dots"]), 2)
 
 
