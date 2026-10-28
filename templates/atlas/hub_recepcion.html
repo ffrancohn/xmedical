@@ -1,3 +1,4 @@
+{% load static %}
 {# Hub isométrico interactivo — recepción. Requiere atlas_modules, pacientes_explore, citas_explore #}
 <section class="xm-atlas-hub" data-atlas-hub data-atlas-initial-module="">
     <p class="text-sm opacity-80 mb-2">Selecciona un módulo para explorar. Las acciones reales siguen abajo o en el panel.</p>
@@ -5,8 +6,12 @@
         <div class="xm-atlas-hub__objects">
             {% for mod in atlas_modules %}
             <button type="button" class="xm-atlas-object" data-atlas-module="{{ mod.id }}"
-                aria-controls="xm-atlas-explore">
-                <span class="xm-atlas-object__visual xm-atlas-object__visual--{{ mod.metaphor }}" aria-hidden="true">{{ mod.icon }}</span>
+                aria-controls="xm-atlas-explore"
+                data-atlas-img-closed="{% static mod.asset_closed %}"
+                data-atlas-img-open="{% static mod.asset_open %}">
+                <span class="xm-atlas-object__visual xm-atlas-object__visual--{{ mod.metaphor }}">
+                    <img src="{% static mod.asset_closed %}" alt="" width="120" height="120" loading="lazy" class="xm-atlas-object__img">
+                </span>
                 <span class="xm-atlas-object__label">{{ mod.label }}</span>
                 <span class="xm-atlas-object__desc">{{ mod.description }}</span>
             </button>

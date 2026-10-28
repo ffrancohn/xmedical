@@ -11,7 +11,11 @@ from django.utils import timezone
 
 from apps.citas.models import Cita
 from apps.core.models import Institucion
+from django.conf import settings
+
 from apps.pacientes.models import Paciente
+
+AVATAR_ASSET_BASE = "atlas-interactive/assets/v1/avatares"
 
 # Rangos por defecto; override en institucion.configuracion["pacientes_grupos_edad"]
 DEFAULT_AGE_BUCKETS: tuple[dict, ...] = (
@@ -61,6 +65,15 @@ def birth_date_range_for_bucket(bucket_id: str, buckets: list[dict], on_date=Non
     return None, None
 
 
+def avatar_static_paths(group_id: str, limit: int = 4) -> list[str]:
+    """Rutas static de avatares genéricos por prefijo de grupo (sin PHI)."""
+    folder = settings.BASE_DIR / "static" / "atlas-interactive" / "assets" / "v1" / "avatares"
+    if not folder.is_dir():
+        return []
+    paths = sorted(folder.glob(f"{group_id}_*.webp"))[:limit]
+    return [f"{AVATAR_ASSET_BASE}/{p.name}" for p in paths]
+
+
 def pacientes_exploracion(instituciones, institucion_principal=None) -> dict:
     """Conteos por grupo de edad; avatares son índices genéricos, no pacientes reales."""
     buckets = get_age_buckets(institucion_principal or (instituciones[0] if instituciones else None))
@@ -84,12 +97,14 @@ def pacientes_exploracion(instituciones, institucion_principal=None) -> dict:
 
     grupos = []
     for b in buckets:
+        avatars = avatar_static_paths(b["id"], limit=4)
         grupos.append(
             {
                 "id": b["id"],
                 "label": b["label"],
                 "count": counts.get(b["id"], 0),
-                "avatar_variants": min(8, max(3, counts.get(b["id"], 0))),
+                "avatar_paths": avatars,
+                "avatar_variants": len(avatars) or min(4, max(1, counts.get(b["id"], 0))),
                 "sexo": dict(sexo_por_grupo.get(b["id"], {})),
             }
         )

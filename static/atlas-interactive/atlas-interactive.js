@@ -15,6 +15,13 @@
     const panels = explore.querySelectorAll("[data-atlas-panel]");
     const objects = root.querySelectorAll("[data-atlas-module]");
 
+    function setObjectImage(btn, open) {
+      const img = btn.querySelector(".xm-atlas-object__img");
+      if (!img) return;
+      const src = open ? btn.getAttribute("data-atlas-img-open") : btn.getAttribute("data-atlas-img-closed");
+      if (src) img.src = src;
+    }
+
     function showPanel(moduleId) {
       panels.forEach((panel) => {
         const match = panel.getAttribute("data-atlas-panel") === moduleId;
@@ -22,8 +29,10 @@
       });
       explore.hidden = false;
       objects.forEach((btn) => {
-        btn.classList.toggle("is-active", btn.getAttribute("data-atlas-module") === moduleId);
-        btn.setAttribute("aria-expanded", btn.getAttribute("data-atlas-module") === moduleId ? "true" : "false");
+        const active = btn.getAttribute("data-atlas-module") === moduleId;
+        btn.classList.toggle("is-active", active);
+        btn.setAttribute("aria-expanded", active ? "true" : "false");
+        setObjectImage(btn, active);
       });
       if (!prefersReducedMotion()) {
         explore.scrollIntoView({ behavior: "smooth", block: "start" });

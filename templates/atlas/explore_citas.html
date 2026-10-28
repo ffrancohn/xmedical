@@ -1,6 +1,10 @@
+{% load static %}
 <div class="xm-card">
     <div class="card-body">
-        <h2 class="card-title">Agenda — exploración</h2>
+        <div class="flex flex-wrap items-start gap-4 mb-2">
+            <img src="{% static 'atlas-interactive/assets/v1/modulos/citas_agenda_abierta.webp' %}" alt="" width="100" height="110" loading="lazy" class="xm-atlas-module-hero">
+            <h2 class="card-title m-0">Agenda — exploración</h2>
+        </div>
         <p class="text-sm opacity-70">Resumen del backend; confirmar citas siempre en el formulario oficial.</p>
         <div class="grid grid-cols-2 gap-3 mt-3">
             <div class="xm-stat-card xm-card p-3">

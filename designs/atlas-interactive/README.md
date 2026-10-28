@@ -1,37 +1,38 @@
 # Diseños — interfaz isométrica interactiva (Atlas)
 
-Carpeta para **artes finales** antes de exportar a `static/atlas-interactive/assets/`.
+## Paquete v1 (`xmedical_visual_assets_v1`)
 
-## Estructura
+| Ubicación | Contenido |
+|-----------|-----------|
+| [`exports/xmedical_visual_assets_v1.zip`](exports/xmedical_visual_assets_v1.zip) | Archivo original entregado |
+| [`source/v1/`](source/v1/) | Extracción completa + `manifest.json` + README del paquete |
+| [`pacientes/archivador/`](pacientes/archivador/) | Copia de referencia archivador cerrado/abierto |
+| [`citas/agenda/`](citas/agenda/) | Agenda cerrada/abierta |
+| [`recepcion/`](recepcion/) | Mostrador y sala de espera |
 
-| Carpeta | Contenido esperado |
-|---------|-------------------|
-| `recepcion/` | Hub mostrador: idle, hover, estados de módulos |
-| `pacientes/archivador/` | Archivador: cerrado, destacado, abierto |
-| `citas/agenda/` | Agenda sobre escritorio |
-| `exports/` | WebP @1x/@2x, SVG de apoyo, sprites |
+## Servidos por Django (producción)
+
+Los WebP activos están en:
+
+`static/atlas-interactive/assets/v1/`
+
+- `modulos/` — metáforas por módulo (archivador, agenda, recepción, …)
+- `avatares/` — genéricos por grupo de edad (`ninos_01.webp`, …)
+- `estados/` — iconos de estado de cita
+- `documentos/` — carpetas, recetas, estudios
+- `profesionales/` — roles clínicos
+
+Metadatos: [`static/atlas-interactive/manifest.v1.json`](../../static/atlas-interactive/manifest.v1.json)
 
 ## Convención de nombres
 
 ```
-{modulo}-{estado}@{escala}.webp
+{modulo}_{estado}.webp
+{grupo_edad}_{variante}.webp
 ```
 
-Ejemplos: `archivador-idle@1x.webp`, `archivador-open@2x.webp`.
-
-## Estados por objeto
-
-- `idle` — reposo
-- `focus` — teclado / selección
-- `active` — seleccionado
-- `open` — animación de apertura (exploración)
-
-Documentar en cada subcarpeta un `NOTES.md` con medidas y puntos de anclaje para hotspots.
+Estados de módulo: `cerrado` / `abierto` (o `cerrada` / `abierta` en agenda).
 
 ## Integración
 
-Tras aprobar diseños, copiar optimizados a:
-
-`static/atlas-interactive/assets/<modulo>/`
-
-Y registrar en `static/atlas-interactive/catalog.json`.
+Tras actualizar artes, copiar de `source/v1/` a `static/atlas-interactive/assets/v1/` y ejecutar `collectstatic` en producción.

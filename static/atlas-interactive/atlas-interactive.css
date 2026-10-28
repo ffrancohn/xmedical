@@ -62,19 +62,35 @@
 }
 
 .xm-atlas-object__visual {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 7rem;
+  height: 7rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
   border-radius: 0.75rem;
-  background: hsl(var(--p) / 0.12);
+  background: transparent;
 }
 
-.xm-atlas-object__visual--archivador { background: linear-gradient(135deg, #4a5568, #718096); }
-.xm-atlas-object__visual--agenda { background: linear-gradient(135deg, #2c5282, #4299e1); }
-.xm-atlas-object__visual--mostrador { background: linear-gradient(135deg, #285e61, #38b2ac); }
+.xm-atlas-object__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.xm-atlas-avatar-img {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  background: hsl(var(--bc) / 0.08);
+}
+
+.xm-atlas-module-hero {
+  object-fit: contain;
+}
 
 .xm-atlas-object__label {
   font-weight: 600;

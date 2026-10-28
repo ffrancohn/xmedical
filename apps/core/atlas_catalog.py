@@ -7,13 +7,18 @@ from dataclasses import dataclass
 from apps.pacientes.views import can_view_pacientes
 
 
+ASSET_VERSION = "v1"
+ASSET_BASE = f"atlas-interactive/assets/{ASSET_VERSION}/modulos"
+
+
 @dataclass(frozen=True)
 class AtlasModule:
     id: str
     label: str
     metaphor: str
     description: str
-    icon: str  # clase / emoji placeholder hasta WebP
+    asset_closed: str
+    asset_open: str
 
 
 _MODULES: tuple[AtlasModule, ...] = (
@@ -22,21 +27,24 @@ _MODULES: tuple[AtlasModule, ...] = (
         label="Pacientes",
         metaphor="archivador",
         description="Expedientes clínicos y archivador",
-        icon="📁",
+        asset_closed=f"{ASSET_BASE}/pacientes_archivador_cerrado.webp",
+        asset_open=f"{ASSET_BASE}/pacientes_archivador_abierto.webp",
     ),
     AtlasModule(
         id="citas",
         label="Citas",
         metaphor="agenda",
         description="Agenda, horarios y reservas",
-        icon="📅",
+        asset_closed=f"{ASSET_BASE}/citas_agenda_cerrada.webp",
+        asset_open=f"{ASSET_BASE}/citas_agenda_abierta.webp",
     ),
     AtlasModule(
         id="flujo_dia",
         label="Atención del día",
         metaphor="mostrador",
         description="Cola y estaciones de recepción",
-        icon="🏥",
+        asset_closed=f"{ASSET_BASE}/recepcion.webp",
+        asset_open=f"{ASSET_BASE}/sala_espera.webp",
     ),
 )
 

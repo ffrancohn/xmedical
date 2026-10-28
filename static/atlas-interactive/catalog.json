@@ -1,5 +1,7 @@
 {
   "version": 1,
+  "assetPackage": "v1",
+  "manifest": "manifest.v1.json",
   "modules": [
     {
       "id": "recepcion",

@@ -1,9 +1,13 @@
-{# Encabezado exploración en /pacientes/ modo Atlas #}
+{% load static %}
 <section class="xm-atlas-hub mb-6" data-atlas-hub data-atlas-initial-module="pacientes">
     <div class="xm-atlas-hub__scene">
         <div class="xm-atlas-hub__objects">
-            <button type="button" class="xm-atlas-object is-active" data-atlas-module="pacientes" aria-expanded="true">
-                <span class="xm-atlas-object__visual xm-atlas-object__visual--archivador" aria-hidden="true">📁</span>
+            <button type="button" class="xm-atlas-object is-active" data-atlas-module="pacientes" aria-expanded="true"
+                data-atlas-img-closed="{% static 'atlas-interactive/assets/v1/modulos/pacientes_archivador_cerrado.webp' %}"
+                data-atlas-img-open="{% static 'atlas-interactive/assets/v1/modulos/pacientes_archivador_abierto.webp' %}">
+                <span class="xm-atlas-object__visual xm-atlas-object__visual--archivador">
+                    <img src="{% static 'atlas-interactive/assets/v1/modulos/pacientes_archivador_abierto.webp' %}" alt="" width="120" height="120" loading="lazy" class="xm-atlas-object__img">
+                </span>
                 <span class="xm-atlas-object__label">Pacientes</span>
                 <span class="xm-atlas-object__desc">Archivador clínico</span>
             </button>
