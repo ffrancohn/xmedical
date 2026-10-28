@@ -2,13 +2,13 @@
 
 Especificación operativa y mapa de carpetas. Complementa [doc 18](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) y [doc 21](21%20Arquitectura%20Visual%20Pantallas.md).
 
-## Principio Objeto → Exploración → Acción
+## Principio de layout (modo Atlas)
 
-1. **Objeto:** metáfora isométrica (archivador, agenda, mostrador) — hub interactivo.
-2. **Exploración:** panel HTML con agregados (sin PHI en assets gráficos).
-3. **Acción:** vistas Django existentes (listas, formularios, permisos actuales).
+- **Navegación:** menú lateral en escritorio y drawer en móvil (`base.html`) — **sin cambios**, no duplicar menú isométrico.
+- **Área principal:** escena isométrica a pantalla (`xm-atlas-viewport`): objeto + exploración.
+- **Datos operativos:** solo en **panel de escritorio** integrado (`xm-atlas-desk-panel`), abierto con `?ver=datos` (pacientes) o `?ver=agenda` (citas), no como segunda “pantalla clásica” debajo del hub.
 
-Modo **classic** no cambia. Modo **Atlas** activa hub en recepción y exploración en pacientes.
+Modo **classic** no cambia. Modo **Atlas** sustituye el contenido central por la escena; listas/tablas clásicas solo con `?classic=1` o modo classic.
 
 ## Carpetas
 
@@ -40,7 +40,8 @@ Si falta, se usan defaults en `atlas_explore.DEFAULT_AGE_BUCKETS`.
 ## Integración actual
 
 - **Recepción** (`dashboards/recepcion`): hub con módulos Pacientes, Citas, Atención del día.
-- **Pacientes** (`pacientes_lista`): exploración archivador + tabla; `?grupo=<id>` filtra por edad; `?classic=1` omite hub.
+- **Pacientes** (`pacientes_lista`): solo archivador hasta `?ver=datos` (búsqueda, grupo); `?classic=1` omite hub.
+- **Citas** (`citas_lista`): solo agenda isométrica hasta `?ver=agenda`; `?classic=1` vista clásica completa.
 
 ## Próximos pasos
 

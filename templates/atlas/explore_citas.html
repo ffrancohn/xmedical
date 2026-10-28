@@ -32,8 +32,8 @@
         </ul>
         {% endif %}
         <div class="flex flex-wrap gap-2 mt-4">
-            <a href="{% url 'citas_lista' %}?fecha={{ explore.fecha|date:'Y-m-d' }}&vista=dia#xm-atlas-acciones" class="btn btn-sm btn-outline">Citas de hoy</a>
-            <a href="{% url 'citas_lista' %}?vista=mes#xm-atlas-acciones" class="btn btn-sm btn-outline">Calendario mes</a>
+            <a href="{% url 'citas_lista' %}?ver=agenda&fecha={{ explore.fecha|date:'Y-m-d' }}&vista=dia#xm-atlas-acciones" class="btn btn-sm btn-outline">Citas de hoy</a>
+            <a href="{% url 'citas_lista' %}?ver=agenda&vista=mes#xm-atlas-acciones" class="btn btn-sm btn-outline">Calendario mes</a>
             <a href="{% url 'citas_agendar' %}" class="btn btn-sm btn-primary">Agendar cita</a>
         </div>
         <p class="xm-atlas-fallback mt-2"><a href="{% url 'citas_lista' %}?classic=1" class="link">Abrir agenda en vista clásica</a></p>

@@ -72,6 +72,12 @@ class PacienteListView(LoginRequiredMixin, ListView):
             inst = instituciones[0] if len(instituciones) == 1 else None
             context["pacientes_explore"] = pacientes_exploracion(instituciones, inst)
             context["atlas_pacientes_hub"] = True
+            req = self.request.GET
+            context["atlas_pacientes_datos"] = bool(
+                req.get("ver") == "datos"
+                or req.get("q")
+                or req.get("grupo")
+            )
         return context
 
 

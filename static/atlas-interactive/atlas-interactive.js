@@ -46,7 +46,9 @@
       btn.setAttribute("aria-expanded", "false");
       btn.addEventListener("click", () => {
         if (moduleId === "flujo_dia") {
-          const hilo = document.querySelector(".xm-hilo");
+          const hilo =
+            document.querySelector("[data-atlas-hilo]") ||
+            document.querySelector(".xm-hilo");
           if (hilo) {
             hilo.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
           }

@@ -1,0 +1,47 @@
+<div class="xm-atlas-desk-panel__head">
+    <h2 class="xm-atlas-desk-panel__title">Expedientes</h2>
+    <a href="{% url 'pacientes_nuevo' %}" class="btn btn-primary btn-sm">Nuevo paciente</a>
+</div>
+
+<form class="mb-4">
+    {% for id in selected_instituciones %}<input type="hidden" name="instituciones" value="{{ id }}">{% endfor %}
+    {% if grupo_activo %}<input type="hidden" name="grupo" value="{{ grupo_activo }}">{% endif %}
+    <input type="hidden" name="ver" value="datos">
+    <input name="q" value="{{ request.GET.q }}" class="input input-bordered w-full md:max-w-md" placeholder="Buscar por documento o nombre...">
+</form>
+
+{% include 'partials/institution_filter.html' %}
+
+<div class="xm-table-wrap xm-atlas-desk-panel__table">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                {% if is_superadmin_view %}<th>Clínica</th>{% endif %}
+                <th>Documento</th>
+                <th>Nombre</th>
+                <th>Contacto</th>
+                <th class="text-right">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paciente in pacientes %}
+            <tr>
+                {% if is_superadmin_view %}<td>{{ paciente.institucion.nombre }}</td>{% endif %}
+                <td class="font-medium">{{ paciente.documento }}</td>
+                <td>{{ paciente.nombre }} {{ paciente.apellido }}</td>
+                <td class="text-sm">{{ paciente.telefono|default:"—" }}</td>
+                <td class="text-right">
+                    <a href="{% url 'pacientes_detalle' paciente.id %}" class="btn btn-xs btn-primary">Ver</a>
+                    <a href="{% url 'pacientes_editar' paciente.id %}" class="btn btn-xs btn-ghost">Editar</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="{% if is_superadmin_view %}5{% else %}4{% endif %}" class="text-center py-8 opacity-70">
+                    No hay pacientes en este criterio.
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

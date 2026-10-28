@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Pacientes{% endblock %}
+{% block body_class %}{% if atlas_pacientes_hub %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
 {% if atlas_pacientes_hub %}
-{% include 'atlas/explore_pacientes_page.html' %}
+<div class="xm-atlas-viewport">
+    {% include 'atlas/explore_pacientes_page.html' %}
+    {% if atlas_pacientes_datos %}
+    <aside class="xm-atlas-desk-panel" id="xm-atlas-acciones" aria-label="Listado de pacientes">
+        {% include 'atlas/pacientes_lista_panel.html' %}
+    </aside>
+    {% endif %}
+</div>
 {% else %}
 {% include 'components/atlas_scene_banner.html' %}
-{% endif %}
-<section id="xm-atlas-acciones" class="xm-atlas-action-panel">
 <div class="xm-page-header">
     <div>
         <p class="xm-page-header__subtitle">Gestión clínica</p>
@@ -70,5 +76,5 @@
         </tbody>
     </table>
 </div>
-</section>
+{% endif %}
 {% endblock %}

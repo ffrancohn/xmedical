@@ -74,6 +74,7 @@ class CitaListView(LoginRequiredMixin, RoleRequiredMixin, ListView):
             instituciones, _ = selected_instituciones(self.request)
             context["citas_explore"] = citas_exploracion(instituciones)
             context["atlas_citas_hub"] = True
+            context["atlas_citas_agenda"] = self.request.GET.get("ver") == "agenda"
         return context
 
 
