@@ -2,7 +2,9 @@
 {% block title %}Inicio recepción{% endblock %}
 {% block content %}
 {% include 'components/atlas_enable_hint.html' %}
-{% if interface_mode == 'atlas' %}
+{% if interface_mode == 'atlas' and atlas_hub %}
+{% include 'atlas/hub_recepcion.html' %}
+{% elif interface_mode == 'atlas' %}
 {% include 'components/atlas_hero.html' with hero_kicker="Hoy" hero_title="Recepción" hero_desc="Quién no ha llegado y quién ya está en sala." atlas_hero_actions_template="components/recepcion_hero_actions.html" %}
 {% else %}
 <div class="xm-page-header">

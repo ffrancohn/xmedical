@@ -54,6 +54,16 @@ class RecepcionDashboardView(LoginRequiredMixin, RoleRequiredMixin, TemplateView
         context = super().get_context_data(**kwargs)
         instituciones, _ = selected_instituciones(self.request)
         context["hilo"] = hilo_del_dia(instituciones, "recepcion")
+        pref = getattr(self.request.user, "preference", None)
+        if pref and pref.interface_mode == "atlas":
+            from apps.core.atlas_catalog import modules_for_hub
+            from apps.core.atlas_explore import citas_exploracion, pacientes_exploracion
+
+            inst = instituciones[0] if len(instituciones) == 1 else None
+            context["atlas_modules"] = modules_for_hub(self.request.user)
+            context["pacientes_explore"] = pacientes_exploracion(instituciones, inst)
+            context["citas_explore"] = citas_exploracion(instituciones)
+            context["atlas_hub"] = True
         return context
 
 

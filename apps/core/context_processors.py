@@ -45,8 +45,10 @@ def visual_preferences(request):
         from apps.core.atlas_ui import resolve_atlas_iso_scene
 
         atlas_iso_scene = resolve_atlas_iso_scene(request)
+    atlas_interactive = interface_mode == "atlas" and request.user.is_authenticated
     return {
         "visual_theme": theme,
         "interface_mode": interface_mode,
         "atlas_iso_scene": atlas_iso_scene,
+        "atlas_interactive": atlas_interactive,
     }

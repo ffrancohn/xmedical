@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "modules": [
+    {
+      "id": "recepcion",
+      "label": "Mostrador",
+      "metaphor": "mostrador",
+      "description": "Registro, turnos y atención al paciente",
+      "assetBase": "assets/recepcion/mostrador",
+      "hubOnly": true
+    },
+    {
+      "id": "pacientes",
+      "label": "Pacientes",
+      "metaphor": "archivador",
+      "description": "Expedientes y archivador clínico",
+      "assetBase": "assets/pacientes/archivador",
+      "exploreUrlName": "pacientes_lista",
+      "permissions": ["view_pacientes"]
+    },
+    {
+      "id": "citas",
+      "label": "Citas",
+      "metaphor": "agenda",
+      "description": "Agenda, horarios y reservas",
+      "assetBase": "assets/citas/agenda",
+      "exploreUrlName": "citas_lista",
+      "permissions": ["view_citas"]
+    }
+  ]
+}

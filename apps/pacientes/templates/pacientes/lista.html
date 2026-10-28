@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Pacientes{% endblock %}
 {% block content %}
+{% if atlas_pacientes_hub %}
+{% include 'atlas/explore_pacientes_page.html' %}
+{% else %}
 {% include 'components/atlas_scene_banner.html' %}
+{% endif %}
 <div class="xm-page-header">
     <div>
         <p class="xm-page-header__subtitle">Gestión clínica</p>
-        <h1 class="xm-page-header__title">Pacientes</h1>
+        <h1 class="xm-page-header__title">Pacientes{% if grupo_activo %} <span class="text-base font-normal opacity-70">· grupo {{ grupo_activo }}</span>{% endif %}</h1>
         <p class="xm-page-header__desc">Busca, registra y administra la información de pacientes de tu institución.</p>
     </div>
     <div class="xm-page-header__actions">
