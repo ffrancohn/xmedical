@@ -47,6 +47,7 @@
 | 16 | [Modelo Local IA (Ollama)](16%20Modelo%20Local%20IA%20(Ollama).md) | IA on-premise, config web, OCR |
 | 17 | [Características, pantallas y Flujo 6](17%20Caracteristicas%20Pantallas%20y%20Flujo%206%20Diagnostico.md) | Catálogo UI + paso Diagnóstico |
 | 18 | [Interfaz Atlas — despliegue producción](18%20Interfaz%20Atlas%20Despliegue%20Produccion.md) | **PR #22**, migrate, collectstatic, rollback |
+| 19 | [Gitflow XMedical](19%20Gitflow%20XMedical.md) | `master`, `develop`, feature/release/hotfix |
 
 ### Planificación por módulo
 
