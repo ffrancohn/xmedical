@@ -298,3 +298,106 @@
 .xm-cita-estado-badge__icon {
   object-fit: contain;
 }
+
+.xm-atlas-stage-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 1.25rem;
+  padding: 1rem 1.15rem;
+  border-radius: 1rem;
+  border: 1px solid hsl(var(--bc) / 0.12);
+  background: linear-gradient(165deg, hsl(var(--b2)) 0%, hsl(var(--b3)) 100%);
+}
+
+.xm-atlas-stage-head__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .xm-atlas-stage-head {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+  }
+  .xm-atlas-stage-head__actions {
+    grid-column: 3;
+    grid-row: 1;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.xm-atlas-stage-head__img {
+  object-fit: contain;
+}
+
+.xm-atlas-stage-head__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  line-height: 1.25;
+}
+
+.xm-atlas-stage-head__lead {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.88;
+  line-height: 1.45;
+}
+
+.xm-atlas-stage-head__hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.65;
+  line-height: 1.4;
+}
+
+.xm-atlas-desk-panel--form {
+  max-width: 48rem;
+}
+
+.xm-atlas-form label {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.xm-atlas-form p {
+  margin-bottom: 0.85rem;
+}
+
+.xm-atlas-info-card {
+  border: 1px solid hsl(var(--bc) / 0.12);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: hsl(var(--b2) / 0.35);
+}
+
+.xm-atlas-info-card__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.65rem;
+}
+
+.xm-atlas-dl {
+  display: grid;
+  grid-template-columns: minmax(6rem, 38%) 1fr;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.xm-atlas-dl dt {
+  font-weight: 600;
+  opacity: 0.72;
+  margin: 0;
+}
+
+.xm-atlas-dl dd {
+  margin: 0;
+}
+
+.xm-atlas-dl--stack {
+  grid-template-columns: 7rem 1fr;
+}

@@ -1,6 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}{{ paciente.nombre }} {{ paciente.apellido }}{% endblock %}
+{% block body_class %}{% if atlas_stage %}xm-atlas-main-isometric{% endif %}{% endblock %}
 {% block content %}
+{% if atlas_stage %}
+{% include 'atlas/stage_begin.html' %}
+<div class="flex flex-wrap gap-2 mb-4">
+    <a href="{% url 'pacientes_historia' paciente.id %}" class="btn btn-sm btn-ghost">Historia clínica</a>
+    <a href="{% url 'pacientes_editar' paciente.id %}" class="btn btn-sm btn-primary">Editar</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="xm-atlas-info-card"><h2 class="xm-atlas-info-card__title">Datos generales</h2><dl class="xm-atlas-dl"><dt>Fecha nacimiento</dt><dd>{{ paciente.fecha_nacimiento|default:"—" }}</dd><dt>Sexo</dt><dd>{{ paciente.get_sexo_display|default:"—" }}</dd><dt>Estado</dt><dd>{% if paciente.activo %}Activo{% else %}Inactivo{% endif %}</dd></dl></div>
+    <div class="xm-atlas-info-card"><h2 class="xm-atlas-info-card__title">Contacto</h2><dl class="xm-atlas-dl"><dt>Móvil</dt><dd>{{ paciente.telefono|default:"—" }}</dd><dt>Fijo</dt><dd>{{ paciente.telefono_fijo|default:"—" }}</dd><dt>Correo</dt><dd>{{ paciente.email|default:"—" }}</dd></dl></div>
+    <div class="xm-atlas-info-card md:col-span-2"><h2 class="xm-atlas-info-card__title">Dirección</h2><p>{{ paciente.direccion|default:"—" }}</p><p class="text-sm opacity-75">{{ paciente.ciudad }}{% if paciente.departamento %}, {{ paciente.departamento }}{% endif %}</p></div>
+    <div class="xm-atlas-info-card md:col-span-2"><h2 class="xm-atlas-info-card__title">Emergencia</h2><dl class="xm-atlas-dl"><dt>Contacto</dt><dd>{{ paciente.contacto_emergencia_nombre|default:"—" }}</dd><dt>Teléfono</dt><dd>{{ paciente.contacto_emergencia_telefono|default:"—" }}</dd></dl></div>
+</div>
+{% if paciente.observaciones %}
+<div class="xm-atlas-info-card mt-4"><h2 class="xm-atlas-info-card__title">Observaciones</h2><p class="text-sm leading-relaxed">{{ paciente.observaciones|linebreaksbr }}</p></div>
+{% endif %}
+{% include 'atlas/stage_end.html' %}
+{% else %}
 <div class="xm-page-header">
     <div>
         <p class="xm-page-header__subtitle">Paciente</p>
@@ -23,5 +41,6 @@
 
 {% if paciente.observaciones %}
 <div class="xm-card mt-4"><div class="p-6"><h2 class="font-bold mb-4">Observaciones</h2><p class="text-sm leading-relaxed">{{ paciente.observaciones|linebreaksbr }}</p></div></div>
+{% endif %}
 {% endif %}
 {% endblock %}

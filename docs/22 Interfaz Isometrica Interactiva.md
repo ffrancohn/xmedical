@@ -42,6 +42,7 @@ Si falta, se usan defaults en `atlas_explore.DEFAULT_AGE_BUCKETS`.
 - **Recepción** (`dashboards/recepcion`): hub con módulos Pacientes, Citas, Atención del día.
 - **Pacientes** (`pacientes_lista`): solo archivador hasta `?ver=datos` (búsqueda, grupo); `?classic=1` omite hub.
 - **Citas** (`citas_lista`): solo agenda isométrica hasta `?ver=agenda`; `?classic=1` vista clásica completa.
+- **Formularios recepción** (nuevo/editar paciente, agendar cita, ficha): cabecera isométrica + **panel de formulario legible** (`atlas/stage_begin.html`); enlace **Vista clásica** con `?classic=1`.
 
 ## Próximos pasos
 

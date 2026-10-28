@@ -3,12 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from apps.core.permissions import CAN_VIEW_HISTORIA, CAN_VIEW_PACIENTES, CAN_EDIT_PACIENTES, role_required, user_has_role
 from apps.core.views import current_institucion, institution_filter_context, selected_instituciones
 from apps.core.atlas_explore import birth_date_range_for_bucket, get_age_buckets, pacientes_exploracion
+from apps.core.atlas_layout import atlas_stage_context, atlas_stage_enabled
 from .forms import PacienteForm, PacientePublicForm
 from .models import Paciente
 
@@ -87,6 +89,11 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
     template_name = "pacientes/form.html"
     success_url = "/pacientes/"
 
+    def get_success_url(self):
+        if atlas_stage_enabled(self.request):
+            return reverse("pacientes_lista") + "?ver=datos"
+        return str(self.success_url)
+
     def dispatch(self, request, *args, **kwargs):
         if can_manage_pacientes(request.user):
             return super().dispatch(request, *args, **kwargs)
@@ -107,6 +114,20 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
                 }
             )
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            atlas_stage_context(
+                self.request,
+                "pacientes",
+                title="Registrar paciente",
+                lead="Complete la ficha del expediente. Los campos obligatorios están marcados.",
+            )
+        )
+        if context.get("atlas_stage"):
+            context["cancel_url"] = context["atlas_stage_back_url"]
+        return context
 
     def form_valid(self, form):
         form.instance.institucion = current_institucion(self.request)
@@ -132,6 +153,20 @@ class PacienteUpdateView(LoginRequiredMixin, UpdateView):
             qs = qs.filter(institucion=institucion)
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            atlas_stage_context(
+                self.request,
+                "pacientes",
+                title="Editar paciente",
+                lead="Actualice solo lo necesario y guarde al final.",
+            )
+        )
+        if context.get("atlas_stage"):
+            context["cancel_url"] = context["atlas_stage_back_url"]
+        return context
+
 
 class PacienteDetailView(LoginRequiredMixin, DetailView):
     model = Paciente
@@ -150,6 +185,19 @@ class PacienteDetailView(LoginRequiredMixin, DetailView):
         if institucion:
             qs = qs.filter(institucion=institucion)
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        p = context["paciente"]
+        context.update(
+            atlas_stage_context(
+                self.request,
+                "pacientes",
+                title=f"{p.nombre} {p.apellido}",
+                lead=f"Documento {p.documento} · ficha del expediente",
+            )
+        )
+        return context
 
 
 class PacientePublicRegistroView(View):
