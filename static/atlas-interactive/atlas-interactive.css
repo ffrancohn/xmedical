@@ -99,16 +99,14 @@
   pointer-events: none;
 }
 
-/* Avatares del paquete v2: retratos recortados al sujeto (132x176, sin alfa).
-   La ficha usa el mismo azul claro del fondo del arte para que no parezca pegatina. */
+/* Avatares v1 (63x184, PNG/WebP con alfa): figura completa, sin fondo ni recorte. */
 .xm-atlas-avatar-img {
-  width: 3.25rem;
+  width: auto;
+  max-width: 2.6rem;
   height: 4.25rem;
-  border-radius: 0.6rem;
-  border: 1px solid rgba(11, 31, 38, 0.10);
-  object-fit: cover;
-  object-position: 50% 22%;
-  background: #e9f2f8;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
 }
 
 .xm-atlas-module-hero {

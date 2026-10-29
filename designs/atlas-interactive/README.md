@@ -30,7 +30,7 @@ Los WebP activos están en:
 `static/atlas-interactive/assets/v1/`
 
 - `modulos/` — metáforas por módulo (archivador, agenda, recepción, …)
-- `avatares/` — 10 ilustraciones completas por grupo de edad y sexo (`ninos_masculino.webp`, …), 240×330 px y con fondo. Paquete v2; ver `avatares/README.md`.
+- `avatares/` — genéricos por grupo de edad (`ninos_01.webp`, …)
 - `estados/` — iconos de estado de cita
 - `documentos/` — carpetas, recetas, estudios
 - `profesionales/` — roles clínicos

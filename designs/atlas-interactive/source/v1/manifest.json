@@ -411,106 +411,256 @@
       ]
     },
     {
-      "id": "avatares.adolescentes_femenino",
-      "file": "avatares/adolescentes_femenino.webp",
+      "id": "avatares.ninos_01",
+      "file": "avatares/ninos_01.webp",
       "size": [
-        240,
-        330
+        68,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        22,
+        650,
+        90,
+        834
+      ]
     },
     {
-      "id": "avatares.adolescentes_masculino",
-      "file": "avatares/adolescentes_masculino.webp",
+      "id": "avatares.ninos_02",
+      "file": "avatares/ninos_02.webp",
       "size": [
-        240,
-        330
+        66,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        94,
+        650,
+        160,
+        834
+      ]
     },
     {
-      "id": "avatares.adultos_femenino",
-      "file": "avatares/adultos_femenino.webp",
+      "id": "avatares.ninos_03",
+      "file": "avatares/ninos_03.webp",
       "size": [
-        240,
-        330
+        61,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        167,
+        650,
+        228,
+        834
+      ]
     },
     {
-      "id": "avatares.adultos_jovenes_femenino",
-      "file": "avatares/adultos_jovenes_femenino.webp",
+      "id": "avatares.ninos_04",
+      "file": "avatares/ninos_04.webp",
       "size": [
-        240,
-        330
+        66,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        230,
+        650,
+        296,
+        834
+      ]
     },
     {
-      "id": "avatares.adultos_jovenes_masculino",
-      "file": "avatares/adultos_jovenes_masculino.webp",
+      "id": "avatares.adolescentes_01",
+      "file": "avatares/adolescentes_01.webp",
       "size": [
-        240,
-        330
+        63,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        348,
+        650,
+        411,
+        834
+      ]
     },
     {
-      "id": "avatares.adultos_masculino",
-      "file": "avatares/adultos_masculino.webp",
+      "id": "avatares.adolescentes_02",
+      "file": "avatares/adolescentes_02.webp",
       "size": [
-        240,
-        330
+        70,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        417,
+        650,
+        487,
+        834
+      ]
     },
     {
-      "id": "avatares.mayores_femenino",
-      "file": "avatares/mayores_femenino.webp",
+      "id": "avatares.adultos_jovenes_01",
+      "file": "avatares/adultos_jovenes_01.webp",
       "size": [
-        240,
-        330
+        66,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        535,
+        650,
+        601,
+        834
+      ]
     },
     {
-      "id": "avatares.mayores_masculino",
-      "file": "avatares/mayores_masculino.webp",
+      "id": "avatares.adultos_jovenes_02",
+      "file": "avatares/adultos_jovenes_02.webp",
       "size": [
-        240,
-        330
+        66,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        607,
+        650,
+        673,
+        834
+      ]
     },
     {
-      "id": "avatares.ninos_femenino",
-      "file": "avatares/ninos_femenino.webp",
+      "id": "avatares.adultos_jovenes_03",
+      "file": "avatares/adultos_jovenes_03.webp",
       "size": [
-        240,
-        330
+        68,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        680,
+        650,
+        748,
+        834
+      ]
     },
     {
-      "id": "avatares.ninos_masculino",
-      "file": "avatares/ninos_masculino.webp",
+      "id": "avatares.adultos_jovenes_04",
+      "file": "avatares/adultos_jovenes_04.webp",
       "size": [
-        240,
-        330
+        62,
+        184
       ],
-      "transparencia": false,
-      "paquete": "xmedical_avatares_completos_v2"
+      "source_crop": [
+        754,
+        650,
+        816,
+        834
+      ]
+    },
+    {
+      "id": "avatares.adultos_01",
+      "file": "avatares/adultos_01.webp",
+      "size": [
+        63,
+        184
+      ],
+      "source_crop": [
+        854,
+        650,
+        917,
+        834
+      ]
+    },
+    {
+      "id": "avatares.adultos_02",
+      "file": "avatares/adultos_02.webp",
+      "size": [
+        71,
+        184
+      ],
+      "source_crop": [
+        924,
+        650,
+        995,
+        834
+      ]
+    },
+    {
+      "id": "avatares.adultos_03",
+      "file": "avatares/adultos_03.webp",
+      "size": [
+        69,
+        184
+      ],
+      "source_crop": [
+        998,
+        650,
+        1067,
+        834
+      ]
+    },
+    {
+      "id": "avatares.adultos_04",
+      "file": "avatares/adultos_04.webp",
+      "size": [
+        67,
+        184
+      ],
+      "source_crop": [
+        1071,
+        650,
+        1138,
+        834
+      ]
+    },
+    {
+      "id": "avatares.mayores_01",
+      "file": "avatares/mayores_01.webp",
+      "size": [
+        68,
+        184
+      ],
+      "source_crop": [
+        1197,
+        650,
+        1265,
+        834
+      ]
+    },
+    {
+      "id": "avatares.mayores_02",
+      "file": "avatares/mayores_02.webp",
+      "size": [
+        61,
+        184
+      ],
+      "source_crop": [
+        1271,
+        650,
+        1332,
+        834
+      ]
+    },
+    {
+      "id": "avatares.mayores_03",
+      "file": "avatares/mayores_03.webp",
+      "size": [
+        65,
+        184
+      ],
+      "source_crop": [
+        1337,
+        650,
+        1402,
+        834
+      ]
+    },
+    {
+      "id": "avatares.mayores_04",
+      "file": "avatares/mayores_04.webp",
+      "size": [
+        98,
+        184
+      ],
+      "source_crop": [
+        1408,
+        650,
+        1506,
+        834
+      ]
     }
-  ],
-  "avatares_paquete": "v2 (10 ilustraciones 240x330, con fondo)",
-  "nota_avatares": "Avatares del paquete v2 (240x330, sin canal alfa, uno por grupo de edad y sexo). Sustituyen a las 18 variantes numeradas del paquete v1."
+  ]
 }
