@@ -122,3 +122,50 @@ class BackupLog(models.Model):
 
     def __str__(self):
         return f"{self.get_tipo_display()} {self.get_alcance_display()} {self.creado_en:%Y-%m-%d %H:%M}"
+
+class Espacio(models.Model):
+    """Sala física de la clínica (consultorio, triaje, laboratorio…).
+
+    `x`, `y`, `ancho`, `alto` son unidades de una cuadrícula del plano (no píxeles),
+    para que el mismo dato sirva en escritorio y móvil.
+    """
+
+    TIPO_CONSULTORIO = "consultorio"
+    TIPO_TRIAJE = "triaje"
+    TIPO_LABORATORIO = "laboratorio"
+    TIPO_RECEPCION = "recepcion"
+    TIPO_FARMACIA = "farmacia"
+    TIPO_OTRO = "otro"
+    TIPO_CHOICES = [
+        (TIPO_CONSULTORIO, "Consultorio"),
+        (TIPO_TRIAJE, "Triaje"),
+        (TIPO_LABORATORIO, "Laboratorio"),
+        (TIPO_RECEPCION, "Recepción"),
+        (TIPO_FARMACIA, "Farmacia"),
+        (TIPO_OTRO, "Otro"),
+    ]
+
+    institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE, related_name="espacios")
+    nombre = models.CharField(max_length=80)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default=TIPO_CONSULTORIO)
+    capacidad = models.PositiveSmallIntegerField(default=1)
+    planta = models.PositiveSmallIntegerField(default=1)
+    x = models.PositiveSmallIntegerField(default=0)
+    y = models.PositiveSmallIntegerField(default=0)
+    ancho = models.PositiveSmallIntegerField(default=3)
+    alto = models.PositiveSmallIntegerField(default=2)
+    especialidad = models.ForeignKey(
+        Especialidad, on_delete=models.SET_NULL, null=True, blank=True, related_name="espacios"
+    )
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Espacio"
+        verbose_name_plural = "Espacios"
+        ordering = ["planta", "y", "x"]
+        constraints = [
+            models.UniqueConstraint(fields=["institucion", "nombre"], name="espacio_unico_por_institucion"),
+        ]
+
+    def __str__(self):
+        return f"{self.nombre} ({self.get_tipo_display()})"

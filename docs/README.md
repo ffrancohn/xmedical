@@ -54,6 +54,7 @@
 | 22 | [Interfaz isométrica interactiva](22%20Interfaz%20Isometrica%20Interactiva.md) | Hub Objeto→Exploración→Acción; carpetas `designs/` y `static/atlas-interactive/` |
 | 23 | [Catálogo CIE-10](23%20Catalogo%20CIE-10.md) | Catálogo de 14.498 códigos, búsqueda sin tildes, sinónimos y ranking |
 | 24 | [Cómo pedir una interfaz isométrica](24%20Especificacion%20escena%20isometrica.md) | Diferencia entre ilustración y escena; 7 propiedades, criterios verificables y plan v1–v3 |
+| 25 | [Gemelo digital de la clínica](25%20Gemelo%20digital%20de%20la%20clinica.md) | Niveles 0–3, brecha de datos (espacios, eventos, capacidad), pantallas por perfil y plan I1–I3 |
 
 ### Planificación por módulo
 

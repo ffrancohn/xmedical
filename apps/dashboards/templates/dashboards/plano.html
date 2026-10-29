@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Plano de la clínica{% endblock %}
+{% block content %}
+<style>
+  .plano-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: 1rem; align-items: start; }
+  .plano { border: 1px solid rgba(11,31,38,.16); border-radius: 14px; background: #f7f5ef; padding: .75rem; }
+  .plano__grid {
+    display: grid;
+    gap: .4rem;
+    align-content: start;
+    min-height: 22rem;
+    background-image: linear-gradient(rgba(11,31,38,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11,31,38,.06) 1px, transparent 1px);
+    background-size: calc(100% / {{ plano.columnas }}) calc(100% / {{ plano.filas }});
+  }
+  .sala {
+    position: relative; border-radius: 10px; padding: .45rem .55rem; min-height: 4.4rem;
+    border: 1px solid rgba(11,31,38,.18); background: #fff; color: #0b1f26;
+    display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+  }
+  .sala__nombre { font-size: .78rem; font-weight: 700; line-height: 1.1; }
+  .sala__tipo { font-size: .62rem; color: #55676d; text-transform: uppercase; letter-spacing: .06em; }
+  .sala__estado { font-size: .66rem; font-weight: 600; }
+  .sala__dato { font-size: .72rem; }
+  .sala--libre { border-style: dashed; background: #fbfaf6; color: #6b7a80; }
+  .sala--reservado { background: #e8f4f4; border-color: #7fc9c4; }
+  .sala--esperando { background: #fdf3e0; border-color: #d9a54a; }
+  .sala--critico { background: #fbe9e2; border-color: #c2410c; box-shadow: inset 0 0 0 1px rgba(194,65,12,.25); }
+  .sala--atendida { background: #e9f2ea; border-color: #8fb99a; }
+  .sala__ini { font-size: .8rem; font-weight: 700; letter-spacing: .04em; }
+  .plano__leyenda { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: .6rem; font-size: .7rem; color: #44565c; }
+  .plano__leyenda i { display: inline-block; width: .7rem; height: .7rem; border-radius: 3px; margin-right: .25rem; vertical-align: -1px; }
+  .plano-kpis { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .5rem; margin-bottom: .8rem; }
+  .plano-kpi { border: 1px solid rgba(11,31,38,.14); border-radius: 10px; padding: .5rem .6rem; background: #fff; }
+  .plano-kpi span { display: block; font-size: .64rem; color: #55676d; }
+  .plano-kpi strong { font-size: 1.25rem; }
+  .plano-lista { border: 1px solid rgba(11,31,38,.14); border-radius: 12px; background: #fff; overflow: hidden; }
+  .plano-lista h3 { margin: 0; padding: .6rem .7rem; font-size: .8rem; border-bottom: 1px solid rgba(11,31,38,.1); }
+  .plano-lista ul { list-style: none; margin: 0; padding: 0; max-height: 26rem; overflow: auto; }
+  .plano-lista li { display: flex; justify-content: space-between; gap: .5rem; padding: .45rem .7rem; border-bottom: 1px solid rgba(11,31,38,.06); font-size: .76rem; }
+  .plano-lista li:last-child { border-bottom: 0; }
+  .plano-lista .estado { font-weight: 600; }
+  .aviso-sin-sala { margin-top: .6rem; font-size: .78rem; padding: .5rem .7rem; border-radius: 10px; background: #fdf3e0; border: 1px solid #d9a54a; }
+  @media (max-width: 980px) { .plano-wrap { grid-template-columns: 1fr; } .plano-kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+</style>
+
+<div class="xm-page-header">
+  <div>
+    <p class="xm-page-header__subtitle">Operación · {{ plano.hora }}</p>
+    <h1 class="xm-page-header__title">Plano de la clínica</h1>
+    <p class="xm-page-header__desc">{{ plano.fecha|date:"d/m/Y" }} · estado de cada sala según las citas de hoy</p>
+  </div>
+</div>
+{% include 'partials/institution_filter.html' %}
+
+<div class="plano-kpis">
+  <div class="plano-kpi"><span>Salas</span><strong>{{ plano.total }}</strong></div>
+  <div class="plano-kpi"><span>Libres</span><strong>{{ plano.libres }}</strong></div>
+  <div class="plano-kpi"><span>Esperando</span><strong>{{ plano.esperando }}</strong></div>
+  <div class="plano-kpi"><span>Espera media</span><strong>{{ plano.espera_media }}<small> min</small></strong></div>
+</div>
+
+<div class="plano-wrap">
+  <div class="plano">
+    <div class="plano__grid" style="grid-template-columns: repeat({{ plano.columnas }}, minmax(0,1fr)); grid-template-rows: repeat({{ plano.filas }}, minmax(4.4rem, auto));">
+      {% for sala in plano.espacios %}
+      <div class="sala sala--{{ sala.tono }}"
+           style="grid-column: {{ sala.x|add:1 }} / span {{ sala.ancho }}; grid-row: {{ sala.y|add:1 }} / span {{ sala.alto }};"
+           aria-label="{{ sala.nombre }}: {{ sala.estado_etiqueta }}{% if sala.iniciales %} {{ sala.iniciales }}{% endif %}{% if sala.minutos is not None %}, {{ sala.minutos }} minutos{% endif %}">
+        <div>
+          <div class="sala__nombre">{{ sala.nombre }}</div>
+          {% if sala.mostrar_tipo %}<div class="sala__tipo">{{ sala.tipo }}{% if sala.especialidad %} · {{ sala.especialidad }}{% endif %}</div>{% endif %}
+        </div>
+        <div>
+          <div class="sala__estado">{{ sala.estado_etiqueta }}{% if sala.critico %} · atasco{% endif %}{% if sala.atrasada %} · atrasada{% endif %}</div>
+          {% if sala.iniciales %}
+          <div class="sala__dato"><span class="sala__ini">{{ sala.iniciales }}</span>
+            {% if sala.minutos is not None %}· {{ sala.minutos }} min{% endif %}
+            {% if sala.minutos_para is not None %}· en {{ sala.minutos_para }} min{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="plano__leyenda">
+      <span><i style="background:#fbfaf6;border:1px dashed #6b7a80"></i>Libre</span>
+      <span><i style="background:#e8f4f4;border:1px solid #7fc9c4"></i>Reservado</span>
+      <span><i style="background:#fdf3e0;border:1px solid #d9a54a"></i>Esperando</span>
+      <span><i style="background:#fbe9e2;border:1px solid #c2410c"></i>Atasco (&gt; 20 min)</span>
+      <span><i style="background:#e9f2ea;border:1px solid #8fb99a"></i>Atendida</span>
+    </div>
+
+    {% if plano.sin_sala %}
+    <p class="aviso-sin-sala">{{ plano.sin_sala }} cita(s) de hoy no tienen sala asignada: no aparecen en el plano.</p>
+    {% endif %}
+  </div>
+
+  <aside class="plano-lista">
+    <h3>Salas por espera</h3>
+    <ul>
+      {% for sala in plano.por_espera %}
+      <li>
+        <span>{{ sala.nombre }}{% if sala.iniciales %} · {{ sala.iniciales }}{% endif %}</span>
+        <span class="estado">{{ sala.minutos }} min{% if sala.critico %} ⚠{% endif %}</span>
+      </li>
+      {% empty %}
+      <li>Nadie esperando ahora mismo.</li>
+      {% endfor %}
+    </ul>
+  </aside>
+</div>
+{% endblock %}

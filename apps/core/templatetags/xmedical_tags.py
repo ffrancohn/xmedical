@@ -79,6 +79,7 @@ def sidebar_nav(context):
 
         reportes = []
         for item in [
+            ("Plano de la clínica", "dashboards_plano", "grid", {"admin", "recepcionista"}),
             ("Enfermería", "dashboards_enfermeria", "activity", {"enfermera", "admin"}),
             ("Administración", "dashboards_administracion", "bar-chart", {"admin"}),
             ("Epidemiología", "dashboards_epidemiologia", "trending-up", {"admin"}),

@@ -21,6 +21,10 @@ class Cita(models.Model):
     hora = models.TimeField()
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default="pendiente")
     tipo_agendamiento = models.CharField(max_length=20, choices=TIPO_AGENDAMIENTO_CHOICES, default="especifico")
+    espacio = models.ForeignKey(
+        "core.Espacio", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="citas", verbose_name="Sala",
+    )
     creado_en = models.DateTimeField(auto_now_add=True)
 
     class Meta:

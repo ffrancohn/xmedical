@@ -135,6 +135,20 @@ class EspecialistaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Temp
         return context
 
 
+class PlanoView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, TemplateView):
+    """Plano vivo de la clínica: ocupación y esperas por sala (doc 25, I1)."""
+
+    template_name = "dashboards/plano.html"
+    allowed_roles = tuple(dict.fromkeys(CAN_DASHBOARD_ADMIN + CAN_DASHBOARD_RECEPCION))
+
+    def get_context_data(self, **kwargs):
+        from apps.core.plano import estado_plano
+
+        context = super().get_context_data(**kwargs)
+        context["plano"] = estado_plano(self.get_instituciones())
+        return context
+
+
 class EpidemiologiaDashboardView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, TemplateView):
     allowed_roles = CAN_DASHBOARD_EPIDEMIOLOGIA
     template_name = "dashboards/epidemiologia.html"

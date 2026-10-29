@@ -5,6 +5,7 @@ from .views import (
     EnfermeriaDashboardView,
     EpidemiologiaDashboardView,
     EspecialistaDashboardView,
+    PlanoView,
     RecepcionDashboardView,
 )
 
@@ -14,4 +15,5 @@ urlpatterns = [
     path("administracion/", AdministracionDashboardView.as_view(), name="dashboards_administracion"),
     path("especialista/", EspecialistaDashboardView.as_view(), name="dashboards_especialista"),
     path("epidemiologia/", EpidemiologiaDashboardView.as_view(), name="dashboards_epidemiologia"),
+    path("plano/", PlanoView.as_view(), name="dashboards_plano"),
 ]
