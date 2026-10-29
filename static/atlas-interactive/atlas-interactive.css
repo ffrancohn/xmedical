@@ -99,16 +99,16 @@
   pointer-events: none;
 }
 
-/* Avatares del paquete v2: retratos 240x330 sin transparencia.
-   Se muestran como ficha vertical y se recorta hacia la cara. */
+/* Avatares del paquete v2: retratos recortados al sujeto (132x176, sin alfa).
+   La ficha usa el mismo azul claro del fondo del arte para que no parezca pegatina. */
 .xm-atlas-avatar-img {
-  width: 2.75rem;
-  height: 3.6rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--atlas-line);
+  width: 3.25rem;
+  height: 4.25rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(11, 31, 38, 0.10);
   object-fit: cover;
-  object-position: 50% 14%;
-  background: var(--atlas-paper-3);
+  object-position: 50% 22%;
+  background: #e9f2f8;
 }
 
 .xm-atlas-module-hero {
@@ -303,4 +303,12 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .xm-scene-halo, .xm-scene-label { transition: none; }
+}
+
+.xm-atlas-grupo-vacio {
+  display: block;
+  font-size: .72rem;
+  color: var(--atlas-ink-2);
+  opacity: .75;
+  padding: .4rem 0;
 }

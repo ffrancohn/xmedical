@@ -16,13 +16,15 @@
                 <div class="font-semibold">{{ g.label }}</div>
                 <div class="text-2xl font-bold my-1">{{ g.count }}</div>
                 <div class="xm-atlas-avatar-grid" aria-hidden="true">
-                    {% for path in g.avatar_paths %}
-                    <img src="{% static path %}" alt="" width="36" height="36" loading="lazy" class="xm-atlas-avatar-img">
-                    {% empty %}
-                    {% for i in "1234"|make_list %}
-                    <span class="xm-atlas-avatar">·</span>
-                    {% endfor %}
-                    {% endfor %}
+                    {% if g.count %}
+                        {% for path in g.avatar_paths %}
+                        <img src="{% static path %}" alt="" width="52" height="68" loading="lazy" class="xm-atlas-avatar-img">
+                        {% empty %}
+                        <span class="xm-atlas-avatar">·</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="xm-atlas-grupo-vacio">Sin pacientes en este grupo</span>
+                    {% endif %}
                 </div>
                 {% if g.sexo %}
                 <p class="text-xs opacity-70 mt-1">
