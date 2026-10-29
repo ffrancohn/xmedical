@@ -122,7 +122,20 @@
     return { polys: b, anchor: P(3.3, 0.3, 2.9), depth: 0.3 };
   }
 
-  var GEOM = { agenda: geomAgenda, espera: geomEspera, historia: geomHistoria };
+  function geomDerivaciones() {
+    var b = [];
+    // mesa auxiliar con la pila de referencias
+    box(b, 0.6, 5.6, 0, 1.4, 1.3, 0.9, { top: C.woodTop, left: C.wood, right: C.woodDark });
+    var colores = ["#e7dcc6", "#ded1b6", "#e7dcc6", "#d9cbb0"];
+    for (var i = 0; i < 4; i++) {
+      flat(b, 0.75 + i * 0.04, 5.75 + i * 0.04, 0.92 + i * 0.1, 1.05, 0.85, colores[i], "rgba(11,31,38,.2)");
+    }
+    // carpeta de prioridad alta encima
+    flat(b, 0.82, 5.82, 1.34, 0.95, 0.28, "#c2410c", "rgba(11,31,38,.28)");
+    return { polys: b, anchor: P(1.3, 6.2, 2.1), depth: 6.1 };
+  }
+
+  var GEOM = { agenda: geomAgenda, espera: geomEspera, historia: geomHistoria, derivaciones: geomDerivaciones };
 
   /* ---------- montaje ---------- */
   var stations = [];

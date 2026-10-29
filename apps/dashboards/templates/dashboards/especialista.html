@@ -2,7 +2,9 @@
 {% block title %}Dashboard especialista{% endblock %}
 {% block content %}
 {% include 'components/atlas_enable_hint.html' %}
-{% if interface_mode == 'atlas' and atlas_hub %}
+{% if interface_mode == 'atlas' and atlas_scene %}
+{% include 'atlas/scene.html' %}
+{% elif interface_mode == 'atlas' and atlas_hub %}
 {% include 'atlas/hub_especialista.html' %}
 {% else %}
 {% include 'components/atlas_scene_banner.html' %}

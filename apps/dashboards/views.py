@@ -102,19 +102,36 @@ class EspecialistaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Temp
             "classic"
         )
         if use_atlas:
-            from apps.core.atlas_catalog import modules_for_hub
+            from django.urls import reverse
+
             from apps.core.atlas_explore import (
                 agenda_exploracion,
                 espera_exploracion,
                 referencias_exploracion,
             )
+            from apps.core.atlas_scene import construir_escena_especialista
 
             instituciones = self.get_instituciones()
-            context["atlas_modules"] = modules_for_hub(self.request.user, area="especialista")
-            context["agenda_explore"] = agenda_exploracion(instituciones, profesional)
-            context["espera_explore"] = espera_exploracion(instituciones, profesional)
-            context["derivaciones_explore"] = referencias_exploracion(instituciones, profesional)
-            context["atlas_hub"] = True
+            agenda = agenda_exploracion(instituciones, profesional)
+            espera = espera_exploracion(instituciones, profesional)
+            referencias = referencias_exploracion(instituciones, profesional)
+            context["atlas_scene"] = construir_escena_especialista(
+                agenda,
+                espera,
+                referencias,
+                urls={
+                    "citas": reverse("citas_lista"),
+                    "preclinica": reverse("preclinica_lista"),
+                    "pacientes": reverse("pacientes_lista"),
+                    "referencias": reverse("referencias_lista"),
+                },
+                perfil=profesional.nombre if profesional else "Vista global",
+                especialidad=(
+                    profesional.especialidad.nombre
+                    if profesional and profesional.especialidad
+                    else ""
+                ),
+            )
         return context
 
 

@@ -132,8 +132,10 @@ La escena ya está conectada en el inicio del médico (`dashboard`), sustituyend
 | Estilos | bloque «Escena isométrica del consultorio» en `static/atlas-interactive/atlas-interactive.css` |
 | Pruebas | `apps/core/tests_atlas_scene.py` (9 tests) |
 
-Salida: `?classic=1` sigue mostrando el banner y la tabla; el hub de tarjetas queda solo para el
-especialista hasta que se replique la escena.
+Salida: `?classic=1` sigue mostrando el banner y la tabla. La escena también está en el inicio del
+especialista (`dashboards_especialista`), donde la bandeja de derivaciones sustituye al archivador;
+allí la construye `construir_escena_especialista`. Los hubs de tarjetas de médico y especialista
+quedan como referencia histórica (recepción sigue usando el suyo).
 
 ## 9. El párrafo que puedes pegar en cualquier brief
 
