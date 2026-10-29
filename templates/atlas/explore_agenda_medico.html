@@ -1,0 +1,47 @@
+{% load static %}
+<div class="xm-card">
+    <div class="card-body">
+        <div class="flex flex-wrap items-start gap-4 mb-3">
+            <img src="{% static 'atlas-interactive/assets/v1/modulos/citas_agenda_abierta.webp' %}" alt="" width="100" height="110" loading="lazy" class="xm-atlas-module-hero">
+            <div>
+                <h2 class="card-title">Agenda — tu jornada</h2>
+                <p class="text-sm opacity-70">Citas de hoy y siguiente paciente por atender. Sin nombres: la tabla de abajo es la vista completa.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Hoy</p>
+                <p class="text-2xl font-bold">{{ explore.hoy_total }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Atendidas</p>
+                <p class="text-2xl font-bold">{{ explore.atendidas }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Por atender</p>
+                <p class="text-2xl font-bold">{{ explore.por_atender }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Siguiente</p>
+                <p class="text-2xl font-bold">{% if explore.proxima_hora %}{{ explore.proxima_hora|time:"H:i" }}{% else %}—{% endif %}</p>
+            </div>
+        </div>
+
+        <ul class="text-sm mt-4 space-y-2">
+            {% for fila in explore.por_estado %}
+            <li>
+                <div class="flex justify-between"><span>{{ fila.label }}</span><span class="font-semibold">{{ fila.total }}</span></div>
+                <div class="xm-atlas-bar" role="img" aria-label="{{ fila.label }}: {{ fila.total }} de {{ explore.hoy_total }}">
+                    <span class="xm-atlas-bar__fill" style="width: {{ fila.pct }}%"></span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="flex flex-wrap gap-2 mt-4">
+            <a href="{% url 'citas_lista' %}?fecha={{ explore.fecha|date:'Y-m-d' }}" class="btn btn-sm btn-primary">Atender la cola de hoy</a>
+            <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-outline">Agenda completa</a>
+        </div>
+    </div>
+</div>

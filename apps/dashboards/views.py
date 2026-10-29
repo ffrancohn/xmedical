@@ -96,6 +96,25 @@ class EspecialistaDashboardView(LoginRequiredMixin, InstitutionFilterMixin, Temp
         context.update(especialista_dashboard_data(self.get_instituciones(), profesional=profesional))
         if profesional and profesional.tipo == "medico":
             context["hilo"] = hilo_del_dia(self.get_instituciones(), "especialista")
+
+        preference = getattr(self.request.user, "preference", None)
+        use_atlas = bool(preference and preference.interface_mode == "atlas") and not self.request.GET.get(
+            "classic"
+        )
+        if use_atlas:
+            from apps.core.atlas_catalog import modules_for_hub
+            from apps.core.atlas_explore import (
+                agenda_exploracion,
+                espera_exploracion,
+                referencias_exploracion,
+            )
+
+            instituciones = self.get_instituciones()
+            context["atlas_modules"] = modules_for_hub(self.request.user, area="especialista")
+            context["agenda_explore"] = agenda_exploracion(instituciones, profesional)
+            context["espera_explore"] = espera_exploracion(instituciones, profesional)
+            context["derivaciones_explore"] = referencias_exploracion(instituciones, profesional)
+            context["atlas_hub"] = True
         return context
 
 

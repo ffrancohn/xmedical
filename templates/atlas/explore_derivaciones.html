@@ -1,0 +1,59 @@
+{% load static %}
+<div class="xm-card">
+    <div class="card-body">
+        <div class="flex flex-wrap items-start gap-4 mb-3">
+            <img src="{% static 'atlas-interactive/assets/v1/modulos/diagnostico.webp' %}" alt="" width="100" height="110" loading="lazy" class="xm-atlas-module-hero">
+            <div>
+                <h2 class="card-title">Derivaciones — tu bandeja</h2>
+                <p class="text-sm opacity-70">Referencias pendientes por prioridad y especialidad, y cuánto llevan esperando. Sin nombres: la tabla de abajo es la vista completa.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Pendientes</p>
+                <p class="text-2xl font-bold">{{ explore.pendientes }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Aceptadas</p>
+                <p class="text-2xl font-bold">{{ explore.aceptadas }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Completadas</p>
+                <p class="text-2xl font-bold">{{ explore.completadas }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Espera media</p>
+                <p class="text-2xl font-bold">{% if explore.espera_media_dias < 0.1 %}menos de 1{% else %}{{ explore.espera_media_dias }}{% endif %}<span class="text-sm font-normal"> d</span></p>
+            </div>
+        </div>
+
+        <ul class="text-sm mt-4 space-y-2">
+            {% for fila in explore.por_prioridad %}
+            <li>
+                <div class="flex justify-between"><span>{{ fila.label }}</span><span class="font-semibold">{{ fila.total }}</span></div>
+                <div class="xm-atlas-bar{% if fila.code == 'alta' %} xm-atlas-bar--wait{% endif %}" role="img"
+                     aria-label="{{ fila.label }}: {{ fila.total }} de {{ explore.pendientes }} pendientes">
+                    <span class="xm-atlas-bar__fill" style="width: {{ fila.pct }}%"></span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% if explore.por_especialidad %}
+        <div class="mt-4">
+            <p class="text-xs opacity-70 mb-1">Por especialidad destino</p>
+            <ul class="text-sm space-y-1">
+                {% for fila in explore.por_especialidad %}
+                <li class="flex justify-between gap-3"><span class="truncate">{{ fila.especialidad_destino__nombre }}</span><span class="font-semibold">{{ fila.total }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="flex flex-wrap gap-2 mt-4">
+            <a href="{% url 'referencias_lista' %}" class="btn btn-sm btn-primary">Revisar bandeja</a>
+            <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-outline">Mi agenda</a>
+        </div>
+    </div>
+</div>

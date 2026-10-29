@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard médico{% endblock %}
 {% block content %}
+{% include 'components/atlas_enable_hint.html' %}
+{% if interface_mode == 'atlas' and atlas_hub %}
+{% include 'atlas/hub_medico.html' %}
+{% else %}
 {% include 'components/atlas_scene_banner.html' %}
+{% endif %}
 {% if hilo %}{% include 'components/hilo.html' %}{% endif %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="xm-stat-card xm-card xm-stat-card--primary">

@@ -1,0 +1,39 @@
+{% load static %}
+{# Hub isométrico interactivo — especialista. Requiere atlas_modules, agenda_explore, espera_explore, derivaciones_explore #}
+<section class="xm-atlas-hub" data-atlas-hub data-atlas-initial-module="">
+    <p class="text-sm opacity-80 mb-2">Selecciona un módulo para explorar tu jornada y tu bandeja de derivaciones.</p>
+    <div class="xm-atlas-hub__scene" role="group" aria-label="Módulos del especialista">
+        <div class="xm-atlas-hub__objects">
+            {% for mod in atlas_modules %}
+            <button type="button" class="xm-atlas-object" data-atlas-module="{{ mod.id }}"
+                aria-controls="xm-atlas-explore-especialista"
+                data-atlas-img-closed="{% static mod.asset_closed %}"
+                data-atlas-img-open="{% static mod.asset_open %}">
+                <span class="xm-atlas-object__visual xm-atlas-object__visual--{{ mod.metaphor }}">
+                    <img src="{% static mod.asset_closed %}" alt="" width="120" height="120" loading="lazy" class="xm-atlas-object__img">
+                </span>
+                <span class="xm-atlas-object__label">{{ mod.label }}</span>
+                <span class="xm-atlas-object__desc">{{ mod.description }}</span>
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="xm-atlas-explore-especialista" class="xm-atlas-explore" data-atlas-explore hidden>
+        {% if agenda_explore %}
+        <div class="xm-atlas-explore__panel" data-atlas-panel="agenda_especialista" hidden>
+            {% include 'atlas/explore_agenda_medico.html' with explore=agenda_explore %}
+        </div>
+        {% endif %}
+        {% if espera_explore %}
+        <div class="xm-atlas-explore__panel" data-atlas-panel="espera_especialista" hidden>
+            {% include 'atlas/explore_espera_medico.html' with explore=espera_explore %}
+        </div>
+        {% endif %}
+        {% if derivaciones_explore %}
+        <div class="xm-atlas-explore__panel" data-atlas-panel="derivaciones" hidden>
+            {% include 'atlas/explore_derivaciones.html' with explore=derivaciones_explore %}
+        </div>
+        {% endif %}
+    </div>
+</section>

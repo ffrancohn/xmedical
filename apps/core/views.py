@@ -106,6 +106,26 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["citas_hoy"] = citas.order_by("hora")
         context["pacientes_espera"] = citas.filter(estado__in=["pendiente", "confirmada", "en_espera"])
         context["atendidos"] = citas.filter(estado="atendida").count()
+
+        preference = getattr(request.user, "preference", None)
+        use_atlas = bool(preference and preference.interface_mode == "atlas") and not request.GET.get(
+            "classic"
+        )
+        if use_atlas and profesional and profesional.tipo == "medico":
+            from apps.core.atlas_catalog import modules_for_hub
+            from apps.core.atlas_explore import (
+                agenda_exploracion,
+                espera_exploracion,
+                historia_medico_exploracion,
+            )
+
+            instituciones, _ = selected_instituciones(request)
+            context["atlas_modules"] = modules_for_hub(request.user, area="medico")
+            context["agenda_explore"] = agenda_exploracion(instituciones, profesional)
+            context["espera_explore"] = espera_exploracion(instituciones, profesional)
+            context["historia_explore"] = historia_medico_exploracion(instituciones, profesional)
+            context["atlas_hub"] = True
+
         return context
 
 

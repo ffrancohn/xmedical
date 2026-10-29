@@ -6,6 +6,7 @@ from apps.core.atlas_explore import (
     DEFAULT_AGE_BUCKETS,
     _age_years,
     _bucket_for_age,
+    avatar_static_paths,
     birth_date_range_for_bucket,
     get_age_buckets,
 )
@@ -31,3 +32,30 @@ class AtlasExploreLogicTests(SimpleTestCase):
         age = _age_years(date(1980, 3, 1), on)
         self.assertGreaterEqual(age, 30)
         self.assertLessEqual(age, 59)
+
+
+class AvatarAssetsTests(SimpleTestCase):
+    """El paquete v2 usa `<grupo>_<sexo>.webp`; el prefijo no debe colisionar."""
+
+    def test_adultos_no_captura_adultos_jovenes(self):
+        rutas = avatar_static_paths("adultos", limit=10)
+        self.assertTrue(rutas)
+        for ruta in rutas:
+            nombre = ruta.rsplit("/", 1)[-1]
+            self.assertTrue(nombre.startswith("adultos_") and not nombre.startswith("adultos_jovenes_"), nombre)
+
+    def test_cada_grupo_tiene_al_menos_un_avatar(self):
+        for grupo in ("ninos", "adolescentes", "adultos_jovenes", "adultos", "mayores"):
+            with self.subTest(grupo=grupo):
+                rutas = avatar_static_paths(grupo, limit=4)
+                self.assertTrue(rutas, f"sin avatares para {grupo}")
+                self.assertLessEqual(len(rutas), 4)
+
+    def test_archivos_existen_en_disco(self):
+        from pathlib import Path
+
+        from django.conf import settings
+
+        base = Path(settings.BASE_DIR) / "static"
+        for ruta in avatar_static_paths("ninos", limit=4):
+            self.assertTrue((base / ruta).exists(), ruta)

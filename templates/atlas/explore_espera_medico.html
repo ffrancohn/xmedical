@@ -1,0 +1,48 @@
+{% load static %}
+<div class="xm-card">
+    <div class="card-body">
+        <div class="flex flex-wrap items-start gap-4 mb-3">
+            <img src="{% static 'atlas-interactive/assets/v1/modulos/sala_espera.webp' %}" alt="" width="100" height="110" loading="lazy" class="xm-atlas-module-hero">
+            <div>
+                <h2 class="card-title">Sala de espera — presión de la consulta</h2>
+                <p class="text-sm opacity-70">Cuántas personas esperan, cuántas ya tienen signos y hace cuánto llegaron.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">En espera</p>
+                <p class="text-2xl font-bold">{{ explore.en_espera }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Listos (con signos)</p>
+                <p class="text-2xl font-bold">{{ explore.listos }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Sin signos</p>
+                <p class="text-2xl font-bold">{{ explore.sin_signos }}</p>
+            </div>
+            <div class="xm-stat-card xm-card p-3">
+                <p class="text-xs opacity-70">Espera media</p>
+                <p class="text-2xl font-bold">{{ explore.espera_media }}<span class="text-sm font-normal"> min</span></p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <div class="flex justify-between text-sm">
+                <span>Mayor espera</span>
+                <span class="font-semibold">{{ explore.espera_maxima }} min</span>
+            </div>
+            <div class="xm-atlas-bar xm-atlas-bar--wait" role="img"
+                 aria-label="Mayor espera: {{ explore.espera_maxima }} minutos sobre un umbral de {{ explore.tope_espera }}">
+                <span class="xm-atlas-bar__fill" style="width: {% widthratio explore.espera_maxima explore.tope_espera 100 %}%"></span>
+            </div>
+            <p class="text-xs opacity-70 mt-1">Umbral de referencia: {{ explore.tope_espera }} min.</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-4">
+            <a href="{% url 'preclinica_lista' %}" class="btn btn-sm btn-outline">Cola de signos</a>
+            <a href="{% url 'citas_lista' %}" class="btn btn-sm btn-primary">Ver pacientes del día</a>
+        </div>
+    </div>
+</div>

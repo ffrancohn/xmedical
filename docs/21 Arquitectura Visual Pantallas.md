@@ -38,7 +38,7 @@ flowchart TB
 | Columna | Significado |
 |---------|-------------|
 | **Primaria** | Cómo el usuario completa la tarea (obligatorio en ambos modos). |
-| **Atlas complemento** | `none`, `banner` (`atlas_scene_banner`), `hero` (`atlas_hero` + acciones). |
+| **Atlas complemento** | `none`, `banner` (`atlas_scene_banner`), `hero` (`atlas_hero` + acciones) o `hub` (módulos isométricos interactivos + panel de exploración). |
 | **Escena ISO** | Valor en `_ROUTE_SCENES` o fallback por rol en `resolve_atlas_iso_scene`. |
 | **No isometrizar** | Contenido que no debe pasarse a SVG 2.5D interactivo. |
 
@@ -63,10 +63,10 @@ Excluye API REST (`api_*`), Django admin y plantillas de email.
 | url_name | Tarea primaria | Primaria | Atlas complemento | Escena ISO | No isometrizar |
 |----------|----------------|----------|-------------------|------------|----------------|
 | `home` | Redirigir según rol | Redirect | none | fallback rol | — |
-| `dashboard` | Resumen médico | Stats + enlaces | banner | `medico` | Métricas numéricas |
+| `dashboard` | Resumen médico | Tabla de agenda + stats | **hub** (3 módulos) | `medico` | Métricas numéricas, nombres en tabla |
 | `dashboards_recepcion` | Cola del día | **Hilo** + acciones | **hero** | `recepcion` | Paneles del hilo |
 | `dashboards_enfermeria` | Cola preclínica | **Hilo** | banner | `enfermeria` | Idem |
-| `dashboards_especialista` | Agenda especialista | **Hilo** / stats | banner | `especialista` | Idem |
+| `dashboards_especialista` | Agenda especialista | **Hilo** / stats | **hub** (3 módulos) | `especialista` | Idem |
 | `dashboards_administracion` | KPIs operativos | Stat cards + tablas | none | fallback `admin` | Tablas densas |
 | `dashboards_epidemiologia` | Brotes y tendencias | Stat cards + **tablas** | **none** | fallback rol | Filas CIE-10, export |
 
@@ -180,6 +180,8 @@ Escala 1–5 en pertinencia de **isometría como complemento Atlas** (no como pr
 |--------|------|
 | Hecho | Matriz por `url_name`; briefs piloto en `docs/visual-briefs/` |
 | Hecho | Banner Atlas en preclínica y wizard consulta (complemento aprobado) |
+| Hecho | **Hub isométrico interactivo en inicio del médico** (`dashboard`): agenda, sala de espera e historia clínica — `atlas/hub_medico.html`, brief [dashboard-medico](visual-briefs/dashboard-medico.md) |
+| Hecho | **Hub isométrico interactivo del especialista** (`dashboards_especialista`): agenda, sala de espera y derivaciones — `atlas/hub_especialista.html`, brief [especialista-dashboard](visual-briefs/especialista-dashboard.md) |
 | Hecho | Epidemiología explícitamente **sin** capa Atlas |
 | Hecho | Gráficos de tendencia en epidemiología (SVG + tabla en `<details>`) |
 | Hecho | Timeline en `historia_clinica` (`components/clinical_timeline.html`) |
@@ -202,3 +204,5 @@ Escala 1–5 en pertinencia de **isometría como complemento Atlas** (no como pr
 | Fecha | Cambio |
 |-------|--------|
 | 2026-10 | Documento inicial + briefs piloto (plan visual-design-architect) |
+| 2026-10-29 | Hub isométrico del médico (`dashboard`): 3 módulos con exploración agregada, sin PHI |
+| 2026-10-29 | Hub isométrico del especialista (`dashboards_especialista`): agenda, espera y bandeja de derivaciones |
