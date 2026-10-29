@@ -1,8 +1,10 @@
 """RBAC centralizado por rol de profesional (SEC-P01)."""
 from functools import wraps
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
+from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import redirect
 
 from .models import Profesional
@@ -48,6 +50,10 @@ def role_required(*roles):
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+            # Sin sesion no es un problema de rol: se manda al login conservando
+            # el destino, no al dashboard (que volveria a rebotar).
+            if not request.user.is_authenticated:
+                return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
             if user_has_role(request.user, *roles):
                 return view_func(request, *args, **kwargs)
             messages.error(request, "No tienes permiso para acceder a esta seccion.")
@@ -63,6 +69,9 @@ class RoleRequiredMixin(AccessMixin):
     permission_denied_message = "No tienes permiso para acceder a esta seccion."
 
     def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
         if user_has_role(request.user, *self.allowed_roles):
             return super().dispatch(request, *args, **kwargs)
         messages.error(request, self.permission_denied_message)

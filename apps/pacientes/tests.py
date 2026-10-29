@@ -77,7 +77,10 @@ class PacienteFunctionalTests(TestCase):
 
     def test_fun_p06_historia_redirect(self):
         paciente = Paciente.objects.filter(institucion=self.institucion).first()
-        response = self.client.get(
+        # CAN_VIEW_HISTORIA es admin/medico: recepcion no abre historia clinica,
+        # asi que el redirect se comprueba con un medico.
+        client = auth_client("medico.demo")
+        response = client.get(
             f"/pacientes/{paciente.pk}/historia/",
             **{"HTTP_HOST": "xmedical.cloud"},
         )

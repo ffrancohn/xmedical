@@ -27,10 +27,12 @@ class PacienteListView(LoginRequiredMixin, ListView):
     context_object_name = "pacientes"
 
     def dispatch(self, request, *args, **kwargs):
-        if can_view_pacientes(request.user):
-            return super().dispatch(request, *args, **kwargs)
-        messages.error(request, "No tienes permiso para acceder a pacientes.")
-        return redirect("dashboard")
+        # Solo se evalua el rol con sesion iniciada: sin sesion manda
+        # LoginRequiredMixin al login (con ?next=), no al dashboard.
+        if request.user.is_authenticated and not can_view_pacientes(request.user):
+            messages.error(request, "No tienes permiso para acceder a pacientes.")
+            return redirect("dashboard")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         qs = Paciente.objects.filter(activo=True)

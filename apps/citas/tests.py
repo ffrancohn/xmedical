@@ -1,5 +1,5 @@
 """Pruebas funcionales de citas (FUN-C*)."""
-from datetime import time
+from datetime import time, timedelta
 
 from django.test import TestCase
 from django.utils import timezone
@@ -59,11 +59,13 @@ class CitaFunctionalTests(TestCase):
         self.assertTrue(response.context["form"].errors)
 
     def test_fun_c04_cancelar_cita(self):
+        # Manana, no hoy: la vista exige 2 horas de anticipacion y con una hora
+        # fija del dia el test fallaba segun la hora en que se ejecutara.
         cita = Cita.objects.create(
             institucion=self.institucion,
             paciente=self.paciente,
             profesional=self.profesional,
-            fecha=self.fecha,
+            fecha=timezone.localdate() + timedelta(days=1),
             hora=time(16, 0),
             estado="pendiente",
         )
