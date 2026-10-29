@@ -209,9 +209,67 @@ def sugerir_diagnostico(request, cita_id):
 @login_required
 @role_required(*CAN_CONSULTA)
 def cie10_search(request):
-    q = request.GET.get("q", "").lower()
-    results = [item for item in CIE10_MVP if q in item["codigo"].lower() or q in item["nombre"].lower()] if q else CIE10_MVP
-    return JsonResponse({"results": results[:10]})
+    """Autocomplete CIE-10: insensible a tildes, por código o descripción, con ranking.
+
+    Usa la tabla `CodigoCie10` (catálogo completo importado con `import_cie10`).
+    Si la tabla está vacía cae al listado MVP embebido, para que el wizard siga
+    funcionando en instalaciones sin catálogo.
+    """
+    from django.db.models import Q
+
+    from .models import CodigoCie10, normalizar_texto
+    from .sinonimos import expandir_termino
+
+    q = (request.GET.get("q") or "").strip()
+    termino = normalizar_texto(q)
+    terminos = expandir_termino(q)
+    catalogo = CodigoCie10.objects.filter(es_hoja=True)
+
+    if not catalogo.exists():
+        results = (
+            [item for item in CIE10_MVP if termino in normalizar_texto(f"{item['codigo']} {item['nombre']}")]
+            if termino
+            else CIE10_MVP
+        )
+        return JsonResponse({"results": results[:10], "catalogo": False, "total": len(results)})
+
+    if not termino:
+        filas = list(catalogo.order_by("codigo")[:10])
+        return JsonResponse(
+            {
+                "results": [{"codigo": c.codigo, "nombre": c.descripcion} for c in filas],
+                "catalogo": True,
+                "total": catalogo.count(),
+            }
+        )
+
+    codigo_q = q.upper()
+    filtro = Q(codigo__istartswith=codigo_q)
+    for candidato in terminos:
+        filtro |= Q(busqueda__contains=candidato)
+    qs = catalogo.filter(filtro)
+    total = qs.count()
+    filas = list(qs[:100])
+
+    def ranking(codigo: str) -> tuple[int, int, str]:
+        if codigo == codigo_q:
+            peso = 0
+        elif codigo.startswith(codigo_q):
+            peso = 1
+        elif codigo.startswith(codigo_q[:1]):
+            peso = 2
+        else:
+            peso = 3
+        return (peso, len(codigo), codigo)
+
+    filas.sort(key=lambda c: ranking(c.codigo))
+    return JsonResponse(
+        {
+            "results": [{"codigo": c.codigo, "nombre": c.descripcion} for c in filas[:10]],
+            "catalogo": True,
+            "total": total,
+        }
+    )
 
 
 @login_required

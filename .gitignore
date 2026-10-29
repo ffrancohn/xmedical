@@ -50,3 +50,10 @@ temp_*.mp3
 temp_*.wav
 .cache/
 models/
+
+# Playwright CLI (snapshots y logs de sesión local)
+.playwright-cli/
+
+# Catálogo CIE-10: dato de terceros (ver data/cie10/README.md), no se versiona
+data/cie10/*.csv
+data/cie10/*.xls
