@@ -1,0 +1,23 @@
+# Normalizacion de finales de linea.
+# El repo se mantiene en LF (CI y scripts de validacion, como
+# .cursor/scripts/validate_package.py, comparan contra "---\n"), aunque el
+# checkout sea en Windows.
+* text=auto eol=lf
+
+# Binarios: nunca convertir ni mostrar como diff de texto.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.rar   binary
+*.ttf   binary
+*.woff  binary
+*.woff2 binary
+
+# Scripts de shell y batch: el .bat necesita CRLF para ejecutarse bien.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
