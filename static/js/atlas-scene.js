@@ -52,9 +52,9 @@
     var top = [P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)];
     var right = [top[3], top[2], P(x + w, y + d, z), P(x, y + d, z)];
     var left = [top[0], top[3], P(x, y + d, z), P(x, y, z)];
-    list.push('<polygon points="' + pts(top) + '" fill="' + col.top + '"/>');
-    list.push('<polygon points="' + pts(right) + '" fill="' + col.right + '"/>');
-    list.push('<polygon points="' + pts(left) + '" fill="' + col.left + '"/>');
+    list.push('<polygon class="face-top" points="' + pts(top) + '" fill="' + col.top + '"/>');
+    list.push('<polygon class="face-side" points="' + pts(right) + '" fill="' + col.right + '"/>');
+    list.push('<polygon class="face-side" points="' + pts(left) + '" fill="' + col.left + '"/>');
   }
   function person(list, x, y, h, color) {
     var head = P(x, y, h);
@@ -178,7 +178,57 @@
       '<g class="xm-scene-body">' + st.polys.join("") + "</g>" +
       '<polygon class="xm-scene-hit" points="' + hit(st.bbox) + '"/></g>';
   });
+
+  /* ---- hoja técnica: marco, bloque de títulos y globos numerados ---- */
+  var floorB = bounds(floor.join(""));
+  var margen = 36;
+  markup +=
+    '<g class="xm-scene-sheet" aria-hidden="true">' +
+    '<rect x="' + (floorB.minX - margen) + '" y="' + (floorB.minY - margen) + '" width="' +
+    (floorB.maxX - floorB.minX + margen * 2) + '" height="' + (floorB.maxY - floorB.minY + margen * 2) +
+    '" fill="none" stroke="rgba(94,234,212,.55)" stroke-width="1.3"/>' +
+    '<rect x="' + (floorB.minX - margen + 7) + '" y="' + (floorB.minY - margen + 7) + '" width="' +
+    (floorB.maxX - floorB.minX + margen * 2 - 14) + '" height="' + (floorB.maxY - floorB.minY + margen * 2 - 14) +
+    '" fill="none" stroke="rgba(94,234,212,.22)" stroke-width=".8"/>' +
+    "</g>";
+
+  var tb = { w: 330, h: 76 };
+  var tbX = floorB.maxX + margen - tb.w - 4;
+  var tbY = floorB.maxY + margen - tb.h - 4;
+  var recorte = function (t, max) {
+    t = String(t || "");
+    return t.length > max ? t.slice(0, max - 1) + "…" : t;
+  };
+  var linea = function (y) {
+    return '<line x1="' + tbX + '" y1="' + y + '" x2="' + (tbX + tb.w) + '" y2="' + y + '" stroke="rgba(94,234,212,.28)" stroke-width=".8"/>';
+  };
+  markup +=
+    '<g class="xm-scene-titleblock" aria-hidden="true">' +
+    '<rect x="' + tbX + '" y="' + tbY + '" width="' + tb.w + '" height="' + tb.h + '" fill="rgba(8,23,29,.92)" stroke="rgba(94,234,212,.45)" stroke-width=".9"/>' +
+    linea(tbY + 24) + linea(tbY + 48) +
+    '<text class="tb-strong" x="' + (tbX + 10) + '" y="' + (tbY + 16) + '">CONSULTORIO — PLANTA BAJA</text>' +
+    '<text class="tb" x="' + (tbX + 10) + '" y="' + (tbY + 40) + '">ESC. 1:50 · ' + esc(recorte(SCENE.especialidad || "MEDICINA GENERAL", 30)) + "</text>" +
+    '<text class="tb" x="' + (tbX + 10) + '" y="' + (tbY + 64) + '">' + esc(recorte(SCENE.perfil || "", 22)) + " · " + esc(SCENE.fecha_corta || SCENE.fecha || "") + "</text>" +
+    "</g>";
+
   svg.innerHTML = markup;
+
+  function esc(t) {
+    return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // globos numerados (01, 02…) sobre cada estación
+  ordered.forEach(function (st, i) {
+    var a = st.anchor;
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("class", "xm-scene-callout");
+    g.setAttribute("aria-hidden", "true");
+    var cx = n(a[0]), cy = n(a[1]);
+    g.innerHTML =
+      '<circle cx="' + cx + '" cy="' + cy + '" r="10.5" fill="rgba(8,23,29,.92)" stroke="rgba(94,234,212,.7)" stroke-width="1"/>' +
+      '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="central">' + String(i + 1).padStart(2, "0") + "</text>";
+    svg.appendChild(g);
+  });
   // el halo reutiliza los polígonos: se le da color y opacidad por CSS
   svg.querySelectorAll(".xm-scene-halo polygon").forEach(function (p) { p.setAttribute("fill", C.accent); p.setAttribute("opacity", ".16"); });
 
@@ -238,10 +288,12 @@
     if (!rect.width || !vb.width) return;
     stations.forEach(function (st) {
       var el = labelEls[st.id], a = st.anchor;
-      el.style.left = ((a[0] - vb.x) / vb.width) * rect.width + "px";
-      el.style.top = ((a[1] - vb.y) / vb.height) * rect.height + "px";
-      var inView = a[0] >= vb.x && a[0] <= vb.x + vb.width;
-      el.style.display = inView && (!compact() || el.classList.contains("is-visible")) ? "" : "none";
+      var left = ((a[0] - vb.x) / vb.width) * rect.width;
+      var top = ((a[1] - vb.y) / vb.height) * rect.height;
+      el.style.left = left + "px";
+      el.style.top = top + "px";
+      var dentro = a[0] >= vb.x && a[0] <= vb.x + vb.width && left > 24 && left < rect.width - 24 && top > 30;
+      el.style.display = dentro && (!compact() || el.classList.contains("is-visible")) ? "" : "none";
     });
   }
 
@@ -278,14 +330,14 @@
     });
     renderPanel(st);
     panel.hidden = false;
-    root.classList.add("is-open");
+    root.classList.add("is-open", "is-zoomed");
     setCamera(viewFor(st.bbox, compact() ? 22 : 70), true);
     document.getElementById("xm-scene-title").focus({ preventScroll: true });
   }
 
   function closeStation(returnFocus) {
     panel.hidden = true;
-    root.classList.remove("is-open");
+    root.classList.remove("is-open", "is-zoomed");
     svg.querySelectorAll(".xm-scene-station").forEach(function (el) {
       el.classList.remove("is-hot");
       el.setAttribute("aria-expanded", "false");

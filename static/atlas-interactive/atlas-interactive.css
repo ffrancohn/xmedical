@@ -312,3 +312,85 @@
   opacity: .75;
   padding: .4rem 0;
 }
+
+/* ==========================================================================
+   Tema blueprint — line-art técnico sobre la misma geometría (doc 24)
+   ========================================================================== */
+.xm-scene.is-blueprint {
+  --atlas-ink: #d9f3ee;
+  --atlas-ink-2: rgba(226, 240, 236, .72);
+  --atlas-paper: #08171d;
+  --atlas-paper-3: #0b1f26;
+  --atlas-line: rgba(94, 234, 212, .22);
+  --atlas-accent: #2dd4bf;
+  --atlas-warn: #e7b85c;
+  background: #08171d;
+  border-color: rgba(94, 234, 212, .3);
+}
+.xm-scene.is-blueprint .xm-scene__stage {
+  background: radial-gradient(circle at 30% 15%, rgba(45, 212, 191, .08), transparent 62%), #08171d;
+}
+.xm-scene.is-blueprint .xm-scene-body polygon,
+.xm-scene.is-blueprint .xm-scene-body circle {
+  fill: rgba(94, 234, 212, .05);
+  stroke: #5eead4;
+  stroke-width: .9;
+  stroke-opacity: .5;
+  vector-effect: non-scaling-stroke;
+}
+.xm-scene.is-blueprint .xm-scene-body .face-top { fill: rgba(94, 234, 212, .11); }
+.xm-scene.is-blueprint .xm-scene-body .face-side { fill: rgba(94, 234, 212, .045); }
+.xm-scene.is-blueprint .xm-scene-halo polygon,
+.xm-scene.is-blueprint .xm-scene-halo circle { fill: rgba(94, 234, 212, .18) !important; stroke: none !important; }
+.xm-scene.is-blueprint .xm-scene-floor polygon { fill: rgba(94, 234, 212, .03); stroke: rgba(94, 234, 212, .2); stroke-width: .8; }
+.xm-scene.is-blueprint .xm-scene-floor line { stroke: rgba(94, 234, 212, .15); }
+.xm-scene.is-blueprint .xm-scene-walls polygon { fill: rgba(94, 234, 212, .045); stroke: rgba(94, 234, 212, .28); stroke-width: .9; }
+.xm-scene.is-blueprint .xm-scene-callout text {
+  fill: #5eead4; font-size: 9.5px; font-family: ui-monospace, SFMono-Regular, monospace; letter-spacing: .04em;
+}
+.xm-scene.is-blueprint .xm-scene-titleblock text { font-family: ui-monospace, SFMono-Regular, monospace; }
+.xm-scene.is-blueprint .tb { font-size: 8.5px; fill: rgba(226, 240, 236, .68); }
+.xm-scene.is-blueprint .tb-strong { font-size: 10px; fill: #eafaf6; letter-spacing: .09em; }
+.xm-scene.is-blueprint .xm-scene-label {
+  background: rgba(8, 23, 29, .94); border-color: rgba(94, 234, 212, .5); color: #eafaf6;
+  transform: translate(-50%, -210%); letter-spacing: .01em;
+}
+.xm-scene.is-blueprint .xm-scene-label b { color: #5eead4; }
+.xm-scene.is-blueprint .xm-scene-label.is-visible { transform: translate(-50%, -210%) scale(1.04); }
+.xm-scene.is-blueprint .xm-scene__hint,
+.xm-scene.is-blueprint .xm-scene__toggle {
+  background: rgba(8, 23, 29, .92); border-color: rgba(94, 234, 212, .35); color: #9fe6d8;
+}
+.xm-scene.is-blueprint .xm-scene__toggle:hover { background: rgba(94, 234, 212, .14); }
+.xm-scene.is-blueprint .xm-scene__panel {
+  background: #0b1f26; border-left-color: rgba(94, 234, 212, .22); color: #d9f3ee;
+}
+.xm-scene.is-blueprint .xm-scene__panel h2 { color: #eafaf6; }
+.xm-scene.is-blueprint .xm-scene__kicker { color: rgba(226, 240, 236, .6); letter-spacing: .14em; }
+.xm-scene.is-blueprint .xm-scene__lead { color: rgba(226, 240, 236, .72); }
+.xm-scene.is-blueprint .xm-scene-kpi { background: rgba(94, 234, 212, .07); border-color: rgba(94, 234, 212, .22); }
+.xm-scene.is-blueprint .xm-scene-kpi span { color: rgba(226, 240, 236, .66); }
+.xm-scene.is-blueprint .xm-scene-bar .track { background: rgba(94, 234, 212, .16); }
+.xm-scene.is-blueprint .xm-scene-bar .fill { background: #2dd4bf; }
+.xm-scene.is-blueprint .xm-scene-bar .fill.warn { background: #e7b85c; }
+.xm-scene.is-blueprint .xm-scene__close {
+  background: rgba(8, 23, 29, .9); border-color: rgba(94, 234, 212, .35); color: #d9f3ee;
+}
+.xm-scene.is-blueprint .xm-scene__table { background: #0b1f26; color: #d9f3ee; }
+.xm-scene.is-blueprint .xm-scene__table h3 { color: #eafaf6; }
+.xm-scene.is-blueprint .xm-scene__table .table th,
+.xm-scene.is-blueprint .xm-scene__table .table td { color: #d9f3ee; border-color: rgba(94, 234, 212, .18); }
+
+.xm-scene.is-blueprint .xm-scene__hint kbd {
+  background: rgba(94, 234, 212, .14);
+  border-color: rgba(94, 234, 212, .4);
+  color: #d9f3ee;
+}
+
+/* La hoja y el cajetín pertenecen a la vista general: se ocultan al acercar la cámara */
+.xm-scene.is-blueprint .xm-scene-sheet,
+.xm-scene.is-blueprint .xm-scene-titleblock {
+  transition: opacity .25s ease;
+}
+.xm-scene.is-zoomed .xm-scene-sheet,
+.xm-scene.is-zoomed .xm-scene-titleblock { opacity: 0; }

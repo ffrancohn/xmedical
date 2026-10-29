@@ -9,6 +9,12 @@ from __future__ import annotations
 
 from django.utils import timezone
 
+DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+MESES = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+]
+
 
 def _hora(valor) -> str:
     return valor.strftime("%H:%M") if valor else "—"
@@ -20,6 +26,11 @@ def _barras(filas, tope: int | None = None) -> list[dict]:
         {"etiqueta": f[0], "valor": f[1], "pct": round(f[1] * 100 / tope) if tope else 0}
         for f in filas
     ]
+
+
+def _fecha_larga(momento) -> str:
+    texto = f"{DIAS[momento.weekday()]} {momento.day} de {MESES[momento.month - 1]}, {momento:%H:%M}"
+    return texto[0].upper() + texto[1:]
 
 
 def _paciente(espera: dict) -> dict:
@@ -129,7 +140,8 @@ def _payload(estaciones, espera, urls, perfil, especialidad, fecha) -> dict:
     return {
         "perfil": perfil,
         "especialidad": especialidad,
-        "fecha": fecha.strftime("%A %d de %B, %H:%M").capitalize(),
+        "fecha": _fecha_larga(fecha),
+        "fecha_corta": fecha.strftime("%d/%m/%Y %H:%M"),
         "estaciones": estaciones,
         "paciente": _paciente(espera),
         "urls": urls,
