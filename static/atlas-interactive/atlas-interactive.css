@@ -1,4 +1,23 @@
-/* Atlas interactivo — Objeto → Exploración → Acción */
+/* Atlas interactivo — Objeto → Exploración → Acción.
+ *
+ * Usa los tokens del modo Atlas (atlas.css) con valores de reserva propios.
+ * No depende de variables de terceros: en este tema NO existen --b1/--b2/--b3,
+ * --bc, --p ni --wa (DaisyUI), y hsl(var(--p)) dejaba bordes, fondos y el
+ * contorno de foco sin efecto.
+ */
+
+.xm-atlas-hub,
+.xm-atlas-explore {
+  --atlas-ink: var(--xm-atlas-ink, #0b1f26);
+  --atlas-ink-2: var(--xm-atlas-ink-2, #34494f);
+  --atlas-paper: var(--xm-atlas-paper, #f2efe7);
+  --atlas-paper-3: var(--xm-atlas-paper-3, #faf8f2);
+  --atlas-line: var(--xm-atlas-line, rgba(11, 31, 38, 0.14));
+  --atlas-accent: #0f766e;
+  --atlas-accent-soft: rgba(15, 118, 110, 0.16);
+  --atlas-warn: #b45309;
+  --atlas-warn-soft: rgba(180, 83, 9, 0.18);
+}
 
 .xm-atlas-hub {
   margin-bottom: 1.5rem;
@@ -7,8 +26,8 @@
 .xm-atlas-hub__scene {
   position: relative;
   border-radius: 1rem;
-  border: 1px solid hsl(var(--bc) / 0.12);
-  background: linear-gradient(165deg, hsl(var(--b2)) 0%, hsl(var(--b3)) 100%);
+  border: 1px solid var(--atlas-line);
+  background: linear-gradient(165deg, var(--atlas-paper-3) 0%, var(--atlas-paper) 100%);
   min-height: 14rem;
   padding: 1.25rem;
   overflow: hidden;
@@ -18,7 +37,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 20%, hsl(var(--p) / 0.08), transparent 55%);
+  background: radial-gradient(circle at 30% 20%, var(--atlas-accent-soft), transparent 55%);
   pointer-events: none;
 }
 
@@ -38,27 +57,27 @@
   padding: 0.75rem 0.5rem;
   border-radius: 0.85rem;
   border: 2px solid transparent;
-  background: hsl(var(--b1) / 0.65);
+  background: var(--atlas-paper-3);
   cursor: pointer;
   transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
   text-align: center;
-  color: inherit;
+  color: var(--atlas-ink);
   font: inherit;
 }
 
 .xm-atlas-object:hover {
-  border-color: hsl(var(--p) / 0.45);
+  border-color: var(--atlas-accent);
   transform: translateY(-2px);
 }
 
 .xm-atlas-object:focus-visible {
-  outline: 3px solid hsl(var(--p));
+  outline: 3px solid var(--atlas-accent);
   outline-offset: 2px;
 }
 
 .xm-atlas-object.is-active {
-  border-color: hsl(var(--p));
-  box-shadow: 0 0 0 1px hsl(var(--p) / 0.3);
+  border-color: var(--atlas-accent);
+  box-shadow: 0 0 0 1px var(--atlas-accent-soft);
 }
 
 .xm-atlas-object__visual {
@@ -80,12 +99,16 @@
   pointer-events: none;
 }
 
+/* Avatares del paquete v2: retratos 240x330 sin transparencia.
+   Se muestran como ficha vertical y se recorta hacia la cara. */
 .xm-atlas-avatar-img {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 9999px;
+  width: 2.75rem;
+  height: 3.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--atlas-line);
   object-fit: cover;
-  background: hsl(var(--bc) / 0.08);
+  object-position: 50% 14%;
+  background: var(--atlas-paper-3);
 }
 
 .xm-atlas-module-hero {
@@ -95,11 +118,12 @@
 .xm-atlas-object__label {
   font-weight: 600;
   font-size: 0.85rem;
+  color: var(--atlas-ink);
 }
 
 .xm-atlas-object__desc {
-  font-size: 0.7rem;
-  opacity: 0.75;
+  font-size: 0.72rem;
+  color: var(--atlas-ink-2);
   line-height: 1.3;
 }
 
@@ -114,6 +138,7 @@
 
 .xm-atlas-explore__panel {
   animation: xm-atlas-fade-in 0.25s ease;
+  outline: none;
 }
 
 @keyframes xm-atlas-fade-in {
@@ -137,27 +162,50 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 9999px;
-  background: hsl(var(--bc) / 0.12);
+  background: var(--atlas-line);
+  color: var(--atlas-ink-2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 0.65rem;
   font-weight: 600;
-  opacity: 0.85;
 }
 
 .xm-atlas-grupo-card {
-  border: 1px solid hsl(var(--bc) / 0.12);
+  border: 1px solid var(--atlas-line);
   border-radius: 0.75rem;
   padding: 0.85rem;
-  background: hsl(var(--b1));
+  background: var(--atlas-paper-3);
 }
 
 .xm-atlas-grupo-card:hover {
-  border-color: hsl(var(--p) / 0.35);
+  border-color: var(--atlas-accent);
 }
 
 .xm-atlas-fallback {
   font-size: 0.8rem;
   margin-top: 0.5rem;
+}
+
+/* Barras de proporción de los paneles de exploración (agenda, diagnósticos, espera) */
+.xm-atlas-bar {
+  display: block;
+  height: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 9999px;
+  background: var(--atlas-line);
+  overflow: hidden;
+}
+
+.xm-atlas-bar__fill {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: var(--atlas-accent);
+  min-width: 0.25rem;
+}
+
+.xm-atlas-bar--wait .xm-atlas-bar__fill {
+  background: var(--atlas-warn);
 }
