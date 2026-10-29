@@ -40,6 +40,10 @@ graphify-out/graph.json
 graphify-out/manifest.json
 graphify-out/.graphify_labels.json
 
+# Artefactos de reparación de permisos de la herramienta (locales, con SIDs de la máquina)
+.dsh-acl-recovery/
+*-acl-recovery/
+
 # Temporales y caché
 output/
 temp_*.mp3
