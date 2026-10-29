@@ -23,12 +23,16 @@ en epidemiología.
 
 ## Carga del catálogo
 
-Ver [`data/cie10/README.md`](../data/cie10/README.md). Resumen:
+El CSV **está versionado** en [`data/cie10/cie-10.csv`](../data/cie10/cie-10.csv) (1,43 MB,
+14.498 filas), así que tras un `git pull` solo hay que importarlo a la base:
 
-```powershell
-Invoke-WebRequest https://raw.githubusercontent.com/verasativa/CIE-10/master/cie-10.csv -OutFile data/cie10/cie-10.csv
+```bash
 python manage.py import_cie10
 ```
+
+Es idempotente (crea, actualiza y no borra). Si se prefiere partir de cero:
+`python manage.py import_cie10 --truncate`. Procedencia, formato y licencia en
+[`data/cie10/README.md`](../data/cie10/README.md).
 
 Resultado en la instalación de demo: **14.498 entradas**, de las cuales **14.268 consultables**
 (nivel ≥ 2).

@@ -54,6 +54,8 @@ models/
 # Playwright CLI (snapshots y logs de sesión local)
 .playwright-cli/
 
-# Catálogo CIE-10: dato de terceros (ver data/cie10/README.md), no se versiona
-data/cie10/*.csv
+# Catálogo CIE-10: el CSV SÍ se versiona (data/cie10/cie-10.csv) para que el
+# despliegue pueda cargarlo sin pasos manuales. Sólo se ignoran hojas de cálculo
+# auxiliares y descargas sueltas.
 data/cie10/*.xls
+data/cie10/*.xlsx
