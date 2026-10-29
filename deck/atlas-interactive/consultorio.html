@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consultorio — prototipo de escena isométrica</title>
+<style>
+  :root {
+    --paper: #f2efe7;
+    --paper-3: #faf8f2;
+    --ink: #0b1f26;
+    --ink-2: #34494f;
+    --line: rgba(11, 31, 38, .14);
+    --accent: #0f766e;
+    --warn: #b45309;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: "Space Grotesk", system-ui, -apple-system, sans-serif; background: var(--paper); color: var(--ink); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 1.25rem; border-bottom: 1px solid var(--line); background: var(--paper-3); }
+  .bar h1 { font-size: 1rem; margin: 0; font-weight: 700; }
+  .bar .meta { font-size: .78rem; color: var(--ink-2); }
+  .bar a { color: var(--accent); font-size: .8rem; text-decoration: none; border-bottom: 1px solid currentColor; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 22rem; height: calc(100% - 3.1rem); }
+  .stage { position: relative; overflow: hidden; }
+  .stage svg { display: block; width: 100%; height: 100%; }
+
+  .station { cursor: pointer; outline: none; }
+  .station .body { transition: filter .15s ease; }
+  .station:hover .body, .station:focus-visible .body, .station.is-hot .body { filter: brightness(1.07) saturate(1.06); }
+  .halo { opacity: 0; transition: opacity .15s ease; pointer-events: none; }
+  .station:hover .halo, .station:focus-visible .halo, .station.is-hot .halo { opacity: 1; }
+  .hit { fill: transparent; stroke: transparent; }
+
+  .labels { position: absolute; inset: 0; pointer-events: none; }
+  .label { position: absolute; transform: translate(-50%, -50%); background: rgba(250, 248, 242, .95); border: 1px solid var(--line); border-radius: 999px; padding: .16rem .5rem; font-size: .7rem; font-weight: 600; color: var(--ink); box-shadow: 0 2px 6px rgba(11, 31, 38, .07); white-space: nowrap; opacity: .92; transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease; }
+  .label b { color: var(--accent); }
+  .label.is-visible { opacity: 1; transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 4px 14px rgba(11, 31, 38, .14); }
+
+  .panel { border-left: 1px solid var(--line); background: var(--paper-3); padding: 1.25rem; overflow-y: auto; position: relative; }
+  .panel[hidden] { display: none; }
+  .panel__kicker { font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-2); margin: 0 0 .25rem; }
+  .panel h2 { font-size: 1.12rem; margin: 0 0 .35rem; outline: none; }
+  .panel p.lead { margin: 0 0 1rem; font-size: .84rem; color: var(--ink-2); }
+  .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; margin-bottom: 1rem; }
+  .kpi { border: 1px solid var(--line); border-radius: 12px; padding: .55rem .65rem; background: #fff; }
+  .kpi span { display: block; font-size: .66rem; color: var(--ink-2); }
+  .kpi strong { font-size: 1.3rem; }
+  .bar-row { margin: .45rem 0; font-size: .76rem; }
+  .bar-row .t { display: flex; justify-content: space-between; }
+  .track { height: .38rem; border-radius: 999px; background: var(--line); margin-top: .2rem; overflow: hidden; }
+  .fill { display: block; height: 100%; background: var(--accent); }
+  .fill.warn { background: var(--warn); }
+  .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+  .btn { border: 1px solid var(--ink); background: var(--ink); color: #f8faf9; border-radius: 10px; padding: .42rem .75rem; font: inherit; font-size: .78rem; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .close { position: absolute; top: .7rem; right: .7rem; border: 1px solid var(--line); background: #fff; border-radius: 8px; width: 1.9rem; height: 1.9rem; cursor: pointer; font-size: .95rem; line-height: 1; }
+
+  .legend { position: absolute; left: 1rem; bottom: 1rem; font-size: .7rem; color: var(--ink-2); background: rgba(250,248,242,.9); border: 1px solid var(--line); border-radius: 10px; padding: .4rem .6rem; }
+  .legend kbd { font-family: inherit; border: 1px solid var(--line); border-radius: 4px; padding: 0 .22rem; background: #fff; }
+
+  .table-view { position: absolute; inset: 0; background: var(--paper); padding: 1.25rem; overflow: auto; }
+  .table-view[hidden] { display: none; }
+  table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; }
+    .panel { position: fixed; left: 0; right: 0; bottom: 0; border-left: 0; border-top: 1px solid var(--line); max-height: 62vh; border-radius: 18px 18px 0 0; box-shadow: 0 -8px 30px rgba(11,31,38,.18); z-index: 20; }
+    .legend { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .station .body, .halo, .label, .panel { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div>
+    <h1>Consultorio</h1>
+    <div class="meta">Dr. Carlos Méndez · Medicina General · jueves 29 de octubre, 09:40</div>
+  </div>
+  <a href="#" id="toggle-table">Ver como tabla</a>
+</header>
+
+<main class="layout">
+  <section class="stage" aria-label="Consultorio en vista isométrica">
+    <svg id="scene" role="group" aria-label="Estaciones del consultorio" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="labels" id="labels" aria-hidden="true"></div>
+    <div class="legend">Tab recorre · Enter abre · <kbd>Esc</kbd> vuelve</div>
+
+    <div class="table-view" id="table-view" hidden>
+      <h2>Vista de tabla (equivalente)</h2>
+      <p class="lead" style="font-size:.85rem;color:var(--ink-2)">Misma tarea sin escena: el fallback obligatorio.</p>
+      <table>
+        <thead><tr><th>Estación</th><th>Qué muestra</th><th>Dato de hoy</th></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside class="panel" id="panel" hidden aria-live="polite">
+    <button class="close" id="close" aria-label="Volver a la vista general">✕</button>
+    <p class="panel__kicker" id="p-kicker"></p>
+    <h2 id="p-title" tabindex="-1"></h2>
+    <p class="lead" id="p-lead"></p>
+    <div id="p-body"></div>
+    <div class="actions" id="p-actions"></div>
+  </aside>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------ *
+   *  Datos ficticios. En producción: atlas_explore / especialista_dashboard_data
+   * ------------------------------------------------------------------ */
+  const DATA = {
+    agenda: { label: "Agenda de hoy", kicker: "Escritorio", lead: "Tus citas del día y el siguiente paciente por atender.",
+      kpis: [["Citas", 5], ["Atendidas", 2], ["Por atender", 3], ["Siguiente", "11:00"]],
+      bars: [["Pendiente", 1, 3], ["Confirmada", 1, 3], ["En espera", 1, 3], ["Atendida", 2, 3]],
+      actions: ["Atender la cola de hoy", "Agenda completa"],
+      aria: "Agenda de hoy: 5 citas, 2 atendidas, siguiente a las 11:00" },
+    espera: { label: "Sala de espera", kicker: "Fondo de la clínica", lead: "Quién espera, cuánto lleva y si ya tiene signos tomados.",
+      kpis: [["En espera", 3], ["Con signos", 1], ["Sin signos", 2], ["Mayor espera", "20 min"]],
+      bars: [["0–10 min", 1, 3], ["10–20 min", 1, 3], ["+20 min", 1, 3]],
+      actions: ["Ver cola de signos", "Llamar al siguiente"],
+      aria: "Sala de espera: 3 pacientes, el primero hace 20 minutos" },
+    historia: { label: "Archivo de historias", kicker: "Archivador", lead: "Expedientes del día y diagnósticos frecuentes de los últimos 30 días.",
+      kpis: [["Consultas hoy", 2], ["30 días", 18], ["Diagnósticos", 21], ["Sin cerrar", 1]],
+      bars: [["Hipertensión", 5, 5], ["Diabetes tipo 2", 3, 5], ["Rinofaringitis", 2, 5]],
+      actions: ["Buscar paciente", "Abrir historia"],
+      aria: "Archivo de historias: 2 consultas hoy, hipertensión es el diagnóstico más frecuente" },
+    laboratorio: { label: "Laboratorio", kicker: "Resultados", lead: "Estudios pedidos y pendientes de resultado para tus pacientes.",
+      kpis: [["Pendientes", 4], ["Listos", 2], ["Promedio", "36 h"], ["Urgentes", 1]],
+      bars: [["Hematología", 2, 4], ["Química", 1, 4], ["Microbiología", 1, 4]],
+      actions: ["Ver resultados", "Solicitar estudio"],
+      aria: "Laboratorio: 4 estudios pendientes, 1 urgente" },
+    farmacia: { label: "Farmacia", kicker: "Medicamentos", lead: "Recetas emitidas y existencias que afectan tus prescripciones.",
+      kpis: [["Recetas hoy", 3], ["Surtidas", 2], ["Sin existencias", 1], ["Equivalentes", 2]],
+      bars: [["Losartán", 2, 3], ["Metformina", 1, 3], ["Amoxicilina", 1, 3]],
+      actions: ["Ver recetas", "Revisar sustitutos"],
+      aria: "Farmacia: 3 recetas hoy, 1 medicamento sin existencias" },
+    pasillo: { label: "Pasillo", kicker: "Salida de la escena", lead: "Ir al resto de la clínica sin perder el contexto del consultorio.",
+      kpis: [["Destinos", 3], ["Recepción", 1], ["Especialista", 2], ["Farmacia", 1]],
+      bars: [],
+      actions: ["Ir a recepción", "Volver al inicio"],
+      aria: "Pasillo: 3 destinos, recepción, especialista y farmacia" },
+  };
+
+  /* ------------------------------------------------------------------ *
+   *  Proyección isométrica (30°): x baja-derecha, y baja-izquierda, z arriba
+   * ------------------------------------------------------------------ */
+  const COS = Math.cos(Math.PI / 6), SIN = 0.5, S = 34;
+  const P = (x, y, z) => [(x - y) * COS * S, (x + y) * SIN * S - (z || 0) * S];
+  const f = (n) => Math.round(n * 100) / 100;
+  const pts = (arr) => arr.map((p) => f(p[0]) + "," + f(p[1])).join(" ");
+
+  const C = {
+    floorA: "#f0ece2", floorB: "#e8e2d5", grid: "rgba(11,31,38,.09)",
+    wallL: "#e6e0d3", wallB: "#eee9de", wallTop: "rgba(11,31,38,.10)",
+    wood: "#c9a27a", woodTop: "#dcbb96", woodDark: "#a9855f",
+    steel: "#a3aeb1", steelTop: "#bcc6c8", steelDark: "#8b979a",
+    paper: "#fbfaf6", ink: "#0b1f26", accent: "#0f766e", accentDark: "#0a4f4a",
+    screen: "#123039", warn: "#b45309", skin: "#3e5158", shirt: "#5b6f75",
+  };
+
+  /* primitivas ------------------------------------------------------- */
+  function box(list, x, y, z, w, d, h, col) {
+    const top = [P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)];
+    const right = [top[3], top[2], P(x + w, y + d, z), P(x, y + d, z)];
+    const left = [top[0], top[3], P(x, y + d, z), P(x, y, z)];
+    list.push(`<polygon points="${pts(top)}" fill="${col.top}"/>`);
+    list.push(`<polygon points="${pts(right)}" fill="${col.right}"/>`);
+    list.push(`<polygon points="${pts(left)}" fill="${col.left}"/>`);
+    return { top, right, left };
+  }
+
+  function quad(list, a, b, c, d, fill, stroke) {
+    list.push(`<polygon points="${pts([a, b, c, d])}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width=".7"` : ""}/>`);
+  }
+
+  function flat(list, x, y, z, w, d, fill, stroke) {
+    quad(list, P(x, y, z), P(x + w, y, z), P(x + w, y + d, z), P(x, y + d, z), fill, stroke);
+  }
+
+  function person(list, x, y, h, color) {
+    const head = P(x, y, h);
+    list.push(`<circle cx="${f(head[0])}" cy="${f(head[1])}" r="7.5" fill="${color}"/>`);
+    quad(list, P(x - 0.2, y, h - 0.18), P(x + 0.2, y, h - 0.18), P(x + 0.2, y, h - 0.95), P(x - 0.2, y, h - 0.95), color);
+  }
+
+  /** Rectángulo vertical sobre un plano y = constante (frente de un mueble). */
+  function faceY(list, x, y, z, w, h, fill, stroke) {
+    quad(list, P(x, y, z), P(x + w, y, z), P(x + w, y, z + h), P(x, y, z + h), fill, stroke);
+  }
+
+  /** Rectángulo vertical sobre un plano x = constante (costado de un mueble). */
+  function faceX(list, x, y, z, d, h, fill, stroke) {
+    quad(list, P(x, y, z), P(x, y + d, z), P(x, y + d, z + h), P(x, y, z + h), fill, stroke);
+  }
+
+  /* ------------------------------------------------------------------ *
+   *  La escena. Plano 9 x 14: fondo (y pequeño) = sala de espera y
+   *  laboratorio; medio = archivo y farmacia; delante = consultorio.
+   * ------------------------------------------------------------------ */
+  const W = 9, D = 14, WALL = 3.4;
+  const STATIONS = [];
+
+  function build() {
+    const floor = [], walls = [], objects = [];
+
+    // suelo
+    flat(floor, 0, 0, 0, W, D, C.floorA);
+    for (let i = 0; i <= W; i++) floor.push(`<line x1="${f(P(i, 0)[0])}" y1="${f(P(i, 0)[1])}" x2="${f(P(i, D)[0])}" y2="${f(P(i, D)[1])}" stroke="${C.grid}"/>`);
+    for (let j = 0; j <= D; j++) floor.push(`<line x1="${f(P(0, j)[0])}" y1="${f(P(0, j)[1])}" x2="${f(P(W, j)[0])}" y2="${f(P(W, j)[1])}" stroke="${C.grid}"/>`);
+
+    // paredes del fondo (x=0 y y=0) para que la cámara mire hacia dentro
+    quad(walls, P(0, 0, 0), P(0, D, 0), P(0, D, WALL), P(0, 0, WALL), C.wallL);
+    quad(walls, P(0, 0, 0), P(W, 0, 0), P(W, 0, WALL), P(0, 0, WALL), C.wallB);
+    quad(walls, P(0, 0, WALL), P(W, 0, WALL), P(W, D, WALL), P(0, D, WALL), "none", C.wallTop);
+
+    /* -------- sala de espera (fondo izquierda) -------- */
+    let b = [];
+    // respaldo primero, para que las personas queden delante
+    box(b, 1.0, 2.85, 0, 3.2, 0.16, 1.0, { top: "#cbb590", left: "#b7a07a", right: "#9c8663" });
+    box(b, 1.0, 2.0, 0, 3.2, 0.85, 0.42, { top: "#cbb590", left: "#b7a07a", right: "#9c8663" });
+    [[1.5, C.skin], [2.45, C.shirt], [3.4, C.shirt]].forEach(([x, col]) => {
+      // piernas sentadas (delante del asiento)
+      quad(b, P(x - 0.17, 2.55, 0.42), P(x + 0.17, 2.55, 0.42), P(x + 0.17, 2.55, 0.04), P(x - 0.17, 2.55, 0.04), col);
+      person(b, x, 2.55, 1.15, col);
+    });
+    STATIONS.push({ id: "espera", title: "Sala de espera", polys: b, anchor: P(2.6, 2.4, 2.0), depth: 2.4 });
+
+    /* -------- laboratorio (fondo derecha) -------- */
+    b = [];
+    box(b, 6.0, 1.2, 0, 2.4, 0.85, 1.05, { top: "#d9e4e6", left: C.steel, right: C.steelDark });
+    for (let i = 0; i < 3; i++) {
+      box(b, 6.25 + i * 0.62, 1.45, 1.05, 0.16, 0.16, 0.5, { top: "#bfe9e2", left: "#8fd6cc", right: "#72c2b7" });
+    }
+    box(b, 7.55, 1.35, 1.05, 0.55, 0.4, 0.35, { top: "#c3ced1", left: C.steel, right: C.steelDark });
+    STATIONS.push({ id: "laboratorio", title: "Laboratorio", polys: b, anchor: P(7.1, 1.6, 2.0), depth: 1.6 });
+
+    /* -------- archivo (izquierda, medio) -------- */
+    b = [];
+    box(b, 0.55, 5.4, 0, 1.35, 1.55, 2.15, { top: C.steelTop, left: C.steel, right: C.steelDark });
+    for (let i = 0; i < 3; i++) {
+      faceY(b, 0.72, 6.96, 1.62 - i * 0.62, 1.0, 0.5, "#c3ced1", "rgba(11,31,38,.25)");
+      // tirador
+      quad(b, P(1.1, 6.9, 1.75 - i * 0.62), P(1.35, 6.9, 1.75 - i * 0.62), P(1.35, 6.9, 1.7 - i * 0.62), P(1.1, 6.9, 1.7 - i * 0.62), "#7d8b8f");
+    }
+    STATIONS.push({ id: "historia", title: "Archivo de historias", polys: b, anchor: P(1.2, 6.3, 3.0), depth: 6.1 });
+
+    /* -------- farmacia (izquierda, delante) -------- */
+    b = [];
+    box(b, 0.55, 9.4, 0, 1.3, 1.5, 2.45, { top: C.woodTop, left: C.wood, right: C.woodDark });
+    for (let i = 0; i < 3; i++) {
+      faceY(b, 0.7, 10.91, 0.4 + i * 0.68, 1.0, 0.55, "#e8dbc6", "rgba(11,31,38,.22)");
+      quad(b, P(1.05, 10.85, 0.62 + i * 0.68), P(1.3, 10.85, 0.62 + i * 0.68), P(1.3, 10.85, 0.57 + i * 0.68), P(1.05, 10.85, 0.57 + i * 0.68), "#9a8663");
+    }
+    STATIONS.push({ id: "farmacia", title: "Farmacia", polys: b, anchor: P(1.2, 10.2, 3.15), depth: 10.1 });
+
+    /* -------- escritorio (consultorio, centro) -------- */
+    b = [];
+    box(b, 3.5, 8.4, 0, 2.3, 1.15, 1.05, { top: C.woodTop, left: C.wood, right: C.woodDark });
+    // papeles = citas por atender
+    for (let i = 0; i < 3; i++) flat(b, 3.75 + i * 0.5, 8.6, 1.07, 0.42, 0.55, C.paper, "rgba(11,31,38,.2)");
+    // monitor orientado al médico
+    box(b, 4.9, 8.55, 1.05, 0.75, 0.12, 0.55, { top: C.screen, left: C.steelDark, right: C.steel });
+    // silla del médico (con el médico sentado: "usted está aquí")
+    box(b, 6.05, 8.85, 0, 0.85, 0.85, 0.45, { top: C.accent, left: C.accentDark, right: "#083f3b" });
+    box(b, 6.05, 9.6, 0.45, 0.85, 0.16, 0.95, { top: C.accent, left: C.accentDark, right: "#083f3b" });
+    quad(b, P(6.25, 9.35, 0.45), P(6.7, 9.35, 0.45), P(6.7, 9.35, 0.04), P(6.25, 9.35, 0.04), "#e2e8e6");
+    person(b, 6.47, 9.25, 1.32, "#0b3b44");
+    STATIONS.push({ id: "agenda", title: "Agenda de hoy", polys: b, anchor: P(4.6, 8.9, 2.15), depth: 8.9 });
+
+    /* -------- silla del paciente -------- */
+    b = [];
+    box(b, 3.3, 10.2, 0, 0.9, 0.9, 0.45, { top: "#dcd3c2", left: "#c6bba8", right: "#ab9f8c" });
+    box(b, 3.3, 11.0, 0.45, 0.9, 0.16, 0.95, { top: "#dcd3c2", left: "#c6bba8", right: "#ab9f8c" });
+    // paciente sentado: piernas delante, torso sobre el asiento
+    quad(b, P(3.5, 10.72, 0.45), P(3.95, 10.72, 0.45), P(3.95, 10.72, 0.04), P(3.5, 10.72, 0.04), "#42585f");
+    person(b, 3.72, 10.62, 1.12, "#42585f");
+    STATIONS.push({ id: "paciente", title: "Paciente en consulta", polys: b, anchor: P(3.72, 10.55, 2.1), depth: 10.6,
+      data: { label: "Siguiente paciente", kicker: "Silla del consultorio", lead: "Quién está sentado ahora y qué falta antes de atenderlo.",
+        kpis: [["En silla", 1], ["Signos", "sí"], ["Espera", "12 min"], ["Historia", "abierta"]],
+        bars: [["Signos tomados", 1, 1], ["Motivo registrado", 1, 1]],
+        actions: ["Abrir historia", "Iniciar consulta"],
+        aria: "Siguiente paciente: en la silla, signos tomados, espera 12 minutos" } });
+
+    /* -------- pasillo (hueco en la pared del fondo) -------- */
+    b = [];
+    // umbral en el suelo para que se lea como salida
+    quad(b, P(2.6, 0.02, 0.01), P(3.95, 0.02, 0.01), P(3.95, 0.9, 0.01), P(2.6, 0.9, 0.01), "#dfd8c9");
+    faceY(b, 2.6, 0.02, 0, 1.35, 2.25, "#0d3138");
+    faceY(b, 2.72, 0.05, 0.08, 1.11, 2.05, "#17505b");
+    faceY(b, 2.8, 0.07, 1.95, 0.95, 0.12, "#2dd4bf");
+    STATIONS.push({ id: "pasillo", title: "Pasillo", polys: b, anchor: P(3.3, 0.3, 2.9), depth: 0.3 });
+
+    return { floor: floor.join(""), walls: walls.join(""), stations: STATIONS };
+  }
+
+  /* ------------------------------------------------------------------ *
+   *  Montaje
+   * ------------------------------------------------------------------ */
+  const svg = document.getElementById("scene");
+  const labelsBox = document.getElementById("labels");
+  const panel = document.getElementById("panel");
+  const scene = build();
+
+  const byId = new Map(scene.stations.map((s) => [s.id, s]));
+  for (const st of scene.stations) {
+    st.data = st.data || DATA[st.id] || { label: st.title, aria: st.title, kpis: [], bars: [], actions: [] };
+    st.bbox = boundsOf(st.polys.join(""));
+  }
+
+  const ordered = [...scene.stations].sort((a, b) => a.depth - b.depth); // fondo → frente
+  let markup = `<g class="floor">${scene.floor}</g><g class="walls">${scene.walls}</g>`;
+  for (const st of ordered) {
+    const d = st.data;
+    markup +=
+      `<g class="station" data-station="${st.id}" role="button" tabindex="0" aria-label="${d.aria}" aria-controls="panel">` +
+      `<g class="halo">${st.polys.map((p) => p.replace(/fill="[^"]*"/, `fill="${C.accent}" opacity=".16"`)).join("")}</g>` +
+      `<g class="body">${st.polys.join("")}</g>` +
+      `<polygon class="hit" points="${hitPolygon(st)}"/></g>`;
+  }
+  svg.innerHTML = markup;
+
+  function hitPolygon(st) {
+    const b = st.bbox, pad = 10;
+    return pts([[b.minX - pad, b.minY - pad], [b.maxX + pad, b.minY - pad], [b.maxX + pad, b.maxY + pad], [b.minX - pad, b.maxY + pad]]);
+  }
+
+  function boundsOf(html) {
+    const pairs = [...html.matchAll(/([-\d.]+),([-\d.]+)/g)];
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const m of pairs) {
+      const x = parseFloat(m[1]), y = parseFloat(m[2]);
+      if (x < minX) minX = x; if (y < minY) minY = y;
+      if (x > maxX) maxX = x; if (y > maxY) maxY = y;
+    }
+    return { minX, minY, maxX, maxY };
+  }
+
+  // etiquetas HTML (no van dentro del SVG)
+  const labelEls = new Map();
+  for (const st of scene.stations) {
+    const el = document.createElement("div");
+    el.className = "label";
+    el.innerHTML = `<b>${st.data.label}</b>`;
+    labelsBox.appendChild(el);
+    labelEls.set(st.id, el);
+  }
+
+  /* cámara ----------------------------------------------------------- */
+  const world = boundsOf(svg.innerHTML);
+  const view = { x: 0, y: 0, w: 1, h: 1 };
+  let raf = null;
+
+  const compact = () => window.matchMedia("(max-width: 900px)").matches;
+  const homePad = () => (compact() ? 8 : 34);
+  const homeView = () => viewFor(world, homePad());
+
+  function viewFor(b, pad = 46) {
+    const w = Math.max(b.maxX - b.minX + pad * 2, 240);
+    const h = Math.max(b.maxY - b.minY + pad * 2, 180);
+    return { x: b.minX - pad, y: b.minY - pad, w, h };
+  }
+
+  function setCamera(target, animate) {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!animate || reduce) {
+      Object.assign(view, target);
+      svg.setAttribute("viewBox", `${f(view.x)} ${f(view.y)} ${f(view.w)} ${f(view.h)}`);
+      placeLabels();
+      return;
+    }
+    const from = { ...view }, t0 = performance.now(), dur = 450;
+    cancelAnimationFrame(raf);
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      for (const key of ["x", "y", "w", "h"]) view[key] = from[key] + (target[key] - from[key]) * e;
+      svg.setAttribute("viewBox", `${f(view.x)} ${f(view.y)} ${f(view.w)} ${f(view.h)}`);
+      placeLabels();
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  function placeLabels() {
+    const vb = svg.viewBox.baseVal, rect = svg.getBoundingClientRect();
+    if (!rect.width || !vb.width) return;
+    const compact = window.matchMedia("(max-width: 900px)").matches;
+    for (const st of scene.stations) {
+      const el = labelEls.get(st.id);
+      const [ax, ay] = st.anchor;
+      el.style.left = ((ax - vb.x) / vb.width) * rect.width + "px";
+      el.style.top = ((ay - vb.y) / vb.height) * rect.height + "px";
+      const inView = ax >= vb.x && ax <= vb.x + vb.width;
+      // en móvil sólo se etiqueta la estación con la que se interactúa
+      el.style.display = inView && (!compact || el.classList.contains("is-visible")) ? "" : "none";
+    }
+  }
+
+  function refreshLabels() { placeLabels(); }
+
+  /* interacción ------------------------------------------------------ */
+  let lastFocus = null;
+
+  function openStation(id) {
+    const st = byId.get(id);
+    if (!st) return;
+    const d = st.data;
+    svg.querySelectorAll(".station").forEach((el) => {
+      const on = el.dataset.station === id;
+      el.classList.toggle("is-hot", on);
+      el.setAttribute("aria-expanded", on ? "true" : "false");
+      labelEls.get(el.dataset.station).classList.toggle("is-visible", on);
+    });
+    document.getElementById("p-kicker").textContent = d.kicker || "";
+    document.getElementById("p-title").textContent = d.label;
+    document.getElementById("p-lead").textContent = d.lead || "";
+    document.getElementById("p-body").innerHTML =
+      `<div class="kpis">${d.kpis.map(([k, v]) => `<div class="kpi"><span>${k}</span><strong>${v}</strong></div>`).join("")}</div>` +
+      (d.bars || []).map(([k, v, max]) => {
+        const pct = Math.round((v / max) * 100);
+        return `<div class="bar-row"><div class="t"><span>${k}</span><span>${v}</span></div><div class="track"><span class="fill${/^\+/.test(k) ? " warn" : ""}" style="width:${pct}%"></span></div></div>`;
+      }).join("");
+    document.getElementById("p-actions").innerHTML = (d.actions || [])
+      .map((a, i) => `<button class="btn${i ? " ghost" : ""}" type="button">${a}</button>`).join("");
+    panel.hidden = false;
+    setCamera(viewFor(st.bbox), true);
+    document.getElementById("p-title").focus({ preventScroll: true });
+  }
+
+  function closeStation(returnFocus) {
+    panel.hidden = true;
+    svg.querySelectorAll(".station").forEach((el) => {
+      el.classList.remove("is-hot");
+      el.setAttribute("aria-expanded", "false");
+      labelEls.get(el.dataset.station).classList.remove("is-visible");
+    });
+    setCamera(homeView(), true);
+    if (returnFocus && lastFocus) lastFocus.focus();
+  }
+
+  svg.addEventListener("click", (e) => {
+    const st = e.target.closest(".station");
+    if (st) { lastFocus = st; openStation(st.dataset.station); }
+  });
+  svg.addEventListener("keydown", (e) => {
+    const st = e.target.closest(".station");
+    if (!st) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lastFocus = st; openStation(st.dataset.station); }
+  });
+  svg.addEventListener("mouseover", (e) => {
+    const st = e.target.closest(".station");
+    if (st) { labelEls.get(st.dataset.station).classList.add("is-visible"); refreshLabels(); }
+  });
+  svg.addEventListener("mouseout", (e) => {
+    const st = e.target.closest(".station");
+    if (st && !st.classList.contains("is-hot")) { labelEls.get(st.dataset.station).classList.remove("is-visible"); refreshLabels(); }
+  });
+  svg.addEventListener("focusin", (e) => {
+    const st = e.target.closest(".station");
+    if (st) { labelEls.get(st.dataset.station).classList.add("is-visible"); refreshLabels(); }
+  });
+  svg.addEventListener("focusout", (e) => {
+    const st = e.target.closest(".station");
+    if (st && !st.classList.contains("is-hot")) { labelEls.get(st.dataset.station).classList.remove("is-visible"); refreshLabels(); }
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden) closeStation(true); });
+  document.getElementById("close").addEventListener("click", () => closeStation(true));
+
+  /* fallback tabla --------------------------------------------------- */
+  const table = document.getElementById("table-view");
+  document.getElementById("table-body").innerHTML = scene.stations
+    .map((st) => `<tr><td>${st.data.label}</td><td>${st.data.lead || ""}</td><td>${(st.data.kpis || []).map(([k, v]) => `${k}: ${v}`).join(" · ")}</td></tr>`)
+    .join("");
+  document.getElementById("toggle-table").addEventListener("click", (e) => {
+    e.preventDefault();
+    table.hidden = !table.hidden;
+    e.target.textContent = table.hidden ? "Ver como tabla" : "Volver a la escena";
+    if (!table.hidden) panel.hidden = true;
+  });
+
+  /* arranque --------------------------------------------------------- */
+  const r = svg.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${r.width || 900} ${r.height || 680}`);
+  setCamera(homeView(), false);
+  window.addEventListener("resize", () => {
+    if (panel.hidden) setCamera(homeView(), false);
+    else placeLabels();
+  });
+  placeLabels();
+})();
+</script>
+</body>
+</html>

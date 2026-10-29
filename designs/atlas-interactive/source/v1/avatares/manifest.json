@@ -1,0 +1,106 @@
+{
+  "version": "2.0",
+  "cantidad": 10,
+  "avatares": [
+    {
+      "id": "ninos_masculino",
+      "archivo": "avatares/ninos_masculino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "ninos_femenino",
+      "archivo": "avatares/ninos_femenino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "adolescentes_masculino",
+      "archivo": "avatares/adolescentes_masculino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "adolescentes_femenino",
+      "archivo": "avatares/adolescentes_femenino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "adultos_jovenes_masculino",
+      "archivo": "avatares/adultos_jovenes_masculino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "adultos_jovenes_femenino",
+      "archivo": "avatares/adultos_jovenes_femenino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "adultos_masculino",
+      "archivo": "avatares/adultos_masculino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "adultos_femenino",
+      "archivo": "avatares/adultos_femenino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "mayores_masculino",
+      "archivo": "avatares/mayores_masculino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    },
+    {
+      "id": "mayores_femenino",
+      "archivo": "avatares/mayores_femenino.webp",
+      "dimension": [
+        240,
+        330
+      ],
+      "transparencia": false,
+      "recomendacion": "tarjetas de grupos de pacientes; no ampliar mucho"
+    }
+  ]
+}

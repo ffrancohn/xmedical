@@ -52,6 +52,8 @@
 | 20 | [Archivo: idea original «Agente Médico»](20%20Archivo%20Idea%20Original%20Agente%20Medico.md) | Registro histórico del repo `agentemedico` (eliminado) |
 | 21 | [Arquitectura visual pantallas](21%20Arquitectura%20Visual%20Pantallas.md) | Matriz `url_name` → representación; Atlas vs classic; skill visual-design-architect |
 | 22 | [Interfaz isométrica interactiva](22%20Interfaz%20Isometrica%20Interactiva.md) | Hub Objeto→Exploración→Acción; carpetas `designs/` y `static/atlas-interactive/` |
+| 23 | [Catálogo CIE-10](23%20Catalogo%20CIE-10.md) | Catálogo de 14.498 códigos, búsqueda sin tildes, sinónimos y ranking |
+| 24 | [Cómo pedir una interfaz isométrica](24%20Especificacion%20escena%20isometrica.md) | Diferencia entre ilustración y escena; 7 propiedades, criterios verificables y plan v1–v3 |
 
 ### Planificación por módulo
 

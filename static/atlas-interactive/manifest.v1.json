@@ -1,666 +1,505 @@
-{
-  "name": "XMedical Visual Assets",
-  "version": "1.0",
-  "format": "webp-rgba",
-  "source": "AI generated concept sheet",
-  "assets": [
-    {
-      "id": "modulos.recepcion",
-      "file": "modulos/recepcion.webp",
-      "size": [
-        246,
-        221
-      ],
-      "source_crop": [
-        8,
-        57,
-        254,
-        278
-      ]
-    },
-    {
-      "id": "modulos.pacientes_archivador_cerrado",
-      "file": "modulos/pacientes_archivador_cerrado.webp",
-      "size": [
-        159,
-        205
-      ],
-      "source_crop": [
-        247,
-        65,
-        406,
-        270
-      ]
-    },
-    {
-      "id": "modulos.pacientes_archivador_abierto",
-      "file": "modulos/pacientes_archivador_abierto.webp",
-      "size": [
-        166,
-        205
-      ],
-      "source_crop": [
-        399,
-        65,
-        565,
-        270
-      ]
-    },
-    {
-      "id": "modulos.citas_agenda_cerrada",
-      "file": "modulos/citas_agenda_cerrada.webp",
-      "size": [
-        194,
-        210
-      ],
-      "source_crop": [
-        577,
-        57,
-        771,
-        267
-      ]
-    },
-    {
-      "id": "modulos.citas_agenda_abierta",
-      "file": "modulos/citas_agenda_abierta.webp",
-      "size": [
-        203,
-        209
-      ],
-      "source_crop": [
-        762,
-        58,
-        965,
-        267
-      ]
-    },
-    {
-      "id": "modulos.consultas",
-      "file": "modulos/consultas.webp",
-      "size": [
-        249,
-        226
-      ],
-      "source_crop": [
-        961,
-        56,
-        1210,
-        282
-      ]
-    },
-    {
-      "id": "modulos.historia_carpeta_cerrada",
-      "file": "modulos/historia_carpeta_cerrada.webp",
-      "size": [
-        165,
-        194
-      ],
-      "source_crop": [
-        1225,
-        67,
-        1390,
-        261
-      ]
-    },
-    {
-      "id": "modulos.historia_carpeta_abierta",
-      "file": "modulos/historia_carpeta_abierta.webp",
-      "size": [
-        167,
-        199
-      ],
-      "source_crop": [
-        1364,
-        68,
-        1531,
-        267
-      ]
-    },
-    {
-      "id": "modulos.medicamentos",
-      "file": "modulos/medicamentos.webp",
-      "size": [
-        253,
-        190
-      ],
-      "source_crop": [
-        21,
-        362,
-        274,
-        552
-      ]
-    },
-    {
-      "id": "modulos.laboratorio",
-      "file": "modulos/laboratorio.webp",
-      "size": [
-        254,
-        196
-      ],
-      "source_crop": [
-        279,
-        359,
-        533,
-        555
-      ]
-    },
-    {
-      "id": "modulos.administracion",
-      "file": "modulos/administracion.webp",
-      "size": [
-        254,
-        196
-      ],
-      "source_crop": [
-        539,
-        360,
-        793,
-        556
-      ]
-    },
-    {
-      "id": "modulos.sala_espera",
-      "file": "modulos/sala_espera.webp",
-      "size": [
-        252,
-        190
-      ],
-      "source_crop": [
-        798,
-        361,
-        1050,
-        551
-      ]
-    },
-    {
-      "id": "modulos.diagnostico",
-      "file": "modulos/diagnostico.webp",
-      "size": [
-        242,
-        198
-      ],
-      "source_crop": [
-        1057,
-        360,
-        1299,
-        558
-      ]
-    },
-    {
-      "id": "modulos.consultorio",
-      "file": "modulos/consultorio.webp",
-      "size": [
-        232,
-        200
-      ],
-      "source_crop": [
-        1298,
-        362,
-        1530,
-        562
-      ]
-    },
-    {
-      "id": "documentos.carpeta_cerrada",
-      "file": "documentos/carpeta_cerrada.webp",
-      "size": [
-        100,
-        119
-      ],
-      "source_crop": [
-        23,
-        872,
-        123,
-        991
-      ]
-    },
-    {
-      "id": "documentos.carpeta_abierta",
-      "file": "documentos/carpeta_abierta.webp",
-      "size": [
-        168,
-        123
-      ],
-      "source_crop": [
-        123,
-        865,
-        291,
-        988
-      ]
-    },
-    {
-      "id": "documentos.documento",
-      "file": "documentos/documento.webp",
-      "size": [
-        91,
-        125
-      ],
-      "source_crop": [
-        298,
-        865,
-        389,
-        990
-      ]
-    },
-    {
-      "id": "documentos.receta",
-      "file": "documentos/receta.webp",
-      "size": [
-        108,
-        127
-      ],
-      "source_crop": [
-        389,
-        864,
-        497,
-        991
-      ]
-    },
-    {
-      "id": "documentos.resultados",
-      "file": "documentos/resultados.webp",
-      "size": [
-        97,
-        127
-      ],
-      "source_crop": [
-        497,
-        863,
-        594,
-        990
-      ]
-    },
-    {
-      "id": "documentos.estudios",
-      "file": "documentos/estudios.webp",
-      "size": [
-        97,
-        124
-      ],
-      "source_crop": [
-        591,
-        866,
-        688,
-        990
-      ]
-    },
-    {
-      "id": "estados.confirmada",
-      "file": "estados/confirmada.webp",
-      "size": [
-        65,
-        91
-      ],
-      "source_crop": [
-        713,
-        890,
-        778,
-        981
-      ]
-    },
-    {
-      "id": "estados.en_espera",
-      "file": "estados/en_espera.webp",
-      "size": [
-        61,
-        91
-      ],
-      "source_crop": [
-        793,
-        890,
-        854,
-        981
-      ]
-    },
-    {
-      "id": "estados.en_consulta",
-      "file": "estados/en_consulta.webp",
-      "size": [
-        61,
-        91
-      ],
-      "source_crop": [
-        870,
-        890,
-        931,
-        981
-      ]
-    },
-    {
-      "id": "estados.finalizada",
-      "file": "estados/finalizada.webp",
-      "size": [
-        65,
-        91
-      ],
-      "source_crop": [
-        945,
-        890,
-        1010,
-        981
-      ]
-    },
-    {
-      "id": "estados.cancelada",
-      "file": "estados/cancelada.webp",
-      "size": [
-        65,
-        91
-      ],
-      "source_crop": [
-        1026,
-        890,
-        1091,
-        981
-      ]
-    },
-    {
-      "id": "profesionales.medico",
-      "file": "profesionales/medico.webp",
-      "size": [
-        70,
-        116
-      ],
-      "source_crop": [
-        1171,
-        863,
-        1241,
-        979
-      ]
-    },
-    {
-      "id": "profesionales.enfermera",
-      "file": "profesionales/enfermera.webp",
-      "size": [
-        65,
-        119
-      ],
-      "source_crop": [
-        1256,
-        860,
-        1321,
-        979
-      ]
-    },
-    {
-      "id": "profesionales.recepcionista",
-      "file": "profesionales/recepcionista.webp",
-      "size": [
-        65,
-        119
-      ],
-      "source_crop": [
-        1341,
-        860,
-        1406,
-        979
-      ]
-    },
-    {
-      "id": "profesionales.administrativo",
-      "file": "profesionales/administrativo.webp",
-      "size": [
-        72,
-        121
-      ],
-      "source_crop": [
-        1431,
-        858,
-        1503,
-        979
-      ]
-    },
-    {
-      "id": "avatares.ninos_01",
-      "file": "avatares/ninos_01.webp",
-      "size": [
-        68,
-        184
-      ],
-      "source_crop": [
-        22,
-        650,
-        90,
-        834
-      ]
-    },
-    {
-      "id": "avatares.ninos_02",
-      "file": "avatares/ninos_02.webp",
-      "size": [
-        66,
-        184
-      ],
-      "source_crop": [
-        94,
-        650,
-        160,
-        834
-      ]
-    },
-    {
-      "id": "avatares.ninos_03",
-      "file": "avatares/ninos_03.webp",
-      "size": [
-        61,
-        184
-      ],
-      "source_crop": [
-        167,
-        650,
-        228,
-        834
-      ]
-    },
-    {
-      "id": "avatares.ninos_04",
-      "file": "avatares/ninos_04.webp",
-      "size": [
-        66,
-        184
-      ],
-      "source_crop": [
-        230,
-        650,
-        296,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adolescentes_01",
-      "file": "avatares/adolescentes_01.webp",
-      "size": [
-        63,
-        184
-      ],
-      "source_crop": [
-        348,
-        650,
-        411,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adolescentes_02",
-      "file": "avatares/adolescentes_02.webp",
-      "size": [
-        70,
-        184
-      ],
-      "source_crop": [
-        417,
-        650,
-        487,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_jovenes_01",
-      "file": "avatares/adultos_jovenes_01.webp",
-      "size": [
-        66,
-        184
-      ],
-      "source_crop": [
-        535,
-        650,
-        601,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_jovenes_02",
-      "file": "avatares/adultos_jovenes_02.webp",
-      "size": [
-        66,
-        184
-      ],
-      "source_crop": [
-        607,
-        650,
-        673,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_jovenes_03",
-      "file": "avatares/adultos_jovenes_03.webp",
-      "size": [
-        68,
-        184
-      ],
-      "source_crop": [
-        680,
-        650,
-        748,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_jovenes_04",
-      "file": "avatares/adultos_jovenes_04.webp",
-      "size": [
-        62,
-        184
-      ],
-      "source_crop": [
-        754,
-        650,
-        816,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_01",
-      "file": "avatares/adultos_01.webp",
-      "size": [
-        63,
-        184
-      ],
-      "source_crop": [
-        854,
-        650,
-        917,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_02",
-      "file": "avatares/adultos_02.webp",
-      "size": [
-        71,
-        184
-      ],
-      "source_crop": [
-        924,
-        650,
-        995,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_03",
-      "file": "avatares/adultos_03.webp",
-      "size": [
-        69,
-        184
-      ],
-      "source_crop": [
-        998,
-        650,
-        1067,
-        834
-      ]
-    },
-    {
-      "id": "avatares.adultos_04",
-      "file": "avatares/adultos_04.webp",
-      "size": [
-        67,
-        184
-      ],
-      "source_crop": [
-        1071,
-        650,
-        1138,
-        834
-      ]
-    },
-    {
-      "id": "avatares.mayores_01",
-      "file": "avatares/mayores_01.webp",
-      "size": [
-        68,
-        184
-      ],
-      "source_crop": [
-        1197,
-        650,
-        1265,
-        834
-      ]
-    },
-    {
-      "id": "avatares.mayores_02",
-      "file": "avatares/mayores_02.webp",
-      "size": [
-        61,
-        184
-      ],
-      "source_crop": [
-        1271,
-        650,
-        1332,
-        834
-      ]
-    },
-    {
-      "id": "avatares.mayores_03",
-      "file": "avatares/mayores_03.webp",
-      "size": [
-        65,
-        184
-      ],
-      "source_crop": [
-        1337,
-        650,
-        1402,
-        834
-      ]
-    },
-    {
-      "id": "avatares.mayores_04",
-      "file": "avatares/mayores_04.webp",
-      "size": [
-        98,
-        184
-      ],
-      "source_crop": [
-        1408,
-        650,
-        1506,
-        834
-      ]
-    }
-  ]
+﻿{
+    "name":  "XMedical Visual Assets",
+    "version":  "1.0",
+    "format":  "webp-rgba",
+    "source":  "AI generated concept sheet",
+    "assets":  [
+                   {
+                       "id":  "modulos.recepcion",
+                       "file":  "modulos/recepcion.webp",
+                       "size":  [
+                                    246,
+                                    221
+                                ],
+                       "source_crop":  [
+                                           8,
+                                           57,
+                                           254,
+                                           278
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.pacientes_archivador_cerrado",
+                       "file":  "modulos/pacientes_archivador_cerrado.webp",
+                       "size":  [
+                                    159,
+                                    205
+                                ],
+                       "source_crop":  [
+                                           247,
+                                           65,
+                                           406,
+                                           270
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.pacientes_archivador_abierto",
+                       "file":  "modulos/pacientes_archivador_abierto.webp",
+                       "size":  [
+                                    166,
+                                    205
+                                ],
+                       "source_crop":  [
+                                           399,
+                                           65,
+                                           565,
+                                           270
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.citas_agenda_cerrada",
+                       "file":  "modulos/citas_agenda_cerrada.webp",
+                       "size":  [
+                                    194,
+                                    210
+                                ],
+                       "source_crop":  [
+                                           577,
+                                           57,
+                                           771,
+                                           267
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.citas_agenda_abierta",
+                       "file":  "modulos/citas_agenda_abierta.webp",
+                       "size":  [
+                                    203,
+                                    209
+                                ],
+                       "source_crop":  [
+                                           762,
+                                           58,
+                                           965,
+                                           267
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.consultas",
+                       "file":  "modulos/consultas.webp",
+                       "size":  [
+                                    249,
+                                    226
+                                ],
+                       "source_crop":  [
+                                           961,
+                                           56,
+                                           1210,
+                                           282
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.historia_carpeta_cerrada",
+                       "file":  "modulos/historia_carpeta_cerrada.webp",
+                       "size":  [
+                                    165,
+                                    194
+                                ],
+                       "source_crop":  [
+                                           1225,
+                                           67,
+                                           1390,
+                                           261
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.historia_carpeta_abierta",
+                       "file":  "modulos/historia_carpeta_abierta.webp",
+                       "size":  [
+                                    167,
+                                    199
+                                ],
+                       "source_crop":  [
+                                           1364,
+                                           68,
+                                           1531,
+                                           267
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.medicamentos",
+                       "file":  "modulos/medicamentos.webp",
+                       "size":  [
+                                    253,
+                                    190
+                                ],
+                       "source_crop":  [
+                                           21,
+                                           362,
+                                           274,
+                                           552
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.laboratorio",
+                       "file":  "modulos/laboratorio.webp",
+                       "size":  [
+                                    254,
+                                    196
+                                ],
+                       "source_crop":  [
+                                           279,
+                                           359,
+                                           533,
+                                           555
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.administracion",
+                       "file":  "modulos/administracion.webp",
+                       "size":  [
+                                    254,
+                                    196
+                                ],
+                       "source_crop":  [
+                                           539,
+                                           360,
+                                           793,
+                                           556
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.sala_espera",
+                       "file":  "modulos/sala_espera.webp",
+                       "size":  [
+                                    252,
+                                    190
+                                ],
+                       "source_crop":  [
+                                           798,
+                                           361,
+                                           1050,
+                                           551
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.diagnostico",
+                       "file":  "modulos/diagnostico.webp",
+                       "size":  [
+                                    242,
+                                    198
+                                ],
+                       "source_crop":  [
+                                           1057,
+                                           360,
+                                           1299,
+                                           558
+                                       ]
+                   },
+                   {
+                       "id":  "modulos.consultorio",
+                       "file":  "modulos/consultorio.webp",
+                       "size":  [
+                                    232,
+                                    200
+                                ],
+                       "source_crop":  [
+                                           1298,
+                                           362,
+                                           1530,
+                                           562
+                                       ]
+                   },
+                   {
+                       "id":  "documentos.carpeta_cerrada",
+                       "file":  "documentos/carpeta_cerrada.webp",
+                       "size":  [
+                                    100,
+                                    119
+                                ],
+                       "source_crop":  [
+                                           23,
+                                           872,
+                                           123,
+                                           991
+                                       ]
+                   },
+                   {
+                       "id":  "documentos.carpeta_abierta",
+                       "file":  "documentos/carpeta_abierta.webp",
+                       "size":  [
+                                    168,
+                                    123
+                                ],
+                       "source_crop":  [
+                                           123,
+                                           865,
+                                           291,
+                                           988
+                                       ]
+                   },
+                   {
+                       "id":  "documentos.documento",
+                       "file":  "documentos/documento.webp",
+                       "size":  [
+                                    91,
+                                    125
+                                ],
+                       "source_crop":  [
+                                           298,
+                                           865,
+                                           389,
+                                           990
+                                       ]
+                   },
+                   {
+                       "id":  "documentos.receta",
+                       "file":  "documentos/receta.webp",
+                       "size":  [
+                                    108,
+                                    127
+                                ],
+                       "source_crop":  [
+                                           389,
+                                           864,
+                                           497,
+                                           991
+                                       ]
+                   },
+                   {
+                       "id":  "documentos.resultados",
+                       "file":  "documentos/resultados.webp",
+                       "size":  [
+                                    97,
+                                    127
+                                ],
+                       "source_crop":  [
+                                           497,
+                                           863,
+                                           594,
+                                           990
+                                       ]
+                   },
+                   {
+                       "id":  "documentos.estudios",
+                       "file":  "documentos/estudios.webp",
+                       "size":  [
+                                    97,
+                                    124
+                                ],
+                       "source_crop":  [
+                                           591,
+                                           866,
+                                           688,
+                                           990
+                                       ]
+                   },
+                   {
+                       "id":  "estados.confirmada",
+                       "file":  "estados/confirmada.webp",
+                       "size":  [
+                                    65,
+                                    91
+                                ],
+                       "source_crop":  [
+                                           713,
+                                           890,
+                                           778,
+                                           981
+                                       ]
+                   },
+                   {
+                       "id":  "estados.en_espera",
+                       "file":  "estados/en_espera.webp",
+                       "size":  [
+                                    61,
+                                    91
+                                ],
+                       "source_crop":  [
+                                           793,
+                                           890,
+                                           854,
+                                           981
+                                       ]
+                   },
+                   {
+                       "id":  "estados.en_consulta",
+                       "file":  "estados/en_consulta.webp",
+                       "size":  [
+                                    61,
+                                    91
+                                ],
+                       "source_crop":  [
+                                           870,
+                                           890,
+                                           931,
+                                           981
+                                       ]
+                   },
+                   {
+                       "id":  "estados.finalizada",
+                       "file":  "estados/finalizada.webp",
+                       "size":  [
+                                    65,
+                                    91
+                                ],
+                       "source_crop":  [
+                                           945,
+                                           890,
+                                           1010,
+                                           981
+                                       ]
+                   },
+                   {
+                       "id":  "estados.cancelada",
+                       "file":  "estados/cancelada.webp",
+                       "size":  [
+                                    65,
+                                    91
+                                ],
+                       "source_crop":  [
+                                           1026,
+                                           890,
+                                           1091,
+                                           981
+                                       ]
+                   },
+                   {
+                       "id":  "profesionales.medico",
+                       "file":  "profesionales/medico.webp",
+                       "size":  [
+                                    70,
+                                    116
+                                ],
+                       "source_crop":  [
+                                           1171,
+                                           863,
+                                           1241,
+                                           979
+                                       ]
+                   },
+                   {
+                       "id":  "profesionales.enfermera",
+                       "file":  "profesionales/enfermera.webp",
+                       "size":  [
+                                    65,
+                                    119
+                                ],
+                       "source_crop":  [
+                                           1256,
+                                           860,
+                                           1321,
+                                           979
+                                       ]
+                   },
+                   {
+                       "id":  "profesionales.recepcionista",
+                       "file":  "profesionales/recepcionista.webp",
+                       "size":  [
+                                    65,
+                                    119
+                                ],
+                       "source_crop":  [
+                                           1341,
+                                           860,
+                                           1406,
+                                           979
+                                       ]
+                   },
+                   {
+                       "id":  "profesionales.administrativo",
+                       "file":  "profesionales/administrativo.webp",
+                       "size":  [
+                                    72,
+                                    121
+                                ],
+                       "source_crop":  [
+                                           1431,
+                                           858,
+                                           1503,
+                                           979
+                                       ]
+                   },
+                   {
+                       "id":  "avatares.ninos_masculino",
+                       "file":  "avatares/ninos_masculino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.ninos_femenino",
+                       "file":  "avatares/ninos_femenino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.adolescentes_masculino",
+                       "file":  "avatares/adolescentes_masculino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.adolescentes_femenino",
+                       "file":  "avatares/adolescentes_femenino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.adultos_jovenes_masculino",
+                       "file":  "avatares/adultos_jovenes_masculino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.adultos_jovenes_femenino",
+                       "file":  "avatares/adultos_jovenes_femenino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.adultos_masculino",
+                       "file":  "avatares/adultos_masculino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.adultos_femenino",
+                       "file":  "avatares/adultos_femenino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.mayores_masculino",
+                       "file":  "avatares/mayores_masculino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   },
+                   {
+                       "id":  "avatares.mayores_femenino",
+                       "file":  "avatares/mayores_femenino.webp",
+                       "size":  [
+                                    240,
+                                    330
+                                ],
+                       "nota":  "avatares v2: ilustración completa con fondo, no ampliar"
+                   }
+               ],
+    "avatares_paquete":  "v2 (10 ilustraciones 240x330, con fondo)"
 }
