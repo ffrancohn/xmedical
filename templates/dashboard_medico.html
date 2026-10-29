@@ -2,8 +2,8 @@
 {% block title %}Dashboard médico{% endblock %}
 {% block content %}
 {% include 'components/atlas_enable_hint.html' %}
-{% if interface_mode == 'atlas' and atlas_hub %}
-{% include 'atlas/hub_medico.html' %}
+{% if interface_mode == 'atlas' and atlas_scene %}
+{% include 'atlas/scene_medico.html' %}
 {% else %}
 {% include 'components/atlas_scene_banner.html' %}
 {% endif %}

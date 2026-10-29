@@ -120,6 +120,21 @@ autocontenido, sin backend ni dependencias. Abre el archivo en el navegador:
 Lo que **no** demuestra: arte final (los muebles son geometría generada), datos reales, permisos por rol
 ni persistencia. Sirve para aprobar la metáfora, la composición y el modelo de interacción.
 
+## 8.b Implementación en producción (v1)
+
+La escena ya está conectada en el inicio del médico (`dashboard`), sustituyendo al hub de tarjetas:
+
+| Pieza | Archivo |
+|---|---|
+| Payload (datos → estaciones) | `apps/core/atlas_scene.py::construir_escena_medico` |
+| Plantilla | `templates/atlas/scene_medico.html` |
+| Render y cámara | `static/js/atlas-scene.js` |
+| Estilos | bloque «Escena isométrica del consultorio» en `static/atlas-interactive/atlas-interactive.css` |
+| Pruebas | `apps/core/tests_atlas_scene.py` (9 tests) |
+
+Salida: `?classic=1` sigue mostrando el banner y la tabla; el hub de tarjetas queda solo para el
+especialista hasta que se replique la escena.
+
 ## 9. El párrafo que puedes pegar en cualquier brief
 
 > Quiero una interfaz isométrica, no una galería de ilustraciones isométricas. Al entrar, el médico

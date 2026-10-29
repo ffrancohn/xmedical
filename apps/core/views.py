@@ -112,19 +112,32 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             "classic"
         )
         if use_atlas and profesional and profesional.tipo == "medico":
-            from apps.core.atlas_catalog import modules_for_hub
+            from django.urls import reverse
+
             from apps.core.atlas_explore import (
                 agenda_exploracion,
                 espera_exploracion,
                 historia_medico_exploracion,
             )
+            from apps.core.atlas_scene import construir_escena_medico
 
             instituciones, _ = selected_instituciones(request)
-            context["atlas_modules"] = modules_for_hub(request.user, area="medico")
-            context["agenda_explore"] = agenda_exploracion(instituciones, profesional)
-            context["espera_explore"] = espera_exploracion(instituciones, profesional)
-            context["historia_explore"] = historia_medico_exploracion(instituciones, profesional)
-            context["atlas_hub"] = True
+            agenda = agenda_exploracion(instituciones, profesional)
+            espera = espera_exploracion(instituciones, profesional)
+            historia = historia_medico_exploracion(instituciones, profesional)
+            context["atlas_scene"] = construir_escena_medico(
+                agenda,
+                espera,
+                historia,
+                urls={
+                    "citas": reverse("citas_lista"),
+                    "preclinica": reverse("preclinica_lista"),
+                    "pacientes": reverse("pacientes_lista"),
+                    "epidemiologia": reverse("dashboards_epidemiologia"),
+                },
+                perfil=profesional.nombre,
+                especialidad=profesional.especialidad.nombre if profesional.especialidad else "",
+            )
 
         return context
 

@@ -1,4 +1,4 @@
-/* Atlas interactivo — Objeto → Exploración → Acción.
+/* Atlas interactivo â€” Objeto â†’ ExploraciÃ³n â†’ AcciÃ³n.
  *
  * Usa los tokens del modo Atlas (atlas.css) con valores de reserva propios.
  * No depende de variables de terceros: en este tema NO existen --b1/--b2/--b3,
@@ -187,7 +187,7 @@
   margin-top: 0.5rem;
 }
 
-/* Barras de proporción de los paneles de exploración (agenda, diagnósticos, espera) */
+/* Barras de proporciÃ³n de los paneles de exploraciÃ³n (agenda, diagnÃ³sticos, espera) */
 .xm-atlas-bar {
   display: block;
   height: 0.5rem;
@@ -208,4 +208,99 @@
 
 .xm-atlas-bar--wait .xm-atlas-bar__fill {
   background: var(--atlas-warn);
+}
+
+/* ==========================================================================
+   Escena isomÃ©trica del consultorio (Atlas v2) â€” doc 24
+   ========================================================================== */
+.xm-scene {
+  --atlas-ink: var(--xm-atlas-ink, #0b1f26);
+  --atlas-ink-2: var(--xm-atlas-ink-2, #34494f);
+  --atlas-paper: var(--xm-atlas-paper, #f2efe7);
+  --atlas-paper-3: var(--xm-atlas-paper-3, #faf8f2);
+  --atlas-line: var(--xm-atlas-line, rgba(11, 31, 38, 0.14));
+  --atlas-accent: #0f766e;
+  --atlas-warn: #b45309;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--atlas-line);
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  background: var(--atlas-paper);
+}
+.xm-scene.is-open { grid-template-columns: minmax(0, 1fr) 21rem; }
+.xm-scene.is-table { grid-template-columns: 1fr; }
+.xm-scene__stage { position: relative; height: 34rem; min-height: 26rem; overflow: hidden; }
+.xm-scene__stage svg { display: block; width: 100%; height: 100%; min-height: 26rem; }
+
+.xm-scene-station { cursor: pointer; outline: none; }
+.xm-scene-halo { opacity: 0; transition: opacity .15s ease; pointer-events: none; }
+.xm-scene-station:hover .xm-scene-halo,
+.xm-scene-station:focus-visible .xm-scene-halo,
+.xm-scene-station.is-hot .xm-scene-halo { opacity: 1; }
+.xm-scene-station:focus-visible .xm-scene-body { filter: brightness(1.08); }
+.xm-scene-hit { fill: transparent; stroke: transparent; }
+
+.xm-scene__labels { position: absolute; inset: 0; pointer-events: none; }
+.xm-scene-label {
+  position: absolute; transform: translate(-50%, -50%);
+  background: rgba(250, 248, 242, .95); border: 1px solid var(--atlas-line);
+  border-radius: 999px; padding: .16rem .5rem; font-size: .7rem; font-weight: 600;
+  color: var(--atlas-ink); white-space: nowrap; opacity: .92;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.xm-scene-label b { color: var(--atlas-accent); }
+.xm-scene-label.is-visible { opacity: 1; transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 4px 14px rgba(11,31,38,.14); }
+
+.xm-scene__hint {
+  position: absolute; left: .85rem; bottom: .85rem; font-size: .7rem; color: var(--atlas-ink-2);
+  background: rgba(250,248,242,.9); border: 1px solid var(--atlas-line); border-radius: 10px; padding: .3rem .55rem;
+}
+.xm-scene__hint kbd { font-family: inherit; border: 1px solid var(--atlas-line); border-radius: 4px; padding: 0 .22rem; background: #fff; }
+.xm-scene__toggle {
+  position: absolute; right: .85rem; bottom: .85rem; font: inherit; font-size: .72rem;
+  background: rgba(250,248,242,.95); border: 1px solid var(--atlas-line); border-radius: 10px;
+  padding: .3rem .6rem; cursor: pointer; color: var(--atlas-accent);
+}
+
+.xm-scene__panel {
+  position: relative; border-left: 1px solid var(--atlas-line); background: var(--atlas-paper-3);
+  padding: 1.1rem 1.1rem 1.25rem; overflow-y: auto; max-height: 32rem;
+}
+.xm-scene__panel[hidden] { display: none; }
+.xm-scene__kicker { font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; color: var(--atlas-ink-2); margin: 0 0 .2rem; }
+.xm-scene__panel h2 { font-size: 1.05rem; margin: 0 0 .3rem; outline: none; }
+.xm-scene__lead { font-size: .82rem; color: var(--atlas-ink-2); margin: 0 0 .9rem; }
+.xm-scene__close {
+  position: absolute; top: .6rem; right: .6rem; width: 1.8rem; height: 1.8rem;
+  border: 1px solid var(--atlas-line); background: #fff; border-radius: 8px; cursor: pointer; line-height: 1;
+}
+.xm-scene-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: .45rem; margin-bottom: .9rem; }
+.xm-scene-kpi { border: 1px solid var(--atlas-line); border-radius: 10px; padding: .5rem .6rem; background: #fff; }
+.xm-scene-kpi span { display: block; font-size: .64rem; color: var(--atlas-ink-2); }
+.xm-scene-kpi strong { font-size: 1.2rem; }
+.xm-scene-bar { margin: .4rem 0; font-size: .76rem; }
+.xm-scene-bar .t { display: flex; justify-content: space-between; }
+.xm-scene-bar .track { height: .38rem; border-radius: 999px; background: var(--atlas-line); margin-top: .18rem; overflow: hidden; }
+.xm-scene-bar .fill { display: block; height: 100%; background: var(--atlas-accent); max-width: 100%; }
+.xm-scene-bar .fill.warn { background: var(--atlas-warn); }
+.xm-scene__actions { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .9rem; }
+
+.xm-scene__table { padding: 1.1rem; grid-column: 1 / -1; background: var(--atlas-paper); }
+.xm-scene__table[hidden] { display: none; }
+.xm-scene__table h3 { margin: 0 0 .2rem; font-size: 1rem; }
+
+@media (max-width: 900px) {
+  .xm-scene { grid-template-columns: 1fr; }
+  .xm-scene__stage { height: 22rem; }
+  .xm-scene__stage, .xm-scene__stage svg { min-height: 0; }
+  .xm-scene__panel {
+    position: fixed; left: 0; right: 0; bottom: 0; border-left: 0; border-top: 1px solid var(--atlas-line);
+    border-radius: 18px 18px 0 0; max-height: 62vh; z-index: 30; box-shadow: 0 -8px 30px rgba(11,31,38,.18);
+  }
+  .xm-scene__hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xm-scene-halo, .xm-scene-label { transition: none; }
 }

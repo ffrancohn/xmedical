@@ -1,0 +1,39 @@
+{% load static %}
+{# Escena isométrica del consultorio (modo Atlas). Requiere `atlas_scene`. #}
+<section class="xm-scene" id="xm-scene" data-atlas-scene aria-label="Consultorio en vista isométrica">
+    <div class="xm-scene__stage">
+        <svg id="xm-scene-svg" role="group" aria-label="Estaciones del consultorio" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="xm-scene__labels" id="xm-scene-labels" aria-hidden="true"></div>
+        <div class="xm-scene__hint">Tab recorre · Enter abre · <kbd>Esc</kbd> vuelve</div>
+        <button type="button" class="xm-scene__toggle" id="xm-scene-toggle">Ver como tabla</button>
+    </div>
+
+    <aside class="xm-scene__panel" id="xm-scene-panel" hidden>
+        <button type="button" class="xm-scene__close" id="xm-scene-close" aria-label="Volver a la vista general">✕</button>
+        <p class="xm-scene__kicker" id="xm-scene-kicker"></p>
+        <h2 id="xm-scene-title" tabindex="-1"></h2>
+        <p class="xm-scene__lead" id="xm-scene-lead"></p>
+        <div id="xm-scene-body"></div>
+        <div class="xm-scene__actions" id="xm-scene-actions"></div>
+    </aside>
+
+    <div class="xm-scene__table" id="xm-scene-table" hidden>
+        <h3>Vista de tabla (equivalente)</h3>
+        <p class="xm-scene__lead">Misma información sin escena: el fallback obligatorio de la interfaz isométrica.</p>
+        <table class="table">
+            <thead><tr><th>Estación</th><th>Qué muestra</th><th>Dato de hoy</th><th></th></tr></thead>
+            <tbody>
+            {% for est in atlas_scene.estaciones %}
+                <tr>
+                    <td class="font-semibold">{{ est.etiqueta }}</td>
+                    <td>{{ est.lead }}</td>
+                    <td>{% for k in est.kpis %}{{ k.etiqueta }}: {{ k.valor }}{% if not forloop.last %} · {% endif %}{% endfor %}</td>
+                    <td class="text-right">{% with est.acciones.0 as accion %}{% if accion.url %}<a href="{{ accion.url }}" class="link link-primary">{{ accion.texto }}</a>{% endif %}{% endwith %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <p class="text-sm opacity-70 mt-2">{{ atlas_scene.perfil }}{% if atlas_scene.especialidad %} · {{ atlas_scene.especialidad }}{% endif %} · {{ atlas_scene.fecha }}</p>
+    </div>
+</section>
+{{ atlas_scene|json_script:"xm-scene-data" }}
