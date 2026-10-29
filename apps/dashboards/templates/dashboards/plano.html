@@ -41,6 +41,11 @@
   .plano-lista li:last-child { border-bottom: 0; }
   .plano-lista .estado { font-weight: 600; }
   .aviso-sin-sala { margin-top: .6rem; font-size: .78rem; padding: .5rem .7rem; border-radius: 10px; background: #fdf3e0; border: 1px solid #d9a54a; }
+  .plano-asignar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .6rem 0 0; font-size: .78rem; }
+  .plano-asignar select { font: inherit; font-size: .78rem; padding: .3rem .4rem; border: 1px solid rgba(11,31,38,.2); border-radius: 8px; background: #fff; }
+  .plano-asignar button { font: inherit; font-size: .78rem; padding: .32rem .7rem; border-radius: 8px; border: 1px solid #0b1f26; background: #0b1f26; color: #fff; cursor: pointer; }
+  .sala__accion { margin-top: .3rem; }
+  .sala__accion button { font: inherit; font-size: .64rem; padding: .16rem .45rem; border-radius: 6px; border: 1px solid rgba(11,31,38,.35); background: #fff; cursor: pointer; }
   @media (max-width: 980px) { .plano-wrap { grid-template-columns: 1fr; } .plano-kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 </style>
 
@@ -79,6 +84,13 @@
             {% if sala.minutos_para is not None %}· en {{ sala.minutos_para }} min{% endif %}
           </div>
           {% endif %}
+          {% if puede_operar and sala.estado == 'reservado' and sala.cita_id %}
+          <form method="post" action="{% url 'dashboards_plano_llegada' %}" class="sala__accion">
+            {% csrf_token %}
+            <input type="hidden" name="cita" value="{{ sala.cita_id }}">
+            <button type="submit">Llegó</button>
+          </form>
+          {% endif %}
         </div>
       </div>
       {% endfor %}
@@ -94,6 +106,21 @@
 
     {% if plano.sin_sala %}
     <p class="aviso-sin-sala">{{ plano.sin_sala }} cita(s) de hoy no tienen sala asignada: no aparecen en el plano.</p>
+    {% if puede_operar %}
+    <form method="post" action="{% url 'dashboards_plano_asignar' %}" class="plano-asignar">
+      {% csrf_token %}
+      <label for="plano-cita">Asignar sala:</label>
+      <select id="plano-cita" name="cita" required>
+        {% for c in plano.sin_sala_lista %}
+        <option value="{{ c.id }}">{{ c.hora }} · {{ c.iniciales }} · {{ c.estado }}</option>
+        {% endfor %}
+      </select>
+      <select name="espacio" required>
+        {% for s in plano.asignables %}<option value="{{ s.id }}">{{ s.nombre }} · {{ s.tipo }}</option>{% endfor %}
+      </select>
+      <button type="submit">Asignar</button>
+    </form>
+    {% endif %}
     {% endif %}
   </div>
 

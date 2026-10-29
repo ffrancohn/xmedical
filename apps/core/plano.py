@@ -62,15 +62,16 @@ def estado_plano(instituciones, fecha=None) -> dict:
     )
 
     por_espacio: dict[int, list[Cita]] = {}
-    sin_sala = 0
+    sin_sala: list[Cita] = []
     for cita in citas:
         if cita.espacio_id:
             por_espacio.setdefault(cita.espacio_id, []).append(cita)
         else:
-            sin_sala += 1
+            sin_sala.append(cita)
 
     filas = []
     esperas = []
+    asignables = []
     for espacio in espacios:
         lista = por_espacio.get(espacio.id, [])
         cita, estado = _cita_actual(lista)
@@ -88,6 +89,8 @@ def estado_plano(instituciones, fecha=None) -> dict:
 
         critico = estado == "esperando" and (minutos or 0) >= UMBRAL_ESPERA_MIN
         atrasada = estado == "reservado" and (minutos or 0) > 5
+        if estado == "libre" and espacio.tipo in ("consultorio", "triaje", "laboratorio"):
+            asignables.append({"id": espacio.id, "nombre": espacio.nombre, "tipo": espacio.get_tipo_display()})
         filas.append(
             {
                 "id": espacio.id,
@@ -101,6 +104,7 @@ def estado_plano(instituciones, fecha=None) -> dict:
                 "critico": critico,
                 "atrasada": atrasada,
                 "iniciales": iniciales,
+                "cita_id": cita.id if cita else None,
                 "minutos": minutos if estado in ("esperando", "atendida") or atrasada else None,
                 "minutos_para": -minutos if estado == "reservado" and minutos is not None and not atrasada else None,
                 "con_signos": bool(cita and cita.id in con_signos),
@@ -121,6 +125,7 @@ def estado_plano(instituciones, fecha=None) -> dict:
         "fecha": fecha,
         "hora": ahora.strftime("%H:%M"),
         "espacios": filas,
+        "asignables": sorted(asignables, key=lambda a: ({'Consultorio': 0, 'Laboratorio': 1, 'Triaje': 2}.get(a['tipo'], 9), a['nombre'])),
         "por_espera": sorted(
             [f for f in filas if f["estado"] == "esperando"],
             key=lambda f: f["minutos"] or 0,
@@ -132,7 +137,17 @@ def estado_plano(instituciones, fecha=None) -> dict:
         "libres": sum(1 for f in filas if f["estado"] == "libre"),
         "esperando": sum(1 for f in filas if f["estado"] == "esperando"),
         "criticos": sum(1 for f in filas if f["critico"]),
-        "sin_sala": sin_sala,
+        "sin_sala": len(sin_sala),
+        "sin_sala_lista": [
+            {
+                "id": c.id,
+                "hora": c.hora.strftime("%H:%M"),
+                "iniciales": f"{c.paciente.nombre[:1]}{c.paciente.apellido[:1]}".upper(),
+                "estado": c.get_estado_display(),
+                "profesional": c.profesional.nombre if c.profesional else "",
+            }
+            for c in sin_sala
+        ],
         "espera_media": round(sum(esperas) / len(esperas)) if esperas else 0,
         "espera_maxima": max(esperas) if esperas else 0,
     }

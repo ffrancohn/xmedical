@@ -1,5 +1,8 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
 from apps.core.decorators import get_profesional
@@ -9,6 +12,7 @@ from apps.core.permissions import (
     CAN_DASHBOARD_EPIDEMIOLOGIA,
     CAN_DASHBOARD_RECEPCION,
     RoleRequiredMixin,
+    role_required,
 )
 from apps.core.views import institution_filter_context, selected_instituciones
 
@@ -146,7 +150,63 @@ class PlanoView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, T
 
         context = super().get_context_data(**kwargs)
         context["plano"] = estado_plano(self.get_instituciones())
+        context["puede_operar"] = True
         return context
+
+
+PLANO_ROLES = tuple(dict.fromkeys(CAN_DASHBOARD_ADMIN + CAN_DASHBOARD_RECEPCION))
+
+
+@login_required
+@role_required(*PLANO_ROLES)
+@require_POST
+def plano_asignar(request):
+    """Asigna una sala a una cita de hoy que aún no la tiene."""
+    from apps.citas.models import Cita
+    from apps.core.models import Espacio
+
+    instituciones, _ = selected_instituciones(request)
+    cita = get_object_or_404(Cita, pk=request.POST.get("cita"), institucion__in=instituciones)
+    espacio = get_object_or_404(
+        Espacio, pk=request.POST.get("espacio"), institucion__in=instituciones, activo=True
+    )
+    cita.espacio = espacio
+    cita.save(update_fields=["espacio"])
+    messages.success(request, f"{cita.paciente} → {espacio.nombre}.")
+    return redirect("dashboards_plano")
+
+
+@login_required
+@role_required(*PLANO_ROLES)
+@require_POST
+def plano_llegada(request):
+    """Marca que el paciente llegó: la cita pasa a «en espera»."""
+    from apps.citas.models import Cita
+
+    instituciones, _ = selected_instituciones(request)
+    cita = get_object_or_404(Cita, pk=request.POST.get("cita"), institucion__in=instituciones)
+    if cita.estado in ("pendiente", "confirmada"):
+        cita.estado = "en_espera"
+        cita.save(update_fields=["estado"])
+        messages.success(request, f"Llegada registrada: {cita.paciente}.")
+    else:
+        messages.info(request, f"{cita.paciente} ya estaba en {cita.get_estado_display().lower()}.")
+    return redirect("dashboards_plano")
+
+
+@login_required
+@role_required(*PLANO_ROLES)
+@require_POST
+def plano_liberar(request):
+    """Saca la cita de la sala (alta o error de asignación); no cambia el estado clínico."""
+    from apps.citas.models import Cita
+
+    instituciones, _ = selected_instituciones(request)
+    cita = get_object_or_404(Cita, pk=request.POST.get("cita"), institucion__in=instituciones)
+    cita.espacio = None
+    cita.save(update_fields=["espacio"])
+    messages.info(request, f"Sala liberada para {cita.paciente}.")
+    return redirect("dashboards_plano")
 
 
 class EpidemiologiaDashboardView(LoginRequiredMixin, RoleRequiredMixin, InstitutionFilterMixin, TemplateView):

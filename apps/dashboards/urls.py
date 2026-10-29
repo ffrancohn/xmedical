@@ -7,6 +7,9 @@ from .views import (
     EspecialistaDashboardView,
     PlanoView,
     RecepcionDashboardView,
+    plano_asignar,
+    plano_llegada,
+    plano_liberar,
 )
 
 urlpatterns = [
@@ -16,4 +19,7 @@ urlpatterns = [
     path("especialista/", EspecialistaDashboardView.as_view(), name="dashboards_especialista"),
     path("epidemiologia/", EpidemiologiaDashboardView.as_view(), name="dashboards_epidemiologia"),
     path("plano/", PlanoView.as_view(), name="dashboards_plano"),
+    path("plano/asignar/", plano_asignar, name="dashboards_plano_asignar"),
+    path("plano/llegada/", plano_llegada, name="dashboards_plano_llegada"),
+    path("plano/liberar/", plano_liberar, name="dashboards_plano_liberar"),
 ]

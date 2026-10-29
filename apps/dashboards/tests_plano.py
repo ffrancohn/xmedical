@@ -115,3 +115,69 @@ class PlanoVistaTests(TestCase):
         self.client.force_login(self.medico_user)
         r = self.client.get(reverse("dashboards_plano"))
         self.assertEqual(r.status_code, 302)
+
+
+class PlanoAccionesTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.inst = Institucion.objects.create(nombre="Clinica Acciones", subdominio="acciones")
+        cls.esp = Especialidad.objects.create(nombre="Medicina General", nivel="primero", institucion=cls.inst)
+        cls.recep_user = User.objects.create_user("rec", password="x")
+        Profesional.objects.create(
+            usuario=cls.recep_user, nombre="Rita Recepción", tipo="recepcionista",
+            especialidad=cls.esp, institucion=cls.inst, activo=True,
+        )
+        cls.medico_user = User.objects.create_user("med2", password="x")
+        cls.medico = Profesional.objects.create(
+            usuario=cls.medico_user, nombre="Dr. Dos", tipo="medico",
+            especialidad=cls.esp, institucion=cls.inst, activo=True,
+        )
+        cls.sala = Espacio.objects.create(institucion=cls.inst, nombre="Consultorio A", x=1, y=1)
+        cls.paciente = Paciente.objects.create(
+            nombre="Luis", apellido="Paz", documento="9", institucion=cls.inst, activo=True,
+        )
+        cls.cita = Cita.objects.create(
+            institucion=cls.inst, paciente=cls.paciente, profesional=cls.medico,
+            fecha=timezone.localdate(), hora=time(9, 0), estado="confirmada",
+        )
+
+    def test_asignar_sala(self):
+        self.client.force_login(self.recep_user)
+        r = self.client.post(
+            reverse("dashboards_plano_asignar"),
+            {"cita": self.cita.id, "espacio": self.sala.id},
+        )
+        self.assertEqual(r.status_code, 302)
+        self.cita.refresh_from_db()
+        self.assertEqual(self.cita.espacio, self.sala)
+
+    def test_marcar_llegada(self):
+        self.client.force_login(self.recep_user)
+        r = self.client.post(reverse("dashboards_plano_llegada"), {"cita": self.cita.id})
+        self.assertEqual(r.status_code, 302)
+        self.cita.refresh_from_db()
+        self.assertEqual(self.cita.estado, "en_espera")
+
+    def test_liberar_sala(self):
+        self.cita.espacio = self.sala
+        self.cita.save(update_fields=["espacio"])
+        self.client.force_login(self.recep_user)
+        r = self.client.post(reverse("dashboards_plano_liberar"), {"cita": self.cita.id})
+        self.assertEqual(r.status_code, 302)
+        self.cita.refresh_from_db()
+        self.assertIsNone(self.cita.espacio)
+
+    def test_medico_no_puede_operar(self):
+        self.client.force_login(self.medico_user)
+        r = self.client.post(
+            reverse("dashboards_plano_asignar"),
+            {"cita": self.cita.id, "espacio": self.sala.id},
+        )
+        self.assertIn(r.status_code, (302, 403))
+        self.cita.refresh_from_db()
+        self.assertIsNone(self.cita.espacio)
+
+    def test_solo_post(self):
+        self.client.force_login(self.recep_user)
+        r = self.client.get(reverse("dashboards_plano_asignar"))
+        self.assertEqual(r.status_code, 405)
